@@ -1,0 +1,7 @@
+dataset,model,training_time_sec,inference_time_sec
+BATADAL,LSTM,3.56,0.2208
+BATADAL,GRU,4.18,0.2508
+BATADAL,Automata,0.0,0.0192
+SKAB (fold 1),LSTM,11.44,0.4399
+SKAB (fold 1),GRU,12.76,0.4881
+SKAB (fold 1),Automata,0.0066,0.0188

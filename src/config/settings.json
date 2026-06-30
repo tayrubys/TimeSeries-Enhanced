@@ -1,0 +1,98 @@
+{
+    "paths": {
+        "skab_root": "data/raw/SKAB",
+        "batadal_training_2": "data/raw/BATADAL/Training_Dataset_2.csv",
+        "processed_dir": "data/processed"
+    },
+    "skab": {
+        "groups": [
+            "valve1",
+            "valve2"
+        ],
+        "target_col": "anomaly",
+        "exclude_cols": [
+            "datetime",
+            "changepoint",
+            "source_group",
+            "source_file",
+            "anomaly"
+        ]
+    },
+    "batadal": {
+        "target_candidates": [
+            "ATT_FLAG",
+            "Attack",
+            "attack",
+            "ATTACK",
+            "Label",
+            "label",
+            "Class",
+            "class",
+            "anomaly",
+            "Anomaly"
+        ],
+        "time_keywords": [
+            "date",
+            "time",
+            "datetime",
+            "timestamp"
+        ]
+    },
+    "deep_learning": {
+        "epochs": 50,
+        "batch_size": 32,
+        "early_stopping_patience": 5,
+        "learning_rate": 0.001,
+        "lstm_units": 64,
+        "gru_units": 64,
+        "dense_units": 32,
+        "dropout_rate_1": 0.3,
+        "dropout_rate_2": 0.2,
+        "val_ratio": 0.2,
+        "sequence_window_size": 20,
+        "n_folds": 5,
+        "thresholds": [
+            0.5,
+            0.4,
+            0.3,
+            0.2,
+            0.1
+        ],
+        "seeds": [
+            42,
+            123,
+            2026,
+            7,
+            999
+        ],
+        "batadal_train_ratio": 0.60,
+        "batadal_val_ratio": 0.20
+    },
+    "automata": {
+        "window_size": 4,
+        "alphabet_size": 3,
+        "anomaly_threshold": 0.05,
+        "skab_anomaly_threshold": 0.90,
+        "batadal_anomaly_threshold": 0.05,
+        "noise_level": 0.1,
+        "window_sizes": [
+            3,
+            4,
+            5,
+            6
+        ],
+        "alphabet_sizes": [
+            3,
+            4,
+            5,
+            6
+        ],
+        "seeds": [
+            42,
+            123,
+            2026,
+            7,
+            999
+        ]
+    }
+}
