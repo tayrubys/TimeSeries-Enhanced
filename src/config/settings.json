@@ -69,30 +69,14 @@
         "batadal_val_ratio": 0.20
     },
     "automata": {
-        "window_size": 4,
-        "alphabet_size": 3,
+        "window_size": 3,
+        "alphabet_size": 4,
         "anomaly_threshold": 0.05,
         "skab_anomaly_threshold": 0.90,
         "batadal_anomaly_threshold": 0.05,
         "noise_level": 0.1,
-        "window_sizes": [
-            3,
-            4,
-            5,
-            6
-        ],
-        "alphabet_sizes": [
-            3,
-            4,
-            5,
-            6
-        ],
-        "seeds": [
-            42,
-            123,
-            2026,
-            7,
-            999
-        ]
+        "window_sizes": [2, 3, 4, 5],
+        "alphabet_sizes": [3, 4, 5, 6],
+        "seeds": [42, 123, 2026, 7, 999]
     }
 }

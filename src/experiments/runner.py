@@ -120,7 +120,7 @@ def run_parameter_sensitivity_analysis(config):
     sensitivity_results = []
     
     if os.path.exists("data/processed/batadal_X_train_pc1.csv"):
-        X_train_b = pd.read_csv("data/processed/batadal_X_train_pc1.csv").values.flatten()
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_random_pc1.csv").values.flatten()
         X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
         y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test_b = np.where(y_test_b == -999, 0, y_test_b)
@@ -175,7 +175,7 @@ def main():
     print("-> Fiziksel düzenek bütünlüğü ve zamansal bağımlılıkları korumak adına GroupKFold mimarisi aktiftir.")
  
     if os.path.exists("data/processed/batadal_X_train_pc1.csv"):
-        X_train = pd.read_csv("data/processed/batadal_X_train_pc1.csv").values.flatten()
+        X_train = pd.read_csv("data/processed/batadal_X_train_random_pc1.csv").values.flatten()
         X_test = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
         y_test = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test = np.where(y_test == -999, 0, y_test)
