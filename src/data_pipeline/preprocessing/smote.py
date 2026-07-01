@@ -1,8 +1,10 @@
 import os
 import sys
 import numpy as np
+import pandas as pd  
 from pathlib import Path
 from imblearn.over_sampling import SMOTE
+from sklearn.decomposition import PCA  
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
@@ -41,6 +43,7 @@ def balance_batadal_train_sequences(
 
     print(f"SMOTE sonrası dağılım: {np.bincount(y_resampled.astype(int))}")
 
+    # Derin Öğrenme İçin
     X_output_path = processed_dir / "batadal_X_train_seq_balanced.npy"
     y_output_path = processed_dir / "batadal_y_train_seq_balanced.npy"
 
@@ -52,6 +55,26 @@ def balance_batadal_train_sequences(
     print(f"  y shape: {y_resampled.shape}")
     print(f"  X dosyası: {X_output_path}")
     print(f"  y dosyası: {y_output_path}")
+
+    #SMOTE SONRASI OTOMATA İÇİN PCA (PC1) UYGULAMASI
+    print("\n" + "-"*40)
+    print("Otomata için SMOTE sonrası PCA (PC1) hesaplanıyor...")
+    print("-"*40)
+
+    pca = PCA(n_components=1, random_state=random_state)
+    X_resampled_pc1 = pca.fit_transform(X_flat_resampled)
+ 
+    X_resampled_pc1_df = pd.DataFrame(X_resampled_pc1, columns=['PC1'])
+    
+    automata_input_path = processed_dir / "batadal_X_train_pc1.csv"
+    X_resampled_pc1_df.to_csv(automata_input_path, index=False)
+    
+    y_train_output_path = processed_dir / "batadal_y_train.csv"
+    pd.DataFrame(y_resampled, columns=['target']).to_csv(y_train_output_path, index=False)
+    
+    print(f"Otomata Girdisi Hazır yol: {automata_input_path}")
+    print(f"Otomata Girdisi Boyutu: {X_resampled_pc1_df.shape}")
+    print("=" * 50 + "\n")
 
 if __name__ == "__main__":
     print("=" * 50)
