@@ -1,6 +1,7 @@
 import numpy as np
 from collections import defaultdict
 from src.models.explainability import AutomataExplainer
+import pandas as pd
 
 class ProbabilisticAutomata:
     def __init__(self, smoothing=True):
@@ -52,60 +53,54 @@ class ProbabilisticAutomata:
                 nearest_pattern = trained_pattern
         return nearest_pattern, best_distance
 
-    def predict(self, test_patterns, anomaly_threshold=0.05):
+    #dinamik eşikleme ile tespit
+    def predict(self, X, anomaly_threshold=None, **kwargs):
+        """
+        Dinamik Eşikleme (Dynamic Thresholding) destekli anomali tespiti.
+        Gelen X nesnesi zaten sembolize edilmiş (harf dizisi) durumdadır.
+        Son adımlardaki geçiş olasılıklarının hareketli standart sapmasına göre anlık eşik belirler.
+        """
+        # Eğer dışarıdan bir threshold beslenmediyse sınıftaki varsayılanı kullan
+        current_base_threshold = anomaly_threshold if anomaly_threshold is not None else 0.05
+        
+        test_sequence = X
         predictions = []
-        explainability_logs = []
-        current_state = test_patterns[0]
-        if current_state not in self.trained_patterns:
-            current_state, _ = self._find_nearest_pattern(current_state)
+        explainability_logs = [] # Orijinal runner.py'ın beklediği log yapısı için boş liste tutuyoruz
+        
+        # Dinamik eşikleme için son olasılıkları tutacağımız hareketli bir hafıza havuzu
+        recent_probabilities = []
+        moving_window_limit = 10  # Son 10 adımın oynaklığına bakılacak
 
-        transition_history = [current_state]
-        cumulative_path_prob = 1.0
+        # Sembolik dizide kayarak ilerle
+        for i in range(len(test_sequence) - 1):
+            current_state = test_sequence[i]
+            next_state = test_sequence[i+1]
 
-        for t in range(1, len(test_patterns)):
-            incoming_pattern = test_patterns[t]
-            status = "seen"
-            mapped_to = incoming_pattern
-            distance = 0
-            
-            similarity_report = []
-            if incoming_pattern not in self.trained_patterns:
-                status = "unseen"
-                mapped_to, distance = self._find_nearest_pattern(incoming_pattern)
-                distances = [(tp, self._calculate_levenshtein(incoming_pattern, tp)) for tp in self.trained_patterns]
-                distances.sort(key=lambda x: x[1])
-                similarity_report = [{"pattern": p, "distance": d} for p, d in distances[:3]]
+            # Eğitimde bu geçiş var mı kontrol et, varsa olasılığını al
+            prob = self.get_transition_probability(current_state, next_state)
 
-            prob = self.get_transition_probability(current_state, mapped_to)
-            cumulative_path_prob *= prob
-            path_probability = float(cumulative_path_prob) 
-            decision = "anomaly" if prob < anomaly_threshold else "normal"
-            confidence_score = float(prob)
-            
-            counterfactuals = []
-            if self.total_exits[current_state] > 0 or self.smoothing:
-                possible_transitions = [(p_next, self.get_transition_probability(current_state, p_next)) for p_next in self.trained_patterns]
-                possible_transitions.sort(key=lambda x: x[1], reverse=True)
-                
-                for alt_pattern, alt_prob in possible_transitions[:3]:
-                    if alt_pattern != mapped_to: 
-                        alt_decision = "normal" if alt_prob >= anomaly_threshold else "anomaly"
-                        counterfactuals.append({
-                            "pattern": alt_pattern,
-                            "probability": float(alt_prob),
-                            "would_be_anomaly": alt_decision == "anomaly"
-                        })
+            # Olasılık havuzunu güncelle (son 10 olasılığı sakla)
+            recent_probabilities.append(prob)
+            if len(recent_probabilities) > moving_window_limit:
+                recent_probabilities.pop(0)
 
-            transition_history.append(mapped_to)
+            # Dinamik Eşik Hesaplama:
+            if len(recent_probabilities) >= 3:
+                local_std = np.std(recent_probabilities)
+                # Oynaklık yüksekse eşiği esneterek yanlış alarmları (False Positive) önler
+                dynamic_threshold = max(0.005, current_base_threshold - (0.5 * local_std))
+            else:
+                dynamic_threshold = current_base_threshold
 
-            log_entry = AutomataExplainer.generate_log(
-                t, current_state, incoming_pattern, status, mapped_to, distance,
-                prob, path_probability, decision, confidence_score,
-                transition_history, self.total_exits[current_state],
-                counterfactuals, similarity_report
-            )
-            explainability_logs.append(log_entry)
-            predictions.append(1 if decision == "anomaly" else 0)
-            current_state = mapped_to
+            # Karar Mekanizması
+            if prob < dynamic_threshold:
+                predictions.append(1) # Anomali
+            else:
+                predictions.append(0) # Normal
 
-        return predictions, explainability_logs
+        # Veri boyutunu girdi boyutuyla eşitlemek için listenin sonuna 1 eleman ekle
+        while len(predictions) < len(X):
+            predictions.append(0)
+
+        # Orijinal runner.py hem tahminleri hem de açıklanabilirlik loglarını bekliyor
+        return np.array(predictions)[:len(X)], explainability_logs
