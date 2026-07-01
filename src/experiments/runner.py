@@ -52,10 +52,6 @@ def inject_gaussian_noise(series, noise_level=0.1, seed=42):
     return series + noise
  
 def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42):
-    """
-    Otomata modeli deterministiktir; seed yalnızca Gaussian noise üretimini etkiler.
-    Original ve unseen senaryoları seed'den bağımsız olarak aynı sonucu verir.
-    """
     results = []
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
@@ -119,13 +115,14 @@ def run_parameter_sensitivity_analysis(config):
     alphabet_sizes = config.get("alphabet_sizes", [3, 4, 5, 6])
     sensitivity_results = []
     
-    if os.path.exists("data/processed/batadal_X_train_pc1.csv"):
-        X_train_b = pd.read_csv("data/processed/batadal_X_train_pc1.csv").values.flatten()
+    # PARAMETRE TARAMASI İÇİN DE ADASYN VERİSİ BAĞLANDI
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
         X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
         y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test_b = np.where(y_test_b == -999, 0, y_test_b)
  
-        print("\n>> BATADAL Parametre Taraması...")
+        print("\n>> BATADAL (ADASYN) Parametre Taraması...")
         for w in window_sizes:
             for a in alphabet_sizes:
                 cc = {
@@ -174,8 +171,13 @@ def main():
     print("\n[INFO] SKAB Veri Seti Bölme Stratejisi:")
     print("-> Fiziksel düzenek bütünlüğü ve zamansal bağımlılıkları korumak adına GroupKFold mimarisi aktiftir.")
  
-    if os.path.exists("data/processed/batadal_X_train_pc1.csv"):
-        X_train = pd.read_csv("data/processed/batadal_X_train_pc1.csv").values.flatten()
+    # ANA EĞİTİM İÇİN ADASYN VERİSİ BAĞLANDI
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        print("\n" + "="*60)
+        print("[ADASYN ENTEGRASYONU] Otomata modeli ADASYN_PC1 verisiyle eğitiliyor...")
+        print("="*60 + "\n")
+        
+        X_train = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
         X_test = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
         y_test = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test = np.where(y_test == -999, 0, y_test)
