@@ -6,3 +6,4 @@ matplotlib
 scipy
 seaborn
 networkx
+imbalanced-learn
