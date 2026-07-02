@@ -20,7 +20,7 @@ from src.experiments.evaluator import evaluate_binary_classification
 config = load_config()
 DL_CONFIG = config["deep_learning"]
 
-SEED = DL_CONFIG["seeds"][0]
+SEED = DL_CONFIG["seeds"][3]
 THRESHOLDS = DL_CONFIG["thresholds"]
 EPOCHS = DL_CONFIG["epochs"]
 BATCH_SIZE = DL_CONFIG["batch_size"]
@@ -30,8 +30,8 @@ LEARNING_RATE = DL_CONFIG["learning_rate"]
 # BATADAL sequence dosyalarını yükler
 def load_batadal_sequence_data(processed_dir="data/processed"):
 
-    X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy")
-    y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy")
+    X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn.npy")
+    y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn.npy")
 
     X_val = np.load(f"{processed_dir}/batadal_X_val_seq.npy")
     y_val = np.load(f"{processed_dir}/batadal_y_val_seq.npy")
@@ -135,7 +135,7 @@ def train_and_predict(model_type):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         callbacks=[early_stopping],
-        class_weight=class_weights,
+        class_weight=None,
         verbose=1
     )
 

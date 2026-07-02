@@ -11,9 +11,26 @@ from src.experiments.evaluator import evaluate_binary_classification
 from src.config import get_dl_config
 
 
-def load_batadal_sequence_data(processed_dir="data/processed"):
-    X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
-    y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
+def load_batadal_sequence_data(processed_dir="data/processed", balancing_method="class_weight"):
+    """
+    balancing_method:
+      "class_weight" -> ham (dengesiz) train + class_weight kullanılacak
+      "smote"        -> SMOTE ile dengelenmiş train (class_weight KULLANILMAZ)
+      "adasyn"       -> ADASYN ile dengelenmiş train (class_weight KULLANILMAZ)
+    """
+    if balancing_method == "class_weight":
+        X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
+        y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
+    elif balancing_method == "smote":
+        X_train = np.load(f"{processed_dir}/batadal_X_train_seq_balanced.npy").astype("float32")
+        y_train = np.load(f"{processed_dir}/batadal_y_train_seq_balanced.npy").astype("float32")
+    elif balancing_method == "adasyn":
+        X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn.npy").astype("float32")
+        y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn.npy").astype("float32")
+    else:
+        raise ValueError(f"Bilinmeyen balancing_method: {balancing_method}")
+
+    # val/test HER ZAMAN dengesiz, orijinal hâliyle yüklenir
     X_val   = np.load(f"{processed_dir}/batadal_X_val_seq.npy").astype("float32")
     y_val   = np.load(f"{processed_dir}/batadal_y_val_seq.npy").astype("float32")
     X_test  = np.load(f"{processed_dir}/batadal_X_test_seq.npy").astype("float32")
@@ -41,17 +58,19 @@ def find_best_threshold(y_true, y_pred_prob, thresholds):
     return best_threshold, best_metrics
 
 
-def train_one_batadal_experiment(model_type, seed):
+def train_one_batadal_experiment(model_type, seed, balancing_method="class_weight"):
     cfg = get_dl_config()
 
     print("\n==============================")
-    print(f"BATADAL {model_type} seed={seed} eğitimi başlıyor")
+    print(f"BATADAL {model_type} seed={seed} balancing={balancing_method} eğitimi başlıyor")
     print("==============================")
 
     np.random.seed(seed)
     tf.random.set_seed(seed)
 
-    X_train, y_train, X_val, y_val, X_test, y_test = load_batadal_sequence_data()
+    X_train, y_train, X_val, y_val, X_test, y_test = load_batadal_sequence_data(
+        balancing_method=balancing_method
+    )
 
     model = build_model(model_type=model_type, input_shape=X_train.shape[1:])
 
@@ -61,12 +80,15 @@ def train_one_batadal_experiment(model_type, seed):
         restore_best_weights=True
     )
 
-    class_weights_array = compute_class_weight(
-        class_weight="balanced",
-        classes=np.array([0, 1]),
-        y=y_train.astype(int)
-    )
-    class_weights = {0: class_weights_array[0], 1: class_weights_array[1]}
+    if balancing_method == "class_weight":
+        class_weights_array = compute_class_weight(
+            class_weight="balanced",
+            classes=np.array([0, 1]),
+            y=y_train.astype(int)
+        )
+        class_weights = {0: class_weights_array[0], 1: class_weights_array[1]}
+    else:
+        class_weights = None
 
     model.fit(
         X_train, y_train,
@@ -95,6 +117,7 @@ def train_one_batadal_experiment(model_type, seed):
     result = {
         "dataset": "BATADAL",
         "model": model_type,
+        "balancing_method": balancing_method,   
         "seed": seed,
         "fold": "-",
         "threshold": best_threshold,
@@ -111,7 +134,7 @@ def train_one_batadal_experiment(model_type, seed):
 def summarize_results(results_df):
     return (
         results_df
-        .groupby(["dataset", "model"])
+        .groupby(["dataset", "model", "balancing_method"])  
         .agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
@@ -125,15 +148,21 @@ def summarize_results(results_df):
         .reset_index()
     )
 
-
 def main():
     cfg = get_dl_config()
     all_results = []
 
+    balancing_methods = ["adasyn"]
+
     for model_type in ["LSTM", "GRU"]:
-        for seed in cfg["seeds"]:
-            result = train_one_batadal_experiment(model_type=model_type, seed=seed)
-            all_results.append(result)
+        for balancing_method in balancing_methods:
+            for seed in cfg["seeds"]:
+                result = train_one_batadal_experiment(
+                    model_type=model_type,
+                    seed=seed,
+                    balancing_method=balancing_method
+                )
+                all_results.append(result)
 
     output_dir = Path("results/outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
