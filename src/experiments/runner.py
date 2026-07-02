@@ -20,6 +20,9 @@ def load_json_config(config_path="src/config/settings.json"):
         # High-order Markov fine-tuning parametreleri
         "order": 2,
         "orders": [2, 3, 4],
+        "batadal_thresholds": [0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02],
+        "skab_thresholds": [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05],
+        # Geriye uyumluluk: eski ortak liste config'te varsa sadece fallback olarak kullanılır.
         "thresholds": [0.05, 0.01, 0.005, 0.001],
 
         "window_sizes": [3, 4, 5, 6],
@@ -133,7 +136,9 @@ def run_markov_order_threshold_sweep(config):
     print("\n--- HIGH-ORDER MARKOV FINE-TUNING GRID SEARCH BAŞLATILIYOR ---")
 
     orders = config.get("orders", [2, 3, 4])
-    thresholds = config.get("thresholds", [0.05, 0.01, 0.005, 0.001])
+    fallback_thresholds = config.get("thresholds", [0.05, 0.01, 0.005, 0.001])
+    batadal_thresholds = config.get("batadal_thresholds", fallback_thresholds)
+    skab_thresholds = config.get("skab_thresholds", fallback_thresholds)
     seeds = config.get("seeds", [42, 123, 2026, 7, 999])
 
     sweep_results = []
@@ -146,8 +151,9 @@ def run_markov_order_threshold_sweep(config):
         y_test_b = np.where(y_test_b == -999, 0, y_test_b)
 
         print("\n>> BATADAL Markov Order/Threshold Taraması...")
+        print(f"   Threshold aralığı: {batadal_thresholds}")
         for order in orders:
-            for threshold in thresholds:
+            for threshold in batadal_thresholds:
                 for seed in seeds:
                     cc = {
                         **config,
@@ -177,10 +183,11 @@ def run_markov_order_threshold_sweep(config):
                         f"F1={temp_df['f1_score'].mean():.4f}"
                     )
 
-    # SKAB sweep
+    # SKAB sweep: bütün fold ve seed kombinasyonları
     print("\n>> SKAB Markov Order/Threshold Taraması...")
+    print(f"   Threshold aralığı: {skab_thresholds}")
     for order in orders:
-        for threshold in thresholds:
+        for threshold in skab_thresholds:
             for fold in range(1, 6):
                 train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
                 test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
@@ -228,8 +235,11 @@ def run_markov_order_threshold_sweep(config):
 
     df_sweep = pd.DataFrame(sweep_results)
     sweep_path = "results/outputs/automata_markov_sweep_metrics.csv"
+    dataset_threshold_sweep_path = "results/outputs/automata_markov_dataset_threshold_sweep_metrics.csv"
     df_sweep.to_csv(sweep_path, index=False)
+    df_sweep.to_csv(dataset_threshold_sweep_path, index=False)
     print(f"\n[OK] Markov sweep sonuçları kaydedildi: {sweep_path}")
+    print(f"[OK] Dataset bazlı threshold sweep sonuçları kaydedildi: {dataset_threshold_sweep_path}")
 
     # Optimizasyon için original senaryonun özetini ayrıca yazıyoruz.
     df_original = df_sweep[df_sweep["scenario"] == "original"].copy()
@@ -249,16 +259,23 @@ def run_markov_order_threshold_sweep(config):
         ).reset_index()
 
         summary_path = "results/outputs/automata_markov_sweep_summary.csv"
+        dataset_threshold_summary_path = "results/outputs/automata_markov_dataset_threshold_sweep_summary.csv"
         summary_df.to_csv(summary_path, index=False)
+        summary_df.to_csv(dataset_threshold_summary_path, index=False)
         print(f"[OK] Markov sweep özeti kaydedildi: {summary_path}")
+        print(f"[OK] Dataset bazlı threshold sweep özeti kaydedildi: {dataset_threshold_summary_path}")
 
+        # Recall düşmeden en yüksek precision/F1 adaylarını görmeyi kolaylaştırır.
         best_df = summary_df.sort_values(
             by=["dataset", "recall_mean", "precision_mean", "f1_score_mean"],
             ascending=[True, False, False, False],
         )
         best_path = "results/outputs/automata_markov_sweep_best_candidates.csv"
+        dataset_threshold_best_path = "results/outputs/automata_markov_dataset_threshold_best_candidates.csv"
         best_df.to_csv(best_path, index=False)
+        best_df.to_csv(dataset_threshold_best_path, index=False)
         print(f"[OK] En iyi adaylar kaydedildi: {best_path}")
+        print(f"[OK] Dataset bazlı en iyi adaylar kaydedildi: {dataset_threshold_best_path}")
 
     return df_sweep
 
@@ -310,6 +327,8 @@ def main():
     print("\n[INFO] SKAB Veri Seti Bölme Stratejisi:")
     print("-> Fiziksel düzenek bütünlüğü ve zamansal bağımlılıkları korumak adına GroupKFold mimarisi aktiftir.")
 
+    # ANA EĞİTİM: config'teki tekil order/threshold ile çalışır.
+    # Fine-tuning sonuçları ayrıca automata_markov_sweep_metrics.csv içine yazılır.
     if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
         print("\n" + "=" * 60)
         print("[ADASYN ENTEGRASYONU] Otomata modeli ADASYN_PC1 verisiyle eğitiliyor...")
