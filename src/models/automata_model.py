@@ -3,30 +3,75 @@ from collections import defaultdict
 from src.models.explainability import AutomataExplainer
 
 class ProbabilisticAutomata:
-    def __init__(self, smoothing=True):
+    def __init__(self, smoothing=True, weight_sharpness=1.0):
         self.smoothing = smoothing
+        # weight_sharpness: sık geçişleri ne kadar güçlü öne çıkarıp
+        # nadir geçişleri ne kadar bastıracağımızı kontrol eder.
+        # 0'a yaklaştıkça weight -> düz (etkisiz), büyüdükçe -> daha keskin ayrım.
+        self.weight_sharpness = weight_sharpness
         self.transitions = defaultdict(lambda: defaultdict(int))
         self.total_exits = defaultdict(int)
         self.trained_patterns = set()
+        #ağırlıklı geçiş olasılıklarını saklamak için matris
+        self.weighted_probabilities = defaultdict(lambda: defaultdict(float))
 
     def fit(self, train_patterns):
         if len(train_patterns) < 2:
             raise ValueError("Otomata eğitimi için en az 2 pattern gereklidir.")
         self.trained_patterns = set(train_patterns)
+        
+        #temizleme
+        self.weighted_probabilities.clear()
+        
+        #standart geçiş frekanslarını hesapla
         for i in range(len(train_patterns) - 1):
             current_state = train_patterns[i]
             next_state = train_patterns[i+1]
             self.transitions[current_state][next_state] += 1
             self.total_exits[current_state] += 1
 
+        #matematiksel normalizasyon ve ağırlıklandırma
+        for current_state, exits in self.transitions.items():
+            total_output = self.total_exits[current_state]
+            if total_output > 0:
+                raw_scores = {}
+                total_raw_score = 0.0
+                
+                #önce her bir sonraki durum için base_prob * weight hesapla (Ham Skor)
+                for next_state, count in exits.items():
+                    if self.smoothing:
+                        base_prob = (count + 1) / (total_output + len(self.trained_patterns))
+                    else:
+                        base_prob = count / total_output
+                    
+                    #frekans ağırlığı: sık geçişi güçlendirir, nadiri bastırır
+                    weight = np.log(1 + self.weight_sharpness * (count / total_output))
+                    
+                    #ham skor hesaplama
+                    raw_score = base_prob * weight
+                    raw_scores[next_state] = raw_score
+                    total_raw_score += raw_score
+                
+                #l1 normalizasyonu: ham skorları toplam skora bölerek normalize et
+                if total_raw_score > 0:
+                    for next_state, r_score in raw_scores.items():
+                        self.weighted_probabilities[current_state][next_state] = r_score / total_raw_score
+
     def get_transition_probability(self, current_state, next_state):
         total_output = self.total_exits[current_state]
+        
+        #eğer bu durumdan daha önce hiç çıkış yapılmadıysa uniform olasılık dön
         if total_output == 0:
             return 1.0 / (len(self.trained_patterns) if self.smoothing else 1.0)
-        transition_count = self.transitions[current_state][next_state]
+            
+        #eğer bu geçiş daha önce görülmüşse, normalize edilmiş ağırlıklı olasılığı dön
+        if next_state in self.weighted_probabilities[current_state]:
+            return self.weighted_probabilities[current_state][next_state]
+            
+        # Geçiş ilk defa görülüyorsa çok küçük bir taban olasılık/smoothing cezası ver
         if self.smoothing:
-            return (transition_count + 1) / (total_output + len(self.trained_patterns))
-        return transition_count / total_output
+            return 1.0 / (total_output + len(self.trained_patterns))
+        return 0.0
 
     def _calculate_levenshtein(self, s1, s2):
         if len(s1) < len(s2): return self._calculate_levenshtein(s2, s1)

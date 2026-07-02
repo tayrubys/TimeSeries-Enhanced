@@ -7,23 +7,23 @@
         "status": "seen",
         "mapped_to": "babb",
         "distance": 0,
-        "transition_probability": 0.189873417721519,
-        "cumulative_path_probability": 0.189873417721519,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.0,
         "decision": "normal",
-        "confidence_score": 0.189873417721519,
-        "decision_reason": "Gecis olasiligi (0.1899) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbab",
             "babb"
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -38,11 +38,11 @@
         "status": "seen",
         "mapped_to": "abbc",
         "distance": 0,
-        "transition_probability": 0.05223880597014925,
-        "cumulative_path_probability": 0.00991876062724353,
-        "decision": "normal",
-        "confidence_score": 0.05223880597014925,
-        "decision_reason": "Gecis olasiligi (0.0522) esik degerden buyuk oldugu icin normal.",
+        "transition_probability": 0.022620464915244345,
+        "cumulative_path_probability": 0.022620464915244345,
+        "decision": "anomaly",
+        "confidence_score": 0.022620464915244345,
+        "decision_reason": "Gecis olasiligi (0.0226) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "cbab",
             "babb",
@@ -51,12 +51,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abbb",
-                "probability": 0.3656716417910448,
+                "probability": 0.8609675569996695,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "abba",
-                "probability": 0.11940298507462686,
+                "probability": 0.11641197808508601,
                 "would_be_anomaly": false
             }
         ],
@@ -70,11 +70,11 @@
         "status": "seen",
         "mapped_to": "bbcc",
         "distance": 0,
-        "transition_probability": 0.056338028169014086,
-        "cumulative_path_probability": 0.0005588034156193538,
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 0.011310232457622173,
         "decision": "normal",
-        "confidence_score": 0.056338028169014086,
-        "decision_reason": "Gecis olasiligi (0.0563) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbab",
             "babb",
@@ -84,11 +84,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbcb",
-                "probability": 0.056338028169014086,
+                "probability": 0.5,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014084507042253521,
                 "would_be_anomaly": true
             }
@@ -103,11 +103,11 @@
         "status": "seen",
         "mapped_to": "bcca",
         "distance": 0,
-        "transition_probability": 0.028169014084507043,
-        "cumulative_path_probability": 1.574094128505222e-05,
-        "decision": "anomaly",
-        "confidence_score": 0.028169014084507043,
-        "decision_reason": "Gecis olasiligi (0.0282) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.1178921069945202,
+        "cumulative_path_probability": 0.0013333871350268882,
+        "decision": "normal",
+        "confidence_score": 0.1178921069945202,
+        "decision_reason": "Gecis olasiligi (0.1179) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbab",
             "babb",
@@ -118,13 +118,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bccb",
-                "probability": 0.056338028169014086,
+                "probability": 0.5681033988464457,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bccc",
-                "probability": 0.04225352112676056,
-                "would_be_anomaly": true
+                "probability": 0.314004494159034,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -137,11 +137,11 @@
         "status": "seen",
         "mapped_to": "ccab",
         "distance": 0,
-        "transition_probability": 0.057971014492753624,
-        "cumulative_path_probability": 9.125183353653461e-07,
+        "transition_probability": 0.8188307994985875,
+        "cumulative_path_probability": 0.001091818453815198,
         "decision": "normal",
-        "confidence_score": 0.057971014492753624,
-        "decision_reason": "Gecis olasiligi (0.0580) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8188307994985875,
+        "decision_reason": "Gecis olasiligi (0.8188) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "babb",
             "abbc",
@@ -152,11 +152,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccaa",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -171,11 +171,11 @@
         "status": "seen",
         "mapped_to": "cabb",
         "distance": 0,
-        "transition_probability": 0.08571428571428572,
-        "cumulative_path_probability": 7.821585731702966e-08,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 0.001091818453815198,
         "decision": "normal",
-        "confidence_score": 0.08571428571428572,
-        "decision_reason": "Gecis olasiligi (0.0857) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abbc",
             "bbcc",
@@ -185,12 +185,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             }
@@ -205,11 +205,11 @@
         "status": "seen",
         "mapped_to": "abbb",
         "distance": 0,
-        "transition_probability": 0.12,
-        "cumulative_path_probability": 9.385902878043559e-09,
+        "transition_probability": 0.8949511251104739,
+        "cumulative_path_probability": 0.0009771241536582894,
         "decision": "normal",
-        "confidence_score": 0.12,
-        "decision_reason": "Gecis olasiligi (0.1200) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8949511251104739,
+        "decision_reason": "Gecis olasiligi (0.8950) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bbcc",
             "bcca",
@@ -220,11 +220,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abba",
-                "probability": 0.04,
-                "would_be_anomaly": true
+                "probability": 0.10504887488952601,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "bccc",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -239,11 +239,11 @@
         "status": "seen",
         "mapped_to": "bbbc",
         "distance": 0,
-        "transition_probability": 0.11278195488721804,
-        "cumulative_path_probability": 1.0585604749673186e-09,
+        "transition_probability": 0.08999547644993895,
+        "cumulative_path_probability": 8.793675375922112e-05,
         "decision": "normal",
-        "confidence_score": 0.11278195488721804,
-        "decision_reason": "Gecis olasiligi (0.1128) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.08999547644993895,
+        "decision_reason": "Gecis olasiligi (0.0900) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcca",
             "ccab",
@@ -254,11 +254,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbbb",
-                "probability": 0.41353383458646614,
+                "probability": 0.9100045235500611,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.007518796992481203,
                 "would_be_anomaly": true
             }
@@ -273,11 +273,11 @@
         "status": "seen",
         "mapped_to": "bbcc",
         "distance": 0,
-        "transition_probability": 0.041237113402061855,
-        "cumulative_path_probability": 4.365197834916778e-11,
+        "transition_probability": 0.028288192745835255,
+        "cumulative_path_probability": 2.4875718397839e-06,
         "decision": "anomaly",
-        "confidence_score": 0.041237113402061855,
-        "decision_reason": "Gecis olasiligi (0.0412) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.028288192745835255,
+        "decision_reason": "Gecis olasiligi (0.0283) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "ccab",
             "cabb",
@@ -288,12 +288,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbcb",
-                "probability": 0.24742268041237114,
+                "probability": 0.8799758901637229,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbca",
-                "probability": 0.07216494845360824,
+                "probability": 0.09173591709044175,
                 "would_be_anomaly": false
             }
         ],
@@ -307,11 +307,11 @@
         "status": "seen",
         "mapped_to": "bcca",
         "distance": 0,
-        "transition_probability": 0.028169014084507043,
-        "cumulative_path_probability": 1.2296331929343037e-12,
-        "decision": "anomaly",
-        "confidence_score": 0.028169014084507043,
-        "decision_reason": "Gecis olasiligi (0.0282) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.1178921069945202,
+        "cumulative_path_probability": 2.9326508549235896e-07,
+        "decision": "normal",
+        "confidence_score": 0.1178921069945202,
+        "decision_reason": "Gecis olasiligi (0.1179) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cabb",
             "abbb",
@@ -322,13 +322,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bccb",
-                "probability": 0.056338028169014086,
+                "probability": 0.5681033988464457,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bccc",
-                "probability": 0.04225352112676056,
-                "would_be_anomaly": true
+                "probability": 0.314004494159034,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -341,11 +341,11 @@
         "status": "seen",
         "mapped_to": "ccaa",
         "distance": 0,
-        "transition_probability": 0.028985507246376812,
-        "cumulative_path_probability": 3.5641541824182714e-14,
-        "decision": "anomaly",
-        "confidence_score": 0.028985507246376812,
-        "decision_reason": "Gecis olasiligi (0.0290) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.18116920050141241,
+        "cumulative_path_probability": 5.313060107362904e-08,
+        "decision": "normal",
+        "confidence_score": 0.18116920050141241,
+        "decision_reason": "Gecis olasiligi (0.1812) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abbb",
             "bbbc",
@@ -356,11 +356,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccab",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -376,7 +376,7 @@
         "mapped_to": "caab",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 5.165440844084451e-16,
+        "cumulative_path_probability": 7.700087112120151e-10,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -390,16 +390,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "caaa",
-                "probability": 0.07246376811594203,
+                "probability": 1.0,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -415,7 +415,7 @@
         "mapped_to": "aaba",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 7.709613200126047e-18,
+        "cumulative_path_probability": 1.1492667331522613e-11,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -429,16 +429,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aabb",
-                "probability": 0.04477611940298507,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -453,11 +453,11 @@
         "status": "seen",
         "mapped_to": "abab",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 2.2675332941547196e-19,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.2866952140760699,
+        "cumulative_path_probability": 3.2948927209159305e-12,
+        "decision": "normal",
+        "confidence_score": 0.2866952140760699,
+        "decision_reason": "Gecis olasiligi (0.2867) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcca",
             "ccaa",
@@ -468,11 +468,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abaa",
-                "probability": 0.04411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.7133047859239301,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -488,7 +488,7 @@
         "mapped_to": "babc",
         "distance": 0,
         "transition_probability": 0.015151515151515152,
-        "cumulative_path_probability": 3.43565650629503e-21,
+        "cumulative_path_probability": 4.9922616983574703e-14,
         "decision": "anomaly",
         "confidence_score": 0.015151515151515152,
         "decision_reason": "Gecis olasiligi (0.0152) esik degerin altinda kaldigi icin anomali!",
@@ -502,16 +502,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "babb",
-                "probability": 0.030303030303030304,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             }
@@ -526,11 +526,11 @@
         "status": "seen",
         "mapped_to": "abcb",
         "distance": 0,
-        "transition_probability": 0.10810810810810811,
-        "cumulative_path_probability": 3.7142232500486812e-22,
+        "transition_probability": 0.8718629493015059,
+        "cumulative_path_probability": 4.3525680080148887e-14,
         "decision": "normal",
-        "confidence_score": 0.10810810810810811,
-        "decision_reason": "Gecis olasiligi (0.1081) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8718629493015059,
+        "decision_reason": "Gecis olasiligi (0.8719) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "caab",
             "aaba",
@@ -541,11 +541,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abca",
-                "probability": 0.04054054054054054,
-                "would_be_anomaly": true
+                "probability": 0.12813705069849418,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
@@ -560,11 +560,11 @@
         "status": "seen",
         "mapped_to": "bcbb",
         "distance": 0,
-        "transition_probability": 0.06944444444444445,
-        "cumulative_path_probability": 2.5793217014226953e-23,
+        "transition_probability": 0.6061375665682851,
+        "cumulative_path_probability": 2.6382549807011126e-14,
         "decision": "normal",
-        "confidence_score": 0.06944444444444445,
-        "decision_reason": "Gecis olasiligi (0.0694) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.6061375665682851,
+        "decision_reason": "Gecis olasiligi (0.6061) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aaba",
             "abab",
@@ -575,11 +575,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bcbc",
-                "probability": 0.05555555555555555,
+                "probability": 0.3938624334317149,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -594,11 +594,11 @@
         "status": "seen",
         "mapped_to": "cbbc",
         "distance": 0,
-        "transition_probability": 0.034482758620689655,
-        "cumulative_path_probability": 8.894212763526535e-25,
+        "transition_probability": 0.027410814792664467,
+        "cumulative_path_probability": 7.231671865182277e-16,
         "decision": "anomaly",
-        "confidence_score": 0.034482758620689655,
-        "decision_reason": "Gecis olasiligi (0.0345) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.027410814792664467,
+        "decision_reason": "Gecis olasiligi (0.0274) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "abab",
             "babc",
@@ -609,13 +609,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbbb",
-                "probability": 0.20689655172413793,
+                "probability": 0.9198282406485359,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "cbba",
-                "probability": 0.04597701149425287,
-                "would_be_anomaly": true
+                "probability": 0.05276094455879958,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -628,11 +628,11 @@
         "status": "seen",
         "mapped_to": "bbca",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 2.615944930448981e-26,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.2866952140760699,
+        "cumulative_path_probability": 2.0732857135163247e-16,
+        "decision": "normal",
+        "confidence_score": 0.2866952140760699,
+        "decision_reason": "Gecis olasiligi (0.2867) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "babc",
             "abcb",
@@ -643,11 +643,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbcb",
-                "probability": 0.04411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.7133047859239301,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -663,7 +663,7 @@
         "mapped_to": "bcac",
         "distance": 0,
         "transition_probability": 0.013888888888888888,
-        "cumulative_path_probability": 3.6332568478458067e-28,
+        "cumulative_path_probability": 2.8795634909948952e-18,
         "decision": "anomaly",
         "confidence_score": 0.013888888888888888,
         "decision_reason": "Gecis olasiligi (0.0139) esik degerin altinda kaldigi icin anomali!",
@@ -677,16 +677,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bcab",
-                "probability": 0.08333333333333333,
+                "probability": 0.7970058176576484,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bcaa",
-                "probability": 0.041666666666666664,
-                "would_be_anomaly": true
+                "probability": 0.20299418234235153,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -701,11 +701,11 @@
         "status": "seen",
         "mapped_to": "cacc",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 1.0845542829390467e-29,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 1.4397817454974476e-18,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcbb",
             "cbbc",
@@ -716,11 +716,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cacb",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -735,11 +735,11 @@
         "status": "seen",
         "mapped_to": "accb",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 3.237475471459841e-31,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 7.198908727487238e-19,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbbc",
             "bbca",
@@ -750,11 +750,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "acca",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -769,11 +769,11 @@
         "status": "seen",
         "mapped_to": "ccbc",
         "distance": 0,
-        "transition_probability": 0.030303030303030304,
-        "cumulative_path_probability": 9.810531731696488e-33,
-        "decision": "anomaly",
-        "confidence_score": 0.030303030303030304,
-        "decision_reason": "Gecis olasiligi (0.0303) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 7.198908727487238e-19,
+        "decision": "normal",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bbca",
             "bcac",
@@ -783,12 +783,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             }
@@ -803,11 +803,11 @@
         "status": "seen",
         "mapped_to": "cbcb",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 2.9285169348347728e-34,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 3.599454363743619e-19,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcac",
             "cacc",
@@ -818,11 +818,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbcc",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -837,11 +837,11 @@
         "status": "seen",
         "mapped_to": "bcba",
         "distance": 0,
-        "transition_probability": 0.07246376811594203,
-        "cumulative_path_probability": 2.122113720894763e-35,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 3.599454363743619e-19,
         "decision": "normal",
-        "confidence_score": 0.07246376811594203,
-        "decision_reason": "Gecis olasiligi (0.0725) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cacc",
             "accb",
@@ -851,12 +851,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -871,11 +871,11 @@
         "status": "seen",
         "mapped_to": "cbab",
         "distance": 0,
-        "transition_probability": 0.16455696202531644,
-        "cumulative_path_probability": 3.492085869826825e-36,
+        "transition_probability": 0.9451071517179851,
+        "cumulative_path_probability": 3.4018700614566043e-19,
         "decision": "normal",
-        "confidence_score": 0.16455696202531644,
-        "decision_reason": "Gecis olasiligi (0.1646) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.9451071517179851,
+        "decision_reason": "Gecis olasiligi (0.9451) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "accb",
             "ccbc",
@@ -886,11 +886,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbaa",
-                "probability": 0.0379746835443038,
-                "would_be_anomaly": true
+                "probability": 0.054892848282014864,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -905,11 +905,11 @@
         "status": "seen",
         "mapped_to": "babb",
         "distance": 0,
-        "transition_probability": 0.189873417721519,
-        "cumulative_path_probability": 6.630542790810427e-37,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 3.4018700614566043e-19,
         "decision": "normal",
-        "confidence_score": 0.189873417721519,
-        "decision_reason": "Gecis olasiligi (0.1899) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "ccbc",
             "cbcb",
@@ -919,12 +919,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -939,11 +939,11 @@
         "status": "seen",
         "mapped_to": "abba",
         "distance": 0,
-        "transition_probability": 0.11940298507462686,
-        "cumulative_path_probability": 7.917066018878121e-38,
+        "transition_probability": 0.11641197808508601,
+        "cumulative_path_probability": 3.960184230425964e-20,
         "decision": "normal",
-        "confidence_score": 0.11940298507462686,
-        "decision_reason": "Gecis olasiligi (0.1194) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.11641197808508601,
+        "decision_reason": "Gecis olasiligi (0.1164) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbcb",
             "bcba",
@@ -954,13 +954,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abbb",
-                "probability": 0.3656716417910448,
+                "probability": 0.8609675569996695,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "abbc",
-                "probability": 0.05223880597014925,
-                "would_be_anomaly": false
+                "probability": 0.022620464915244345,
+                "would_be_anomaly": true
             }
         ],
         "similarity_analysis": []
@@ -973,11 +973,11 @@
         "status": "seen",
         "mapped_to": "bbab",
         "distance": 0,
-        "transition_probability": 0.18823529411764706,
-        "cumulative_path_probability": 1.4902712506123521e-38,
+        "transition_probability": 0.9018014075954852,
+        "cumulative_path_probability": 3.5712997133355776e-20,
         "decision": "normal",
-        "confidence_score": 0.18823529411764706,
-        "decision_reason": "Gecis olasiligi (0.1882) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.9018014075954852,
+        "decision_reason": "Gecis olasiligi (0.9018) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcba",
             "cbab",
@@ -988,12 +988,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbaa",
-                "probability": 0.047058823529411764,
-                "would_be_anomaly": true
+                "probability": 0.06455387323289893,
+                "would_be_anomaly": false
             },
             {
                 "pattern": "bbac",
-                "probability": 0.03529411764705882,
+                "probability": 0.033644719171615885,
                 "would_be_anomaly": true
             }
         ],
@@ -1007,11 +1007,11 @@
         "status": "seen",
         "mapped_to": "babb",
         "distance": 0,
-        "transition_probability": 0.4263565891472868,
-        "cumulative_path_probability": 6.353869673153439e-39,
+        "transition_probability": 0.9612797209708692,
+        "cumulative_path_probability": 3.433017991938569e-20,
         "decision": "normal",
-        "confidence_score": 0.4263565891472868,
-        "decision_reason": "Gecis olasiligi (0.4264) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.9612797209708692,
+        "decision_reason": "Gecis olasiligi (0.9613) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbab",
             "babb",
@@ -1022,12 +1022,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "babc",
-                "probability": 0.06976744186046512,
-                "would_be_anomaly": false
+                "probability": 0.03550490294637157,
+                "would_be_anomaly": true
             },
             {
-                "pattern": "baba",
-                "probability": 0.023255813953488372,
+                "pattern": "cacb",
+                "probability": 0.007751937984496124,
                 "would_be_anomaly": true
             }
         ],
@@ -1041,11 +1041,11 @@
         "status": "seen",
         "mapped_to": "abbb",
         "distance": 0,
-        "transition_probability": 0.3656716417910448,
-        "cumulative_path_probability": 2.3234299551083473e-39,
+        "transition_probability": 0.8609675569996695,
+        "cumulative_path_probability": 2.955717113655261e-20,
         "decision": "normal",
-        "confidence_score": 0.3656716417910448,
-        "decision_reason": "Gecis olasiligi (0.3657) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8609675569996695,
+        "decision_reason": "Gecis olasiligi (0.8610) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "babb",
             "abba",
@@ -1056,13 +1056,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abba",
-                "probability": 0.11940298507462686,
+                "probability": 0.11641197808508601,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "abbc",
-                "probability": 0.05223880597014925,
-                "would_be_anomaly": false
+                "probability": 0.022620464915244345,
+                "would_be_anomaly": true
             }
         ],
         "similarity_analysis": []
@@ -1075,11 +1075,11 @@
         "status": "seen",
         "mapped_to": "bbbc",
         "distance": 0,
-        "transition_probability": 0.11278195488721804,
-        "cumulative_path_probability": 2.6204097238064063e-40,
+        "transition_probability": 0.08999547644993895,
+        "cumulative_path_probability": 2.660011698946436e-21,
         "decision": "normal",
-        "confidence_score": 0.11278195488721804,
-        "decision_reason": "Gecis olasiligi (0.1128) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.08999547644993895,
+        "decision_reason": "Gecis olasiligi (0.0900) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abba",
             "bbab",
@@ -1090,11 +1090,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbbb",
-                "probability": 0.41353383458646614,
+                "probability": 0.9100045235500611,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.007518796992481203,
                 "would_be_anomaly": true
             }
@@ -1109,11 +1109,11 @@
         "status": "seen",
         "mapped_to": "bbcc",
         "distance": 0,
-        "transition_probability": 0.041237113402061855,
-        "cumulative_path_probability": 1.0805813294047037e-41,
+        "transition_probability": 0.028288192745835255,
+        "cumulative_path_probability": 7.524692364597348e-23,
         "decision": "anomaly",
-        "confidence_score": 0.041237113402061855,
-        "decision_reason": "Gecis olasiligi (0.0412) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.028288192745835255,
+        "decision_reason": "Gecis olasiligi (0.0283) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "bbab",
             "babb",
@@ -1124,12 +1124,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbcb",
-                "probability": 0.24742268041237114,
+                "probability": 0.8799758901637229,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbca",
-                "probability": 0.07216494845360824,
+                "probability": 0.09173591709044175,
                 "would_be_anomaly": false
             }
         ],
@@ -1143,11 +1143,11 @@
         "status": "seen",
         "mapped_to": "bcca",
         "distance": 0,
-        "transition_probability": 0.028169014084507043,
-        "cumulative_path_probability": 3.0438910687456443e-43,
-        "decision": "anomaly",
-        "confidence_score": 0.028169014084507043,
-        "decision_reason": "Gecis olasiligi (0.0282) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.1178921069945202,
+        "cumulative_path_probability": 8.871018373479597e-24,
+        "decision": "normal",
+        "confidence_score": 0.1178921069945202,
+        "decision_reason": "Gecis olasiligi (0.1179) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "babb",
             "abbb",
@@ -1158,13 +1158,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bccb",
-                "probability": 0.056338028169014086,
+                "probability": 0.5681033988464457,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bccc",
-                "probability": 0.04225352112676056,
-                "would_be_anomaly": true
+                "probability": 0.314004494159034,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -1177,11 +1177,11 @@
         "status": "seen",
         "mapped_to": "ccab",
         "distance": 0,
-        "transition_probability": 0.057971014492753624,
-        "cumulative_path_probability": 1.7645745326061706e-44,
+        "transition_probability": 0.8188307994985875,
+        "cumulative_path_probability": 7.263863067122958e-24,
         "decision": "normal",
-        "confidence_score": 0.057971014492753624,
-        "decision_reason": "Gecis olasiligi (0.0580) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8188307994985875,
+        "decision_reason": "Gecis olasiligi (0.8188) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abbb",
             "bbbc",
@@ -1192,11 +1192,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccaa",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1212,7 +1212,7 @@
         "mapped_to": "babc",
         "distance": 1,
         "transition_probability": 0.014285714285714285,
-        "cumulative_path_probability": 2.5208207608659577e-46,
+        "cumulative_path_probability": 1.0376947238747082e-25,
         "decision": "anomaly",
         "confidence_score": 0.014285714285714285,
         "decision_reason": "Gecis olasiligi (0.0143) esik degerin altinda kaldigi icin anomali! Ayrica veri unseen oldugu icin Levenshtein ile babc durumuna (Mesafe: 1) eslendi.",
@@ -1226,16 +1226,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cabb",
-                "probability": 0.08571428571428572,
+                "probability": 1.0,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             }
@@ -1246,11 +1246,11 @@
                 "distance": 1
             },
             {
-                "pattern": "cbbc",
+                "pattern": "babc",
                 "distance": 1
             },
             {
-                "pattern": "cabb",
+                "pattern": "ccbc",
                 "distance": 1
             }
         ]
@@ -1263,11 +1263,11 @@
         "status": "seen",
         "mapped_to": "abca",
         "distance": 0,
-        "transition_probability": 0.04054054054054054,
-        "cumulative_path_probability": 1.0219543625132262e-47,
-        "decision": "anomaly",
-        "confidence_score": 0.04054054054054054,
-        "decision_reason": "Gecis olasiligi (0.0405) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.12813705069849418,
+        "cumulative_path_probability": 1.329671414426934e-26,
+        "decision": "normal",
+        "confidence_score": 0.12813705069849418,
+        "decision_reason": "Gecis olasiligi (0.1281) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bbcc",
             "bcca",
@@ -1278,11 +1278,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abcb",
-                "probability": 0.10810810810810811,
+                "probability": 0.8718629493015059,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
@@ -1297,11 +1297,11 @@
         "status": "seen",
         "mapped_to": "bcac",
         "distance": 0,
-        "transition_probability": 0.04477611940298507,
-        "cumulative_path_probability": 4.575915056029371e-49,
-        "decision": "anomaly",
-        "confidence_score": 0.04477611940298507,
-        "decision_reason": "Gecis olasiligi (0.0448) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.329671414426934e-26,
+        "decision": "normal",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcca",
             "ccab",
@@ -1311,12 +1311,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1331,11 +1331,11 @@
         "status": "seen",
         "mapped_to": "cacc",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 1.3659447928445882e-50,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 6.64835707213467e-27,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "ccab",
             "babc",
@@ -1346,11 +1346,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cacb",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1365,11 +1365,11 @@
         "status": "seen",
         "mapped_to": "acca",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 4.077447142819666e-52,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 3.324178536067335e-27,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "babc",
             "abca",
@@ -1380,11 +1380,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "accb",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1399,11 +1399,11 @@
         "status": "seen",
         "mapped_to": "ccaa",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 1.2171484008416913e-53,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 1.6620892680336675e-27,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abca",
             "bcac",
@@ -1414,11 +1414,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccab",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1433,11 +1433,11 @@
         "status": "seen",
         "mapped_to": "caaa",
         "distance": 0,
-        "transition_probability": 0.07246376811594203,
-        "cumulative_path_probability": 8.819915948128199e-55,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.6620892680336675e-27,
         "decision": "normal",
-        "confidence_score": 0.07246376811594203,
-        "decision_reason": "Gecis olasiligi (0.0725) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcac",
             "cacc",
@@ -1447,12 +1447,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1467,11 +1467,11 @@
         "status": "seen",
         "mapped_to": "aaaa",
         "distance": 0,
-        "transition_probability": 0.07246376811594203,
-        "cumulative_path_probability": 6.391243440672608e-56,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.6620892680336675e-27,
         "decision": "normal",
-        "confidence_score": 0.07246376811594203,
-        "decision_reason": "Gecis olasiligi (0.0725) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cacc",
             "acca",
@@ -1481,12 +1481,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1501,11 +1501,11 @@
         "status": "seen",
         "mapped_to": "aaac",
         "distance": 0,
-        "transition_probability": 0.01937984496124031,
-        "cumulative_path_probability": 1.2386130698977922e-57,
+        "transition_probability": 0.0010681577952080144,
+        "cumulative_path_probability": 1.7753736079817447e-30,
         "decision": "anomaly",
-        "confidence_score": 0.01937984496124031,
-        "decision_reason": "Gecis olasiligi (0.0194) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.0010681577952080144,
+        "decision_reason": "Gecis olasiligi (0.0011) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "acca",
             "ccaa",
@@ -1516,12 +1516,17 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aaaa",
-                "probability": 0.6976744186046512,
+                "probability": 0.9932267815975019,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaab",
-                "probability": 0.04263565891472868,
+                "probability": 0.005705060607289961,
+                "would_be_anomaly": true
+            },
+            {
+                "pattern": "cacb",
+                "probability": 0.003875968992248062,
                 "would_be_anomaly": true
             }
         ],
@@ -1535,11 +1540,11 @@
         "status": "seen",
         "mapped_to": "aacc",
         "distance": 0,
-        "transition_probability": 0.07246376811594203,
-        "cumulative_path_probability": 8.975457028244872e-59,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.7753736079817447e-30,
         "decision": "normal",
-        "confidence_score": 0.07246376811594203,
-        "decision_reason": "Gecis olasiligi (0.0725) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "ccaa",
             "caaa",
@@ -1549,12 +1554,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1570,7 +1575,7 @@
         "mapped_to": "accb",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 1.300790873658677e-60,
+        "cumulative_path_probability": 2.5730052289590506e-32,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -1584,16 +1589,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "accc",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "acca",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1608,11 +1613,11 @@
         "status": "seen",
         "mapped_to": "ccbc",
         "distance": 0,
-        "transition_probability": 0.030303030303030304,
-        "cumulative_path_probability": 3.941790526238416e-62,
-        "decision": "anomaly",
-        "confidence_score": 0.030303030303030304,
-        "decision_reason": "Gecis olasiligi (0.0303) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 2.5730052289590506e-32,
+        "decision": "normal",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aaaa",
             "aaac",
@@ -1622,12 +1627,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             }
@@ -1642,11 +1647,11 @@
         "status": "seen",
         "mapped_to": "cbcb",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 1.1766538884293778e-63,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 1.2865026144795253e-32,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aaac",
             "aacc",
@@ -1657,11 +1662,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbcc",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1676,11 +1681,11 @@
         "status": "seen",
         "mapped_to": "bcba",
         "distance": 0,
-        "transition_probability": 0.07246376811594203,
-        "cumulative_path_probability": 8.526477452386796e-65,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.2865026144795253e-32,
         "decision": "normal",
-        "confidence_score": 0.07246376811594203,
-        "decision_reason": "Gecis olasiligi (0.0725) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aacc",
             "accb",
@@ -1690,12 +1695,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1710,11 +1715,11 @@
         "status": "seen",
         "mapped_to": "cbab",
         "distance": 0,
-        "transition_probability": 0.16455696202531644,
-        "cumulative_path_probability": 1.403091226342131e-65,
+        "transition_probability": 0.9451071517179851,
+        "cumulative_path_probability": 1.2158828216484852e-32,
         "decision": "normal",
-        "confidence_score": 0.16455696202531644,
-        "decision_reason": "Gecis olasiligi (0.1646) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.9451071517179851,
+        "decision_reason": "Gecis olasiligi (0.9451) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "accb",
             "ccbc",
@@ -1725,11 +1730,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbaa",
-                "probability": 0.0379746835443038,
-                "would_be_anomaly": true
+                "probability": 0.054892848282014864,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -1745,7 +1750,7 @@
         "mapped_to": "babc",
         "distance": 0,
         "transition_probability": 0.012658227848101266,
-        "cumulative_path_probability": 1.7760648434710517e-67,
+        "cumulative_path_probability": 1.53909217930188e-34,
         "decision": "anomaly",
         "confidence_score": 0.012658227848101266,
         "decision_reason": "Gecis olasiligi (0.0127) esik degerin altinda kaldigi icin anomali!",
@@ -1759,16 +1764,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "babb",
-                "probability": 0.189873417721519,
+                "probability": 1.0,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -1784,7 +1789,7 @@
         "mapped_to": "aacc",
         "distance": 1,
         "transition_probability": 0.013513513513513514,
-        "cumulative_path_probability": 2.4000876263122323e-69,
+        "cumulative_path_probability": 2.079854296353892e-36,
         "decision": "anomaly",
         "confidence_score": 0.013513513513513514,
         "decision_reason": "Gecis olasiligi (0.0135) esik degerin altinda kaldigi icin anomali! Ayrica veri unseen oldugu icin Levenshtein ile aacc durumuna (Mesafe: 1) eslendi.",
@@ -1798,31 +1803,31 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abcb",
-                "probability": 0.10810810810810811,
+                "probability": 0.8718629493015059,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "abca",
-                "probability": 0.04054054054054054,
-                "would_be_anomaly": true
+                "probability": 0.12813705069849418,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbcc",
-                "distance": 1
-            },
-            {
                 "pattern": "abca",
                 "distance": 1
             },
             {
-                "pattern": "aacc",
+                "pattern": "bbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcc",
                 "distance": 1
             }
         ]
@@ -1836,7 +1841,7 @@
         "mapped_to": "bccb",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 3.4783878642206268e-71,
+        "cumulative_path_probability": 3.014281588918684e-38,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -1850,16 +1855,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "accc",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "acca",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1874,11 +1879,11 @@
         "status": "seen",
         "mapped_to": "ccba",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 1.0230552541825373e-72,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.33333333333333337,
+        "cumulative_path_probability": 1.0047605296395615e-38,
+        "decision": "normal",
+        "confidence_score": 0.33333333333333337,
+        "decision_reason": "Gecis olasiligi (0.3333) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbab",
             "babc",
@@ -1888,14 +1893,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccbb",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "pattern": "ccbc",
+                "probability": 0.33333333333333337,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "ccbc",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "pattern": "ccbb",
+                "probability": 0.33333333333333337,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -1909,7 +1914,7 @@
         "mapped_to": "cbaa",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 1.5269481405709512e-74,
+        "cumulative_path_probability": 1.4996425815515844e-40,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -1923,16 +1928,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbab",
-                "probability": 0.04477611940298507,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1947,11 +1952,11 @@
         "status": "seen",
         "mapped_to": "baab",
         "distance": 0,
-        "transition_probability": 0.04477611940298507,
-        "cumulative_path_probability": 6.837081226437095e-76,
-        "decision": "anomaly",
-        "confidence_score": 0.04477611940298507,
-        "decision_reason": "Gecis olasiligi (0.0448) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.4996425815515844e-40,
+        "decision": "normal",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aacc",
             "bccb",
@@ -1961,12 +1966,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1981,11 +1986,11 @@
         "status": "seen",
         "mapped_to": "aabb",
         "distance": 0,
-        "transition_probability": 0.057971014492753624,
-        "cumulative_path_probability": 3.9635253486591856e-77,
+        "transition_probability": 0.8188307994985875,
+        "cumulative_path_probability": 1.2279535340140094e-40,
         "decision": "normal",
-        "confidence_score": 0.057971014492753624,
-        "decision_reason": "Gecis olasiligi (0.0580) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8188307994985875,
+        "decision_reason": "Gecis olasiligi (0.8188) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bccb",
             "ccba",
@@ -1996,11 +2001,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aaba",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2015,11 +2020,11 @@
         "status": "seen",
         "mapped_to": "abbb",
         "distance": 0,
-        "transition_probability": 0.1625,
-        "cumulative_path_probability": 6.440728691571176e-78,
+        "transition_probability": 0.9022418552467749,
+        "cumulative_path_probability": 1.1079110746856335e-40,
         "decision": "normal",
-        "confidence_score": 0.1625,
-        "decision_reason": "Gecis olasiligi (0.1625) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.9022418552467749,
+        "decision_reason": "Gecis olasiligi (0.9022) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "ccba",
             "cbaa",
@@ -2030,11 +2035,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abba",
-                "probability": 0.05,
+                "probability": 0.09775814475322506,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bccc",
+                "pattern": "cacb",
                 "probability": 0.0125,
                 "would_be_anomaly": true
             }
@@ -2049,11 +2054,11 @@
         "status": "seen",
         "mapped_to": "bbbc",
         "distance": 0,
-        "transition_probability": 0.11278195488721804,
-        "cumulative_path_probability": 7.263979727335912e-79,
+        "transition_probability": 0.08999547644993895,
+        "cumulative_path_probability": 9.970698503049749e-42,
         "decision": "normal",
-        "confidence_score": 0.11278195488721804,
-        "decision_reason": "Gecis olasiligi (0.1128) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.08999547644993895,
+        "decision_reason": "Gecis olasiligi (0.0900) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbaa",
             "baab",
@@ -2064,11 +2069,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbbb",
-                "probability": 0.41353383458646614,
+                "probability": 0.9100045235500611,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.007518796992481203,
                 "would_be_anomaly": true
             }
@@ -2083,11 +2088,11 @@
         "status": "seen",
         "mapped_to": "bbcc",
         "distance": 0,
-        "transition_probability": 0.041237113402061855,
-        "cumulative_path_probability": 2.9954555576642936e-80,
+        "transition_probability": 0.028288192745835255,
+        "cumulative_path_probability": 2.8205304106488235e-43,
         "decision": "anomaly",
-        "confidence_score": 0.041237113402061855,
-        "decision_reason": "Gecis olasiligi (0.0412) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.028288192745835255,
+        "decision_reason": "Gecis olasiligi (0.0283) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "baab",
             "aabb",
@@ -2098,12 +2103,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbcb",
-                "probability": 0.24742268041237114,
+                "probability": 0.8799758901637229,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbca",
-                "probability": 0.07216494845360824,
+                "probability": 0.09173591709044175,
                 "would_be_anomaly": false
             }
         ],
@@ -2117,11 +2122,11 @@
         "status": "seen",
         "mapped_to": "bccb",
         "distance": 0,
-        "transition_probability": 0.056338028169014086,
-        "cumulative_path_probability": 1.6875805958672076e-81,
+        "transition_probability": 0.5681033988464457,
+        "cumulative_path_probability": 1.6023529128393579e-43,
         "decision": "normal",
-        "confidence_score": 0.056338028169014086,
-        "decision_reason": "Gecis olasiligi (0.0563) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.5681033988464457,
+        "decision_reason": "Gecis olasiligi (0.5681) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aabb",
             "abbb",
@@ -2132,13 +2137,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bccc",
-                "probability": 0.04225352112676056,
-                "would_be_anomaly": true
+                "probability": 0.314004494159034,
+                "would_be_anomaly": false
             },
             {
                 "pattern": "bcca",
-                "probability": 0.028169014084507043,
-                "would_be_anomaly": true
+                "probability": 0.1178921069945202,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -2151,11 +2156,11 @@
         "status": "seen",
         "mapped_to": "ccbc",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 4.963472340785905e-83,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.33333333333333337,
+        "cumulative_path_probability": 5.341176376131193e-44,
+        "decision": "normal",
+        "confidence_score": 0.33333333333333337,
+        "decision_reason": "Gecis olasiligi (0.3333) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abbb",
             "bbbc",
@@ -2166,13 +2171,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccbb",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.33333333333333337,
+                "would_be_anomaly": false
             },
             {
                 "pattern": "ccba",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.33333333333333337,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -2185,11 +2190,11 @@
         "status": "seen",
         "mapped_to": "cbcc",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 1.4816335345629566e-84,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 2.6705881880655967e-44,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bbbc",
             "bbcc",
@@ -2200,11 +2205,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbcb",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2219,11 +2224,11 @@
         "status": "seen",
         "mapped_to": "bcca",
         "distance": 0,
-        "transition_probability": 0.057971014492753624,
-        "cumulative_path_probability": 8.589179910509893e-86,
+        "transition_probability": 0.8188307994985875,
+        "cumulative_path_probability": 2.1867598611652366e-44,
         "decision": "normal",
-        "confidence_score": 0.057971014492753624,
-        "decision_reason": "Gecis olasiligi (0.0580) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8188307994985875,
+        "decision_reason": "Gecis olasiligi (0.8188) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bbcc",
             "bccb",
@@ -2234,11 +2239,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bccc",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2253,11 +2258,11 @@
         "status": "seen",
         "mapped_to": "ccaa",
         "distance": 0,
-        "transition_probability": 0.028985507246376812,
-        "cumulative_path_probability": 2.4896173653651866e-87,
-        "decision": "anomaly",
-        "confidence_score": 0.028985507246376812,
-        "decision_reason": "Gecis olasiligi (0.0290) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.18116920050141241,
+        "cumulative_path_probability": 3.9617353573588554e-45,
+        "decision": "normal",
+        "confidence_score": 0.18116920050141241,
+        "decision_reason": "Gecis olasiligi (0.1812) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bccb",
             "ccbc",
@@ -2268,11 +2273,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccab",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2288,7 +2293,7 @@
         "mapped_to": "caab",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 3.608141109224908e-89,
+        "cumulative_path_probability": 5.741645445447616e-47,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -2302,16 +2307,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "caaa",
-                "probability": 0.07246376811594203,
+                "probability": 1.0,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2327,7 +2332,7 @@
         "mapped_to": "aaba",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 5.385285237649117e-91,
+        "cumulative_path_probability": 8.569620067832262e-49,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -2341,16 +2346,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aabb",
-                "probability": 0.04477611940298507,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2365,11 +2370,11 @@
         "status": "seen",
         "mapped_to": "abab",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 1.5839074228379754e-92,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.2866952140760699,
+        "cumulative_path_probability": 2.456869059897755e-49,
+        "decision": "normal",
+        "confidence_score": 0.2866952140760699,
+        "decision_reason": "Gecis olasiligi (0.2867) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcca",
             "ccaa",
@@ -2380,11 +2385,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abaa",
-                "probability": 0.04411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.7133047859239301,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -2400,7 +2405,7 @@
         "mapped_to": "babc",
         "distance": 0,
         "transition_probability": 0.015151515151515152,
-        "cumulative_path_probability": 2.39985973157269e-94,
+        "cumulative_path_probability": 3.722528878632962e-51,
         "decision": "anomaly",
         "confidence_score": 0.015151515151515152,
         "decision_reason": "Gecis olasiligi (0.0152) esik degerin altinda kaldigi icin anomali!",
@@ -2414,16 +2419,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "babb",
-                "probability": 0.030303030303030304,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             }
@@ -2438,11 +2443,11 @@
         "status": "seen",
         "mapped_to": "abcb",
         "distance": 0,
-        "transition_probability": 0.10810810810810811,
-        "cumulative_path_probability": 2.594442953051557e-95,
+        "transition_probability": 0.8718629493015059,
+        "cumulative_path_probability": 3.2455350069849616e-51,
         "decision": "normal",
-        "confidence_score": 0.10810810810810811,
-        "decision_reason": "Gecis olasiligi (0.1081) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8718629493015059,
+        "decision_reason": "Gecis olasiligi (0.8719) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "caab",
             "aaba",
@@ -2453,11 +2458,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abca",
-                "probability": 0.04054054054054054,
-                "would_be_anomaly": true
+                "probability": 0.12813705069849418,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
@@ -2472,11 +2477,11 @@
         "status": "seen",
         "mapped_to": "bcbb",
         "distance": 0,
-        "transition_probability": 0.06944444444444445,
-        "cumulative_path_probability": 1.8016964951746926e-96,
+        "transition_probability": 0.6061375665682851,
+        "cumulative_path_probability": 1.9672406913460468e-51,
         "decision": "normal",
-        "confidence_score": 0.06944444444444445,
-        "decision_reason": "Gecis olasiligi (0.0694) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.6061375665682851,
+        "decision_reason": "Gecis olasiligi (0.6061) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aaba",
             "abab",
@@ -2487,11 +2492,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bcbc",
-                "probability": 0.05555555555555555,
+                "probability": 0.3938624334317149,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -2506,11 +2511,11 @@
         "status": "seen",
         "mapped_to": "cbbc",
         "distance": 0,
-        "transition_probability": 0.034482758620689655,
-        "cumulative_path_probability": 6.212746535085147e-98,
+        "transition_probability": 0.027410814792664467,
+        "cumulative_path_probability": 5.392367024307969e-53,
         "decision": "anomaly",
-        "confidence_score": 0.034482758620689655,
-        "decision_reason": "Gecis olasiligi (0.0345) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.027410814792664467,
+        "decision_reason": "Gecis olasiligi (0.0274) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "abab",
             "babc",
@@ -2521,13 +2526,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbbb",
-                "probability": 0.20689655172413793,
+                "probability": 0.9198282406485359,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "cbba",
-                "probability": 0.04597701149425287,
-                "would_be_anomaly": true
+                "probability": 0.05276094455879958,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -2540,11 +2545,11 @@
         "status": "seen",
         "mapped_to": "bbca",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 1.8272783926721021e-99,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.2866952140760699,
+        "cumulative_path_probability": 1.5459658184107132e-53,
+        "decision": "normal",
+        "confidence_score": 0.2866952140760699,
+        "decision_reason": "Gecis olasiligi (0.2867) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "babc",
             "abcb",
@@ -2555,11 +2560,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbcb",
-                "probability": 0.04411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.7133047859239301,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -2574,11 +2579,11 @@
         "status": "seen",
         "mapped_to": "bcab",
         "distance": 0,
-        "transition_probability": 0.08333333333333333,
-        "cumulative_path_probability": 1.5227319938934183e-100,
+        "transition_probability": 0.7970058176576484,
+        "cumulative_path_probability": 1.2321437511732062e-53,
         "decision": "normal",
-        "confidence_score": 0.08333333333333333,
-        "decision_reason": "Gecis olasiligi (0.0833) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.7970058176576484,
+        "decision_reason": "Gecis olasiligi (0.7970) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "abcb",
             "bcbb",
@@ -2589,11 +2594,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bcaa",
-                "probability": 0.041666666666666664,
-                "would_be_anomaly": true
+                "probability": 0.20299418234235153,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -2608,11 +2613,11 @@
         "status": "seen",
         "mapped_to": "cabb",
         "distance": 0,
-        "transition_probability": 0.08571428571428572,
-        "cumulative_path_probability": 1.3051988519086443e-101,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 1.2321437511732062e-53,
         "decision": "normal",
-        "confidence_score": 0.08571428571428572,
-        "decision_reason": "Gecis olasiligi (0.0857) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bcbb",
             "cbbc",
@@ -2622,12 +2627,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             }
@@ -2642,11 +2647,11 @@
         "status": "seen",
         "mapped_to": "abbb",
         "distance": 0,
-        "transition_probability": 0.12,
-        "cumulative_path_probability": 1.566238622290373e-102,
+        "transition_probability": 0.8949511251104739,
+        "cumulative_path_probability": 1.1027084364103008e-53,
         "decision": "normal",
-        "confidence_score": 0.12,
-        "decision_reason": "Gecis olasiligi (0.1200) esik degerden buyuk oldugu icin normal.",
+        "confidence_score": 0.8949511251104739,
+        "decision_reason": "Gecis olasiligi (0.8950) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cbbc",
             "bbca",
@@ -2657,11 +2662,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "abba",
-                "probability": 0.04,
-                "would_be_anomaly": true
+                "probability": 0.10504887488952601,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "bccc",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2677,7 +2682,7 @@
         "mapped_to": "bbba",
         "distance": 0,
         "transition_probability": 0.007518796992481203,
-        "cumulative_path_probability": 1.177623024278476e-104,
+        "cumulative_path_probability": 8.291040875265418e-56,
         "decision": "anomaly",
         "confidence_score": 0.007518796992481203,
         "decision_reason": "Gecis olasiligi (0.0075) esik degerin altinda kaldigi icin anomali!",
@@ -2691,16 +2696,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbbb",
-                "probability": 0.41353383458646614,
+                "probability": 0.9100045235500611,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbc",
-                "probability": 0.11278195488721804,
+                "probability": 0.08999547644993895,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.007518796992481203,
                 "would_be_anomaly": true
             }
@@ -2716,7 +2721,7 @@
         "mapped_to": "bbac",
         "distance": 0,
         "transition_probability": 0.008333333333333333,
-        "cumulative_path_probability": 9.813525202320633e-107,
+        "cumulative_path_probability": 6.909200729387849e-58,
         "decision": "anomaly",
         "confidence_score": 0.008333333333333333,
         "decision_reason": "Gecis olasiligi (0.0083) esik degerin altinda kaldigi icin anomali!",
@@ -2730,16 +2735,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbab",
-                "probability": 0.38333333333333336,
+                "probability": 0.9289289437685504,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbaa",
-                "probability": 0.09166666666666666,
+                "probability": 0.07107105623144962,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.008333333333333333,
                 "would_be_anomaly": true
             }
@@ -2754,11 +2759,11 @@
         "status": "seen",
         "mapped_to": "bacb",
         "distance": 0,
-        "transition_probability": 0.04477611940298507,
-        "cumulative_path_probability": 4.394115762233119e-108,
-        "decision": "anomaly",
-        "confidence_score": 0.04477611940298507,
-        "decision_reason": "Gecis olasiligi (0.0448) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 6.909200729387849e-58,
+        "decision": "normal",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cabb",
             "abbb",
@@ -2768,12 +2773,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2789,7 +2794,7 @@
         "mapped_to": "acbc",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 6.558381734676296e-110,
+        "cumulative_path_probability": 1.031223989460873e-59,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -2803,16 +2808,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "acbb",
-                "probability": 0.04477611940298507,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2827,11 +2832,11 @@
         "status": "seen",
         "mapped_to": "cbcc",
         "distance": 0,
-        "transition_probability": 0.04411764705882353,
-        "cumulative_path_probability": 2.8934037064748367e-111,
-        "decision": "anomaly",
-        "confidence_score": 0.04411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0441) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.7133047859239301,
+        "cumulative_path_probability": 7.355770070420091e-60,
+        "decision": "normal",
+        "confidence_score": 0.7133047859239301,
+        "decision_reason": "Gecis olasiligi (0.7133) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bbba",
             "bbac",
@@ -2842,11 +2847,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbcb",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.2866952140760699,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -2862,7 +2867,7 @@
         "mapped_to": "bccb",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 4.193338705035995e-113,
+        "cumulative_path_probability": 1.0660536333942161e-61,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -2876,16 +2881,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bcca",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bccc",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2900,11 +2905,11 @@
         "status": "seen",
         "mapped_to": "ccba",
         "distance": 0,
-        "transition_probability": 0.029411764705882353,
-        "cumulative_path_probability": 1.233334913245881e-114,
-        "decision": "anomaly",
-        "confidence_score": 0.029411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0294) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.33333333333333337,
+        "cumulative_path_probability": 3.5535121113140542e-62,
+        "decision": "normal",
+        "confidence_score": 0.33333333333333337,
+        "decision_reason": "Gecis olasiligi (0.3333) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bacb",
             "acbc",
@@ -2914,14 +2919,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccbb",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "pattern": "ccbc",
+                "probability": 0.33333333333333337,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "ccbc",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "pattern": "ccbb",
+                "probability": 0.33333333333333337,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -2935,7 +2940,7 @@
         "mapped_to": "cbaa",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 1.8407983779789266e-116,
+        "cumulative_path_probability": 5.303749419871723e-64,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -2949,16 +2954,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbab",
-                "probability": 0.04477611940298507,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2974,7 +2979,7 @@
         "mapped_to": "baaa",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 2.747460265640189e-118,
+        "cumulative_path_probability": 7.916043910256303e-66,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -2988,16 +2993,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "baab",
-                "probability": 0.04477611940298507,
-                "would_be_anomaly": true
+                "probability": 1.0,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3012,11 +3017,11 @@
         "status": "seen",
         "mapped_to": "aaab",
         "distance": 0,
-        "transition_probability": 0.03896103896103896,
-        "cumulative_path_probability": 1.0704390645351387e-119,
-        "decision": "anomaly",
-        "confidence_score": 0.03896103896103896,
-        "decision_reason": "Gecis olasiligi (0.0390) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.07406743683402686,
+        "cumulative_path_probability": 5.863210822982917e-67,
+        "decision": "normal",
+        "confidence_score": 0.07406743683402686,
+        "decision_reason": "Gecis olasiligi (0.0741) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bccb",
             "ccba",
@@ -3027,11 +3032,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aaaa",
-                "probability": 0.14285714285714285,
+                "probability": 0.925932563165973,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012987012987012988,
                 "would_be_anomaly": true
             }
@@ -3047,7 +3052,7 @@
         "mapped_to": "aaac",
         "distance": 1,
         "transition_probability": 0.012987012987012988,
-        "cumulative_path_probability": 1.390180603292388e-121,
+        "cumulative_path_probability": 7.614559510367425e-69,
         "decision": "anomaly",
         "confidence_score": 0.012987012987012988,
         "decision_reason": "Gecis olasiligi (0.0130) esik degerin altinda kaldigi icin anomali! Ayrica veri unseen oldugu icin Levenshtein ile aaac durumuna (Mesafe: 1) eslendi.",
@@ -3061,31 +3066,31 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aabb",
-                "probability": 0.14285714285714285,
+                "probability": 0.925932563165973,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaba",
-                "probability": 0.03896103896103896,
-                "would_be_anomaly": true
+                "probability": 0.07406743683402686,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.012987012987012988,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
-                "distance": 1
-            },
-            {
-                "pattern": "aacc",
-                "distance": 1
-            },
-            {
                 "pattern": "aaac",
+                "distance": 1
+            },
+            {
+                "pattern": "babc",
+                "distance": 1
+            },
+            {
+                "pattern": "aabb",
                 "distance": 1
             }
         ]
@@ -3098,11 +3103,11 @@
         "status": "unseen",
         "mapped_to": "aacc",
         "distance": 1,
-        "transition_probability": 0.07246376811594203,
-        "cumulative_path_probability": 1.0073772487625999e-122,
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 7.614559510367425e-69,
         "decision": "normal",
-        "confidence_score": 0.07246376811594203,
-        "decision_reason": "Gecis olasiligi (0.0725) esik degerden buyuk oldugu icin normal. Ayrica veri unseen oldugu icin Levenshtein ile aacc durumuna (Mesafe: 1) eslendi.",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal. Ayrica veri unseen oldugu icin Levenshtein ile aacc durumuna (Mesafe: 1) eslendi.",
         "transition_history": [
             "cbaa",
             "baaa",
@@ -3112,27 +3117,27 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbcc",
-                "distance": 1
-            },
-            {
                 "pattern": "abca",
                 "distance": 1
             },
             {
-                "pattern": "aacc",
+                "pattern": "bbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcc",
                 "distance": 1
             }
         ]
@@ -3146,7 +3151,7 @@
         "mapped_to": "bccc",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 1.4599670271921738e-124,
+        "cumulative_path_probability": 1.1035593493286124e-70,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -3160,16 +3165,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "accc",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "acca",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.18116920050141241,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -3184,11 +3189,11 @@
         "status": "seen",
         "mapped_to": "cccc",
         "distance": 0,
-        "transition_probability": 0.04411764705882353,
-        "cumulative_path_probability": 6.441031002318414e-126,
-        "decision": "anomaly",
-        "confidence_score": 0.04411764705882353,
-        "decision_reason": "Gecis olasiligi (0.0441) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.7133047859239301,
+        "cumulative_path_probability": 7.871741654271975e-71,
+        "decision": "normal",
+        "confidence_score": 0.7133047859239301,
+        "decision_reason": "Gecis olasiligi (0.7133) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aaab",
             "aaac",
@@ -3199,11 +3204,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccca",
-                "probability": 0.029411764705882353,
-                "would_be_anomaly": true
+                "probability": 0.2866952140760699,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -3218,11 +3223,11 @@
         "status": "seen",
         "mapped_to": "ccca",
         "distance": 0,
-        "transition_probability": 0.038834951456310676,
-        "cumulative_path_probability": 2.501371263036277e-127,
+        "transition_probability": 0.01669837326781962,
+        "cumulative_path_probability": 1.3144528041087734e-72,
         "decision": "anomaly",
-        "confidence_score": 0.038834951456310676,
-        "decision_reason": "Gecis olasiligi (0.0388) esik degerin altinda kaldigi icin anomali!",
+        "confidence_score": 0.01669837326781962,
+        "decision_reason": "Gecis olasiligi (0.0167) esik degerin altinda kaldigi icin anomali!",
         "transition_history": [
             "aaac",
             "aacc",
@@ -3233,12 +3238,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cccc",
-                "probability": 0.3300970873786408,
+                "probability": 0.9747518756529621,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cccb",
-                "probability": 0.02912621359223301,
+                "pattern": "cacb",
+                "probability": 0.009708737864077669,
                 "would_be_anomaly": true
             }
         ],
@@ -3252,11 +3257,11 @@
         "status": "seen",
         "mapped_to": "ccac",
         "distance": 0,
-        "transition_probability": 0.028985507246376812,
-        "cumulative_path_probability": 7.250351487061673e-129,
-        "decision": "anomaly",
-        "confidence_score": 0.028985507246376812,
-        "decision_reason": "Gecis olasiligi (0.0290) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.21909323310772974,
+        "cumulative_path_probability": 2.8798771461971254e-73,
+        "decision": "normal",
+        "confidence_score": 0.21909323310772974,
+        "decision_reason": "Gecis olasiligi (0.2191) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "aacc",
             "bccc",
@@ -3267,13 +3272,13 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccaa",
-                "probability": 0.043478260869565216,
-                "would_be_anomaly": true
+                "probability": 0.5618135337845406,
+                "would_be_anomaly": false
             },
             {
                 "pattern": "ccab",
-                "probability": 0.028985507246376812,
-                "would_be_anomaly": true
+                "probability": 0.21909323310772974,
+                "would_be_anomaly": false
             }
         ],
         "similarity_analysis": []
@@ -3286,11 +3291,11 @@
         "status": "seen",
         "mapped_to": "cacc",
         "distance": 0,
-        "transition_probability": 0.030303030303030304,
-        "cumulative_path_probability": 2.197076208200507e-130,
-        "decision": "anomaly",
-        "confidence_score": 0.030303030303030304,
-        "decision_reason": "Gecis olasiligi (0.0303) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 1.0,
+        "cumulative_path_probability": 2.8798771461971254e-73,
+        "decision": "normal",
+        "confidence_score": 1.0,
+        "decision_reason": "Gecis olasiligi (1.0000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "bccc",
             "cccc",
@@ -3300,12 +3305,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.015151515151515152,
                 "would_be_anomaly": true
             }
@@ -3321,7 +3326,7 @@
         "mapped_to": "accc",
         "distance": 0,
         "transition_probability": 0.014925373134328358,
-        "cumulative_path_probability": 3.2792182211947864e-132,
+        "cumulative_path_probability": 4.29832409880168e-75,
         "decision": "anomaly",
         "confidence_score": 0.014925373134328358,
         "decision_reason": "Gecis olasiligi (0.0149) esik degerin altinda kaldigi icin anomali!",
@@ -3335,16 +3340,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "accb",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
                 "pattern": "acca",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3360,7 +3365,7 @@
         "mapped_to": "cccb",
         "distance": 0,
         "transition_probability": 0.014705882352941176,
-        "cumulative_path_probability": 4.822379737051157e-134,
+        "cumulative_path_probability": 6.321064851178941e-77,
         "decision": "anomaly",
         "confidence_score": 0.014705882352941176,
         "decision_reason": "Gecis olasiligi (0.0147) esik degerin altinda kaldigi icin anomali!",
@@ -3374,16 +3379,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cccc",
-                "probability": 0.058823529411764705,
+                "probability": 1.0,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -3398,11 +3403,11 @@
         "status": "seen",
         "mapped_to": "ccbb",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 1.4395163394182557e-135,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 3.1605324255894705e-77,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "ccac",
             "cacc",
@@ -3413,11 +3418,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "ccba",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3432,11 +3437,11 @@
         "status": "seen",
         "mapped_to": "cbba",
         "distance": 0,
-        "transition_probability": 0.029850746268656716,
-        "cumulative_path_probability": 4.297063699755987e-137,
-        "decision": "anomaly",
-        "confidence_score": 0.029850746268656716,
-        "decision_reason": "Gecis olasiligi (0.0299) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.5,
+        "cumulative_path_probability": 1.5802662127947352e-77,
+        "decision": "normal",
+        "confidence_score": 0.5,
+        "decision_reason": "Gecis olasiligi (0.5000) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cacc",
             "accc",
@@ -3447,11 +3452,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "cbbb",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
+                "probability": 0.5,
+                "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3467,7 +3472,7 @@
         "mapped_to": "bbaa",
         "distance": 0,
         "transition_probability": 0.014492753623188406,
-        "cumulative_path_probability": 6.227628550370996e-139,
+        "cumulative_path_probability": 2.290240888108312e-79,
         "decision": "anomaly",
         "confidence_score": 0.014492753623188406,
         "decision_reason": "Gecis olasiligi (0.0145) esik degerin altinda kaldigi icin anomali!",
@@ -3481,16 +3486,16 @@
         "counterfactual_analysis": [
             {
                 "pattern": "bbab",
-                "probability": 0.07246376811594203,
+                "probability": 1.0,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bccc",
+                "pattern": "bbca",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -3505,11 +3510,11 @@
         "status": "seen",
         "mapped_to": "baab",
         "distance": 0,
-        "transition_probability": 0.038461538461538464,
-        "cumulative_path_probability": 2.395241750142691e-140,
-        "decision": "anomaly",
-        "confidence_score": 0.038461538461538464,
-        "decision_reason": "Gecis olasiligi (0.0385) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.08432554817531149,
+        "cumulative_path_probability": 1.9312581834324563e-80,
+        "decision": "normal",
+        "confidence_score": 0.08432554817531149,
+        "decision_reason": "Gecis olasiligi (0.0843) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "cccb",
             "ccbb",
@@ -3520,12 +3525,12 @@
         "counterfactual_analysis": [
             {
                 "pattern": "baaa",
-                "probability": 0.11538461538461539,
+                "probability": 0.7566238053162676,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "baac",
-                "probability": 0.05128205128205128,
+                "probability": 0.15905064650842096,
                 "would_be_anomaly": false
             }
         ],
@@ -3539,11 +3544,11 @@
         "status": "seen",
         "mapped_to": "aaba",
         "distance": 0,
-        "transition_probability": 0.028985507246376812,
-        "cumulative_path_probability": 6.942729710558524e-142,
-        "decision": "anomaly",
-        "confidence_score": 0.028985507246376812,
-        "decision_reason": "Gecis olasiligi (0.0290) esik degerin altinda kaldigi icin anomali!",
+        "transition_probability": 0.18116920050141241,
+        "cumulative_path_probability": 3.498845010542682e-81,
+        "decision": "normal",
+        "confidence_score": 0.18116920050141241,
+        "decision_reason": "Gecis olasiligi (0.1812) esik degerden buyuk oldugu icin normal.",
         "transition_history": [
             "ccbb",
             "cbba",
@@ -3554,11 +3559,11 @@
         "counterfactual_analysis": [
             {
                 "pattern": "aabb",
-                "probability": 0.057971014492753624,
+                "probability": 0.8188307994985875,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abba",
+                "pattern": "cacb",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
