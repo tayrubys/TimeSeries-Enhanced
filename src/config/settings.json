@@ -49,7 +49,7 @@
         "dropout_rate_1": 0.3,
         "dropout_rate_2": 0.2,
         "val_ratio": 0.2,
-        "sequence_window_size": 20,
+        "sequence_window_size": 10,
         "n_folds": 5,
         "thresholds": [
             0.5,

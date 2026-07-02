@@ -135,7 +135,7 @@ def train_and_predict(model_type):
         epochs=EPOCHS,
         batch_size=BATCH_SIZE,
         callbacks=[early_stopping],
-        class_weight=None,
+        class_weight=class_weights,
         verbose=1
     )
 

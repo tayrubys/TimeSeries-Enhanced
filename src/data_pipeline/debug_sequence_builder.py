@@ -3,7 +3,7 @@ import numpy as np
 from src.data_pipeline.sequence_builder import build_sequences_from_csv, load_scaled_data
 
 
-WINDOW_SIZE = 20
+WINDOW_SIZE = 10
 
 
 def check_batadal_sequences():
