@@ -73,18 +73,25 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     num_states = len(model.trained_patterns)
     num_transitions = sum(len(targets) for targets in model.transitions.values())
     transition_density = num_transitions / (num_states * num_states) if num_states > 0 else 0.0
- 
+
+    selected_threshold = config["anomaly_threshold"]
+
     common_fields = {
-        "dataset": dataset_name, "fold": fold_name, "seed": seed,
-        "window_size": config["window_size"], "alphabet_size": config["alphabet_size"],
+        "dataset": dataset_name,
+        "fold": fold_name,
+        "seed": seed,
+        "window_size": config["window_size"],
+        "alphabet_size": config["alphabet_size"],
         "weight_sharpness": config.get("weight_sharpness", 1.0),
-        "num_states": num_states, "num_transitions": num_transitions,
-        "transition_density": transition_density
+        "num_states": num_states,
+        "num_transitions": num_transitions,
+        "transition_density": transition_density,
+        "selected_threshold": selected_threshold
     }
- 
+
     # --- SENARYO 1: Orijinal Veri ---
     test_patterns_orig = transformer.transform(X_test, window_size=config["window_size"])
-    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=config["anomaly_threshold"])
+    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=selected_threshold)
     y_test_aligned_orig = y_test[:len(preds_orig)]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
     metrics_orig.update({"scenario": "original", **common_fields})
@@ -93,7 +100,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     # --- SENARYO 2: Gaussian Noise ---
     X_test_noisy = inject_gaussian_noise(X_test, noise_level=config["noise_level"], seed=seed)
     test_patterns_noisy = transformer.transform(X_test_noisy, window_size=config["window_size"])
-    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=config["anomaly_threshold"])
+    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=selected_threshold)
     y_test_aligned_noisy = y_test[:len(preds_noisy)]
     metrics_noisy = calculate_metrics(y_test_aligned_noisy, preds_noisy)
     metrics_noisy.update({"scenario": "gaussian_noise", **common_fields})
@@ -109,7 +116,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             y_test_unseen.append(y_test_sliding[idx])
  
     if len(unseen_test_patterns) > 1:
-        preds_unseen, _ = model.predict(unseen_test_patterns, anomaly_threshold=config["anomaly_threshold"])
+        preds_unseen, _ = model.predict(unseen_test_patterns, anomaly_threshold=selected_threshold)
         y_test_aligned_unseen = y_test_unseen[-len(preds_unseen):]
         metrics_unseen = calculate_metrics(y_test_aligned_unseen, preds_unseen)
     else:
