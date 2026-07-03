@@ -163,6 +163,35 @@ Bu bölümde, `sequence_window_size` parametresi 10'da sabit tutulmuş; modeller
 >
 >  **Mimariler Arası Dayanıklılık Farkı:** GRU modeli hiperparametre optimizasyonu ile tüm seed'lerde dengeli ve yüksek genelleme başarısı gösterirken, LSTM modeli başlangıç ağırlık bağımlılığını tam olarak kıramamıştır. LSTM mimarisi `seed=123` (%84.32 F1) ve `seed=999` (%76.43 F1) senaryolarında mükemmel performans gösterse de, `seed=2026` altında test kümesinde tamamen anomali kaçırma eğilimine (F1: 0.0) girmiştir. Bu durum, GRU hücresinin (katman yapısının) daha az parametre içermesinin verdiği avantajla, kısıtlı endüstriyel veri senaryolarında regülasyon ayarlarına çok daha hızlı ve kararlı tepki verdiği görülmektedir.
 
+## 2.1.Melez Yöntem Deneyi: ADASYN + Balanced Class Weighting
+Başlık 2 deki tüm hiper parametreler sabit tutularak, literatürde melez yaklaşım olarak bilinen veri seviyesinde ADASYN artırımı ile model seviyesinde `class_weight="balanced"` cezalandırma mekanizması aynı anda devreye alınmıştır. Amaç, ADASYN'in sentetik pencereler üzerindeki ezber (overfitting) etkisini kayıp fonksiyonundaki sınıf ağırlıklarıyla dengelemektir.
+
+### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
+
+| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
+|---|---|---|---|---|---|---|
+| **LSTM** | 42 | 0.5 | 0.9008 | 0.0000 | 0.0000 | 0.0000 |
+| **LSTM** | 123 | 0.5 | 0.9021 | 0.0000 | 0.0000 | 0.0000 |
+| **LSTM** | 2026 | 0.5 | 0.8996 | 0.2000 | 0.0125 | 0.0235 |
+| **LSTM** | 7 | 0.1 | 0.9226 | 0.7000 | 0.3500 | 0.4667 |
+| **LSTM** | 999 | 0.5 | 0.8875 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 42 | 0.5 | 0.9504 | 0.7143 | 0.8125 | 0.7602 |
+| **GRU** | 123 | 0.1 | 0.9504 | 0.7407 | 0.7500 | 0.7453 |
+| **GRU** | 2026 | 0.3 | 0.9299 | 0.9231 | 0.3000 | 0.4528 |
+| **GRU** | 7 | 0.5 | 0.9637 | 0.8289 | 0.7875 | 0.8077 |
+| **GRU** | 999 | 0.5 | 0.9238 | 0.7576 | 0.3125 | 0.4425 |
+
+### Model Performans Özetleri (Ortalama ± Standart Sapma)
+
+| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
+|---|---|---|---|---|
+| **GRU (Melez)** | 0.9437 ± 0.0164 | 0.7929 ± 0.0843 | 0.5925 ± 0.2623 | 0.6417 ± 0.1787 |
+| **LSTM (Melez)** | 0.9025 ± 0.0126 | 0.1800 ± 0.3033 | 0.0725 ± 0.1552 | 0.0980 ± 0.2063 |
+
+>  **Metodolojik Değerlendirme (Kapasite ve Aşırı Regülasyon Çatışması):** Veri artırımı ve sınıf ağırlıklandırmanın melez kombinasyonu, iki mimari üzerinde tamamen zıt etkiler yaratmıştır. Daha sade bir parametre akışına sahip olan **GRU modeli**, bu yoğun cezalandırma mekanizmasına uyum sağlayarak kararlı yapısını korumuş ve ortalama Precision değerini **%79.29** seviyesine stabilize etmeyi başarmıştır. 
+>
+> Buna karşın **LSTM modeli**, bünyesindeki fazla parametre yükü ve yüksek dropout oranlarının ($0.4 / 0.3$), çift yönlü sınıf dengeleme baskısıyla birleşmesi sonucu **Aşırı Düzenleme (Aşırı Regülasyon - Underfitting)** tuzağına düşmüştür. Model, anomali sınıfını ayırt etmek için gereken gradyan sinyallerini tamamen kaybetmiş ve ağırlık uzayında tüm anomali pencerelerini "Normal" olarak etiketleme kolaycılığına kaçarak çökmüştür (%0.09 Ortalama F1). Bu durum, zaman serisi anomali tespitinde her regülasyon aracının model kapasitesine göre hassas ayarlanması gerektiğini göstermektedir.
+
 ---
 ## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
  
@@ -174,5 +203,6 @@ Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin 
 | Window=40 | 0.213 | 0.210 |
 | Window=10 | 0.351 | 0.586 |
 | Window=10 + HP optimizasyonu | 0.362 | **0.728** |
+| Melez Yaklaşım (window=10, LR=0.0005, Dropout + class_weight="balanced") | 0.098 | 0.641 |
 
 >LSTM modelinin en iyi performansı, hiçbir ek müdahale yapılmadan, **ilk baseline denemesinde** (window=20) elde edilmiştir. Sonraki tüm optimizasyon adımları (pencere boyutu küçültme, learning rate/dropout ayarı) LSTM performansını **iyileştirmek yerine kötüleştirmiştir**. GRU ise tam tersi bir eğilim göstermiş, her adımda tutarlı biçimde iyileşmiştir (F1: 0.359 → 0.728).
