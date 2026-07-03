@@ -22,9 +22,12 @@ def load_json_config(config_path="src/config/settings.json"):
         "orders": [2, 3, 4],
         "batadal_thresholds": [0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.02],
         "skab_thresholds": [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05],
+        "smoothing_alpha": 1.0,
+        "smoothing_alphas": [1.0, 0.5, 0.1, 0.01],
         # Geriye uyumluluk: eski ortak liste config'te varsa sadece fallback olarak kullanılır.
         "thresholds": [0.05, 0.01, 0.005, 0.001],
 
+        # Geriye uyumluluk için tutuluyor; artık grid search bunları taramıyor.
         "window_sizes": [3, 4, 5, 6],
         "alphabet_sizes": [3, 4, 5, 6],
 
@@ -70,9 +73,12 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         smoothing=True,
         order=config.get("order", 2),
         learning_rate=config.get("learning_rate", 0.0),
+        smoothing_alpha=config.get("smoothing_alpha", 1.0),
     )
     model.fit(train_patterns)
 
+    # High-order Markov için gerçek state sayısı context sayısıdır.
+    # trained_patterns ise vocab/sembol kümesidir.
     num_states = len(model.total_exits)
     vocab_size = len(model.trained_patterns)
     num_transitions = sum(len(targets) for targets in model.transitions.values())
@@ -86,6 +92,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "alphabet_size": config["alphabet_size"],
         "order": config.get("order", 2),
         "anomaly_threshold": config["anomaly_threshold"],
+        "smoothing_alpha": config.get("smoothing_alpha", 1.0),
         "num_states": num_states,
         "vocab_size": vocab_size,
         "num_transitions": num_transitions,
@@ -139,6 +146,7 @@ def run_markov_order_threshold_sweep(config):
     fallback_thresholds = config.get("thresholds", [0.05, 0.01, 0.005, 0.001])
     batadal_thresholds = config.get("batadal_thresholds", fallback_thresholds)
     skab_thresholds = config.get("skab_thresholds", fallback_thresholds)
+    smoothing_alphas = config.get("smoothing_alphas", [1.0, 0.5, 0.1, 0.01])
     seeds = config.get("seeds", [42, 123, 2026, 7, 999])
 
     sweep_results = []
@@ -150,84 +158,93 @@ def run_markov_order_threshold_sweep(config):
         y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test_b = np.where(y_test_b == -999, 0, y_test_b)
 
-        print("\n>> BATADAL Markov Order/Threshold Taraması...")
+        print("\n>> BATADAL Markov Order/Threshold/Alpha Taraması...")
         print(f"   Threshold aralığı: {batadal_thresholds}")
+        print(f"   Alpha aralığı: {smoothing_alphas}")
         for order in orders:
-            for threshold in batadal_thresholds:
-                for seed in seeds:
-                    cc = {
-                        **config,
-                        "order": order,
-                        "anomaly_threshold": threshold,
-                    }
-                    res, _ = run_experiment_pipeline(
-                        X_train_b,
-                        X_test_b,
-                        y_test_b,
-                        cc,
-                        "BATADAL",
-                        "markov_sweep",
-                        seed=seed,
-                    )
-                    sweep_results.extend(res)
+            for alpha in smoothing_alphas:
+                for threshold in batadal_thresholds:
+                    for seed in seeds:
+                        cc = {
+                            **config,
+                            "order": order,
+                            "anomaly_threshold": threshold,
+                            "smoothing_alpha": alpha,
+                        }
+                        res, _ = run_experiment_pipeline(
+                            X_train_b,
+                            X_test_b,
+                            y_test_b,
+                            cc,
+                            "BATADAL",
+                            "markov_alpha_sweep",
+                            seed=seed,
+                        )
+                        sweep_results.extend(res)
 
-                temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "BATADAL"
+                    # Konsolda sadece original senaryo ortalamasını hızlıca gösterelim.
+                    temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "BATADAL"
+                                            and r["order"] == order
+                                            and r["smoothing_alpha"] == alpha
+                                            and r["anomaly_threshold"] == threshold
+                                            and r["scenario"] == "original"])
+                    if not temp_df.empty:
+                        print(
+                            f"BATADAL -> order={order}, alpha={alpha}, threshold={threshold} | "
+                            f"Precision={temp_df['precision'].mean():.4f}, "
+                            f"Recall={temp_df['recall'].mean():.4f}, "
+                            f"F1={temp_df['f1_score'].mean():.4f}"
+                        )
+
+    # SKAB sweep: bütün fold ve seed kombinasyonları
+    print("\n>> SKAB Markov Order/Threshold/Alpha Taraması...")
+    print(f"   Threshold aralığı: {skab_thresholds}")
+    print(f"   Alpha aralığı: {smoothing_alphas}")
+    for order in orders:
+        for alpha in smoothing_alphas:
+            for threshold in skab_thresholds:
+                for fold in range(1, 6):
+                    train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                    test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                    y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                    if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                        continue
+
+                    X_train_s = pd.read_csv(train_file).values.flatten()
+                    X_test_s = pd.read_csv(test_file).values.flatten()
+                    y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                    for seed in seeds:
+                        cc = {
+                            **config,
+                            "order": order,
+                            "anomaly_threshold": threshold,
+                            "smoothing_alpha": alpha,
+                        }
+                        res, _ = run_experiment_pipeline(
+                            X_train_s,
+                            X_test_s,
+                            y_test_s,
+                            cc,
+                            "SKAB",
+                            f"fold_{fold}",
+                            seed=seed,
+                        )
+                        sweep_results.extend(res)
+
+                temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "SKAB"
                                         and r["order"] == order
+                                        and r["smoothing_alpha"] == alpha
                                         and r["anomaly_threshold"] == threshold
                                         and r["scenario"] == "original"])
                 if not temp_df.empty:
                     print(
-                        f"BATADAL -> order={order}, threshold={threshold} | "
+                        f"SKAB -> order={order}, alpha={alpha}, threshold={threshold} | "
                         f"Precision={temp_df['precision'].mean():.4f}, "
                         f"Recall={temp_df['recall'].mean():.4f}, "
                         f"F1={temp_df['f1_score'].mean():.4f}"
                     )
-
-    # SKAB sweep: bütün fold ve seed kombinasyonları
-    print("\n>> SKAB Markov Order/Threshold Taraması...")
-    print(f"   Threshold aralığı: {skab_thresholds}")
-    for order in orders:
-        for threshold in skab_thresholds:
-            for fold in range(1, 6):
-                train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
-                test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
-                y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
-
-                if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
-                    continue
-
-                X_train_s = pd.read_csv(train_file).values.flatten()
-                X_test_s = pd.read_csv(test_file).values.flatten()
-                y_test_s = pd.read_csv(y_test_file).values.flatten()
-
-                for seed in seeds:
-                    cc = {
-                        **config,
-                        "order": order,
-                        "anomaly_threshold": threshold,
-                    }
-                    res, _ = run_experiment_pipeline(
-                        X_train_s,
-                        X_test_s,
-                        y_test_s,
-                        cc,
-                        "SKAB",
-                        f"fold_{fold}",
-                        seed=seed,
-                    )
-                    sweep_results.extend(res)
-
-            temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "SKAB"
-                                    and r["order"] == order
-                                    and r["anomaly_threshold"] == threshold
-                                    and r["scenario"] == "original"])
-            if not temp_df.empty:
-                print(
-                    f"SKAB -> order={order}, threshold={threshold} | "
-                    f"Precision={temp_df['precision'].mean():.4f}, "
-                    f"Recall={temp_df['recall'].mean():.4f}, "
-                    f"F1={temp_df['f1_score'].mean():.4f}"
-                )
 
     if not sweep_results:
         print("[UYARI] Sweep için uygun veri dosyası bulunamadı.")
@@ -236,15 +253,18 @@ def run_markov_order_threshold_sweep(config):
     df_sweep = pd.DataFrame(sweep_results)
     sweep_path = "results/outputs/automata_markov_sweep_metrics.csv"
     dataset_threshold_sweep_path = "results/outputs/automata_markov_dataset_threshold_sweep_metrics.csv"
+    alpha_sweep_path = "results/outputs/automata_markov_alpha_sweep_metrics.csv"
     df_sweep.to_csv(sweep_path, index=False)
     df_sweep.to_csv(dataset_threshold_sweep_path, index=False)
+    df_sweep.to_csv(alpha_sweep_path, index=False)
     print(f"\n[OK] Markov sweep sonuçları kaydedildi: {sweep_path}")
     print(f"[OK] Dataset bazlı threshold sweep sonuçları kaydedildi: {dataset_threshold_sweep_path}")
+    print(f"[OK] Alpha sweep sonuçları kaydedildi: {alpha_sweep_path}")
 
     # Optimizasyon için original senaryonun özetini ayrıca yazıyoruz.
     df_original = df_sweep[df_sweep["scenario"] == "original"].copy()
     if not df_original.empty:
-        summary_df = df_original.groupby(["dataset", "order", "anomaly_threshold"]).agg(
+        summary_df = df_original.groupby(["dataset", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -260,10 +280,13 @@ def run_markov_order_threshold_sweep(config):
 
         summary_path = "results/outputs/automata_markov_sweep_summary.csv"
         dataset_threshold_summary_path = "results/outputs/automata_markov_dataset_threshold_sweep_summary.csv"
+        alpha_summary_path = "results/outputs/automata_markov_alpha_sweep_summary.csv"
         summary_df.to_csv(summary_path, index=False)
         summary_df.to_csv(dataset_threshold_summary_path, index=False)
+        summary_df.to_csv(alpha_summary_path, index=False)
         print(f"[OK] Markov sweep özeti kaydedildi: {summary_path}")
         print(f"[OK] Dataset bazlı threshold sweep özeti kaydedildi: {dataset_threshold_summary_path}")
+        print(f"[OK] Alpha sweep özeti kaydedildi: {alpha_summary_path}")
 
         # Recall düşmeden en yüksek precision/F1 adaylarını görmeyi kolaylaştırır.
         best_df = summary_df.sort_values(
@@ -272,10 +295,13 @@ def run_markov_order_threshold_sweep(config):
         )
         best_path = "results/outputs/automata_markov_sweep_best_candidates.csv"
         dataset_threshold_best_path = "results/outputs/automata_markov_dataset_threshold_best_candidates.csv"
+        alpha_best_path = "results/outputs/automata_markov_alpha_best_candidates.csv"
         best_df.to_csv(best_path, index=False)
         best_df.to_csv(dataset_threshold_best_path, index=False)
+        best_df.to_csv(alpha_best_path, index=False)
         print(f"[OK] En iyi adaylar kaydedildi: {best_path}")
         print(f"[OK] Dataset bazlı en iyi adaylar kaydedildi: {dataset_threshold_best_path}")
+        print(f"[OK] Alpha en iyi adaylar kaydedildi: {alpha_best_path}")
 
     return df_sweep
 
@@ -287,7 +313,7 @@ def write_summary_files(df_all):
 
     df_skab = df_all[df_all["dataset"] == "SKAB"]
     if not df_skab.empty:
-        summary_df = df_skab.groupby(["scenario", "order", "anomaly_threshold"]).agg(
+        summary_df = df_skab.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -303,7 +329,7 @@ def write_summary_files(df_all):
 
     df_batadal = df_all[df_all["dataset"] == "BATADAL"]
     if not df_batadal.empty:
-        batadal_summary = df_batadal.groupby(["scenario", "order", "anomaly_threshold"]).agg(
+        batadal_summary = df_batadal.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
