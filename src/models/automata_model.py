@@ -92,6 +92,73 @@ class ProbabilisticAutomata:
                 nearest_pattern = trained_pattern
         return nearest_pattern, best_distance
 
+
+    # verilen pattern dizisi için karar vermeden olasılık/anomali skorlarını hesaplar
+    def calculate_scores(
+        self,
+        patterns,
+        decision_mode="avg_negative_log",
+        score_window=1,
+        max_mapping_distance=None,
+    ):
+        if len(patterns) < self.order:
+            return []
+
+        if decision_mode not in {"probability", "negative_log", "avg_negative_log"}:
+            raise ValueError("decision_mode 'probability', 'negative_log' veya 'avg_negative_log' olmalıdır.")
+
+        if score_window < 1:
+            raise ValueError("score_window en az 1 olmalıdır.")
+
+        eps = 1e-12
+        mapped_initial = []
+        for i in range(self.order):
+            pat = patterns[i]
+            if pat not in self.trained_patterns:
+                pat_mapped, _ = self._find_nearest_pattern(pat)
+                mapped_initial.append(pat_mapped if pat_mapped is not None else pat)
+            else:
+                mapped_initial.append(pat)
+
+        current_state = tuple(mapped_initial)
+        recent_negative_log_scores = []
+        scores = []
+
+        for t in range(self.order, len(patterns)):
+            incoming_pattern = patterns[t]
+            mapped_to = incoming_pattern
+            distance = 0
+            forced_distance_anomaly = False
+
+            if incoming_pattern not in self.trained_patterns:
+                mapped_to, distance = self._find_nearest_pattern(incoming_pattern)
+                if mapped_to is None:
+                    mapped_to = incoming_pattern
+                    distance = float("inf")
+                if max_mapping_distance is not None and distance > max_mapping_distance:
+                    forced_distance_anomaly = True
+
+            prob = self.get_transition_probability(current_state, mapped_to)
+            negative_log_score = float(-np.log(prob + eps))
+            recent_negative_log_scores.append(negative_log_score)
+            if len(recent_negative_log_scores) > score_window:
+                recent_negative_log_scores.pop(0)
+
+            if decision_mode == "probability":
+                score = float(prob)
+            elif decision_mode == "negative_log":
+                score = negative_log_score
+            else:
+                score = float(np.mean(recent_negative_log_scores))
+
+            if forced_distance_anomaly and decision_mode in {"negative_log", "avg_negative_log"}:
+                score = max(float(score), float(distance))
+
+            scores.append(score)
+            current_state = current_state[1:] + (mapped_to,)
+
+        return scores
+
     # test verisi üzerinde kayan pencere ile anomali tahmini yapar ve sonuçları döndürür
     def predict(
         self,

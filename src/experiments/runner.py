@@ -26,8 +26,25 @@ def load_json_config(config_path="src/config/settings.json"):
         "smoothing_alphas": [1.0, 0.5, 0.1, 0.01],
         "score_windows": [3, 5, 10],
         "max_mapping_distances": [None, 1, 2, 3],
-        "decision_mode": "probability",
-        "decision_modes": ["negative_log"],
+        "auto_score_percentiles": [90, 95, 97, 99],
+        "decision_mode": "avg_negative_log",
+        "decision_modes": ["negative_log", "avg_negative_log"],
+
+        # Final seçilen Markov otomata parametreleri
+        "batadal_final_order": 3,
+        "batadal_final_smoothing_alpha": 0.1,
+        "batadal_final_decision_mode": "avg_negative_log",
+        "batadal_final_score_window": 5,
+        "batadal_final_score_threshold": 3.9120,
+        "batadal_final_max_mapping_distance": None,
+
+        "skab_final_order": 3,
+        "skab_final_smoothing_alpha": 0.5,
+        "skab_final_decision_mode": "avg_negative_log",
+        "skab_final_score_window": 10,
+        "skab_final_score_threshold": 0.2231,
+        "skab_final_max_mapping_distance": None,
+
         "batadal_score_thresholds": [2.5257, 2.6593, 2.8134, 2.9957, 3.2189, 3.5066, 3.9120],
         "skab_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108, 0.6931, 0.9163, 1.2040, 1.6094, 2.3026, 2.9957],
         # Geriye uyumluluk: eski ortak liste config'te varsa sadece fallback olarak kullanılır.
@@ -83,6 +100,23 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     )
     model.fit(train_patterns)
 
+    # Validation/normal skor dağılımına göre otomatik score threshold seçimi.
+    # Ayrı bir validation dosyası verilmediği durumda eğitim pattern dizisi normal referans dağılımı olarak kullanılır.
+    auto_score_percentile = config.get("auto_score_percentile")
+    computed_score_threshold = config.get("score_threshold")
+    if (
+        config.get("decision_mode") in {"negative_log", "avg_negative_log"}
+        and auto_score_percentile is not None
+    ):
+        reference_scores = model.calculate_scores(
+            train_patterns,
+            decision_mode=config.get("decision_mode", "avg_negative_log"),
+            score_window=config.get("score_window", 1),
+            max_mapping_distance=config.get("max_mapping_distance"),
+        )
+        if reference_scores:
+            computed_score_threshold = float(np.percentile(reference_scores, auto_score_percentile))
+
     # High-order Markov için gerçek state sayısı context sayısıdır.
     # trained_patterns ise vocab/sembol kümesidir.
     num_states = len(model.total_exits)
@@ -100,7 +134,8 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "anomaly_threshold": config["anomaly_threshold"],
         "smoothing_alpha": config.get("smoothing_alpha", 1.0),
         "decision_mode": config.get("decision_mode", "probability"),
-        "score_threshold": config.get("score_threshold"),
+        "score_threshold": computed_score_threshold,
+        "auto_score_percentile": auto_score_percentile,
         "score_window": config.get("score_window", 1),
         "max_mapping_distance": config.get("max_mapping_distance"),
         "num_states": num_states,
@@ -115,7 +150,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         test_patterns_orig,
         anomaly_threshold=config["anomaly_threshold"],
         decision_mode=config.get("decision_mode", "probability"),
-        score_threshold=config.get("score_threshold"),
+        score_threshold=computed_score_threshold,
         score_window=config.get("score_window", 1),
         max_mapping_distance=config.get("max_mapping_distance"),
     )
@@ -131,7 +166,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         test_patterns_noisy,
         anomaly_threshold=config["anomaly_threshold"],
         decision_mode=config.get("decision_mode", "probability"),
-        score_threshold=config.get("score_threshold"),
+        score_threshold=computed_score_threshold,
         score_window=config.get("score_window", 1),
         max_mapping_distance=config.get("max_mapping_distance"),
     )
@@ -154,7 +189,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             unseen_test_patterns,
             anomaly_threshold=config["anomaly_threshold"],
             decision_mode=config.get("decision_mode", "probability"),
-            score_threshold=config.get("score_threshold"),
+            score_threshold=computed_score_threshold,
             score_window=config.get("score_window", 1),
             max_mapping_distance=config.get("max_mapping_distance"),
         )
@@ -500,6 +535,7 @@ def run_mapping_distance_sweep(config):
     sweep_results = []
 
     # Önceki avg negative log sweep'te iyi sonuç veren adaylar üzerinden mesafe eşiğini tarıyoruz.
+    # Böylece gereksiz tüm kombinasyonları tekrar çalıştırmadan 18-20. adımları izole test ediyoruz.
     batadal_candidates = config.get("batadal_mapping_candidates", [
         {"order": 3, "smoothing_alpha": 0.1, "score_window": 5, "score_threshold": 3.9120},
         {"order": 2, "smoothing_alpha": 0.1, "score_window": 5, "score_threshold": 3.9120},
@@ -647,6 +683,168 @@ def run_mapping_distance_sweep(config):
     print(f"[OK] Mapping distance en iyi adaylar kaydedildi: {best_path}")
 
 
+def run_validation_threshold_sweep(config):
+    """Validation/normal skor dağılımı percentile değerleriyle otomatik score threshold tarar."""
+    print("\n--- VALIDATION PERCENTILE THRESHOLD SWEEP BAŞLATILIYOR ---")
+
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    percentiles = config.get("auto_score_percentiles", [90, 95, 97, 99])
+    sweep_results = []
+
+    # Önceki adımlarda iyi sonuç veren avg_negative_log adayları üzerinden threshold'u otomatik seçiyoruz.
+    batadal_candidates = config.get("batadal_validation_threshold_candidates", [
+        {"order": 3, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},
+        {"order": 2, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},
+        {"order": 4, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},
+        {"order": 3, "smoothing_alpha": 0.5, "score_window": 5, "max_mapping_distance": None},
+    ])
+
+    skab_candidates = config.get("skab_validation_threshold_candidates", [
+        {"order": 3, "smoothing_alpha": 0.5, "score_window": 10, "max_mapping_distance": None},
+        {"order": 2, "smoothing_alpha": 1.0, "score_window": 10, "max_mapping_distance": None},
+        {"order": 2, "smoothing_alpha": 0.5, "score_window": 10, "max_mapping_distance": None},
+        {"order": 4, "smoothing_alpha": 1.0, "score_window": 10, "max_mapping_distance": None},
+    ])
+
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Validation Percentile Threshold Taraması...")
+        print(f"   Percentile aralığı: {percentiles}")
+        for candidate in batadal_candidates:
+            for percentile in percentiles:
+                for seed in seeds:
+                    cc = {
+                        **config,
+                        **candidate,
+                        "decision_mode": "avg_negative_log",
+                        "score_threshold": None,
+                        "auto_score_percentile": percentile,
+                        "anomaly_threshold": config.get("batadal_anomaly_threshold", 0.05),
+                    }
+                    res, _ = run_experiment_pipeline(
+                        X_train_b,
+                        X_test_b,
+                        y_test_b,
+                        cc,
+                        "BATADAL",
+                        "validation_threshold_sweep",
+                        seed=seed,
+                    )
+                    sweep_results.extend(res)
+
+                temp_df = pd.DataFrame([
+                    r for r in sweep_results
+                    if r["dataset"] == "BATADAL"
+                    and r["scenario"] == "original"
+                    and r["order"] == candidate["order"]
+                    and r["smoothing_alpha"] == candidate["smoothing_alpha"]
+                    and r["score_window"] == candidate["score_window"]
+                    and r["auto_score_percentile"] == percentile
+                ])
+                if not temp_df.empty:
+                    print(
+                        f"BATADAL -> order={candidate['order']}, alpha={candidate['smoothing_alpha']}, "
+                        f"window={candidate['score_window']}, percentile={percentile}, "
+                        f"score_threshold={temp_df['score_threshold'].mean():.4f} | "
+                        f"Precision={temp_df['precision'].mean():.4f}, "
+                        f"Recall={temp_df['recall'].mean():.4f}, F1={temp_df['f1_score'].mean():.4f}"
+                    )
+
+    print("\n>> SKAB Validation Percentile Threshold Taraması...")
+    print(f"   Percentile aralığı: {percentiles}")
+    for candidate in skab_candidates:
+        for percentile in percentiles:
+            for fold in range(1, 6):
+                train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+                if os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file):
+                    X_train_s = pd.read_csv(train_file).values.flatten()
+                    X_test_s = pd.read_csv(test_file).values.flatten()
+                    y_test_s = pd.read_csv(y_test_file).values.flatten()
+                    for seed in seeds:
+                        cc = {
+                            **config,
+                            **candidate,
+                            "decision_mode": "avg_negative_log",
+                            "score_threshold": None,
+                            "auto_score_percentile": percentile,
+                            "anomaly_threshold": config.get("skab_anomaly_threshold", 0.90),
+                        }
+                        res, _ = run_experiment_pipeline(
+                            X_train_s,
+                            X_test_s,
+                            y_test_s,
+                            cc,
+                            "SKAB",
+                            f"validation_threshold_fold_{fold}",
+                            seed=seed,
+                        )
+                        sweep_results.extend(res)
+
+            temp_df = pd.DataFrame([
+                r for r in sweep_results
+                if r["dataset"] == "SKAB"
+                and r["scenario"] == "original"
+                and r["order"] == candidate["order"]
+                and r["smoothing_alpha"] == candidate["smoothing_alpha"]
+                and r["score_window"] == candidate["score_window"]
+                and r["auto_score_percentile"] == percentile
+            ])
+            if not temp_df.empty:
+                print(
+                    f"SKAB -> order={candidate['order']}, alpha={candidate['smoothing_alpha']}, "
+                    f"window={candidate['score_window']}, percentile={percentile}, "
+                    f"score_threshold={temp_df['score_threshold'].mean():.4f} | "
+                    f"Precision={temp_df['precision'].mean():.4f}, "
+                    f"Recall={temp_df['recall'].mean():.4f}, F1={temp_df['f1_score'].mean():.4f}"
+                )
+
+    if not sweep_results:
+        print("[UYARI] Validation percentile threshold sweep için uygun veri bulunamadı.")
+        return
+
+    df_sweep = pd.DataFrame(sweep_results)
+    os.makedirs("results/outputs", exist_ok=True)
+    metrics_path = "results/outputs/automata_markov_validation_threshold_sweep_metrics.csv"
+    summary_path = "results/outputs/automata_markov_validation_threshold_sweep_summary.csv"
+    best_path = "results/outputs/automata_markov_validation_threshold_best_candidates.csv"
+
+    df_sweep.to_csv(metrics_path, index=False)
+
+    summary_cols = [
+        "dataset", "order", "smoothing_alpha", "decision_mode", "score_window", "auto_score_percentile", "max_mapping_distance"
+    ]
+    summary = df_sweep[df_sweep["scenario"] == "original"].groupby(summary_cols, dropna=False).agg(
+        score_threshold_mean=("score_threshold", "mean"),
+        score_threshold_std=("score_threshold", "std"),
+        accuracy_mean=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        precision_mean=("precision", "mean"),
+        precision_std=("precision", "std"),
+        recall_mean=("recall", "mean"),
+        recall_std=("recall", "std"),
+        f1_score_mean=("f1_score", "mean"),
+        f1_score_std=("f1_score", "std"),
+        transition_density_mean=("transition_density", "mean"),
+        num_states_mean=("num_states", "mean"),
+        num_transitions_mean=("num_transitions", "mean"),
+    ).reset_index()
+    summary = summary.sort_values(["dataset", "f1_score_mean"], ascending=[True, False])
+    summary.to_csv(summary_path, index=False)
+
+    best_candidates = summary.sort_values(["dataset", "f1_score_mean"], ascending=[True, False]).groupby("dataset").head(5)
+    best_candidates.to_csv(best_path, index=False)
+
+    print(f"\n[OK] Validation threshold sweep sonuçları kaydedildi: {metrics_path}")
+    print(f"[OK] Validation threshold sweep özeti kaydedildi: {summary_path}")
+    print(f"[OK] Validation threshold en iyi adaylar kaydedildi: {best_path}")
+
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -694,8 +892,7 @@ def main():
     print("\n[INFO] SKAB Veri Seti Bölme Stratejisi:")
     print("-> Fiziksel düzenek bütünlüğü ve zamansal bağımlılıkları korumak adına GroupKFold mimarisi aktiftir.")
 
-    # ANA EĞİTİM: config'teki tekil order/threshold ile çalışır.
-    # Fine-tuning sonuçları ayrıca automata_markov_sweep_metrics.csv içine yazılır.
+    # ANA EĞİTİM: Fine-tuning sonucunda seçilen final Markov parametreleri ile çalışır.
     if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
         print("\n" + "=" * 60)
         print("[ADASYN ENTEGRASYONU] Otomata modeli ADASYN_PC1 verisiyle eğitiliyor...")
@@ -708,13 +905,26 @@ def main():
 
         config_batadal = {
             **config,
-            "order": config.get("order", 2),
+            "order": config.get("batadal_final_order", 3),
+            "smoothing_alpha": config.get("batadal_final_smoothing_alpha", 0.1),
+            "decision_mode": config.get("batadal_final_decision_mode", "avg_negative_log"),
+            "score_window": config.get("batadal_final_score_window", 5),
+            "score_threshold": config.get("batadal_final_score_threshold", 3.9120),
+            "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+            "auto_score_percentile": None,
             "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
         }
 
         batadal_logs = None
         for seed in seeds:
-            print(f"BATADAL automata seed={seed}, order={config_batadal['order']}, threshold={config_batadal['anomaly_threshold']} çalışıyor...")
+            print(
+                f"BATADAL final automata seed={seed}, "
+                f"order={config_batadal['order']}, "
+                f"alpha={config_batadal['smoothing_alpha']}, "
+                f"mode={config_batadal['decision_mode']}, "
+                f"window={config_batadal['score_window']}, "
+                f"score_threshold={config_batadal['score_threshold']} çalışıyor..."
+            )
             batadal_res, logs = run_experiment_pipeline(
                 X_train,
                 X_test,
@@ -734,7 +944,13 @@ def main():
 
     config_skab = {
         **config,
-        "order": config.get("order", 2),
+        "order": config.get("skab_final_order", 3),
+        "smoothing_alpha": config.get("skab_final_smoothing_alpha", 0.5),
+        "decision_mode": config.get("skab_final_decision_mode", "avg_negative_log"),
+        "score_window": config.get("skab_final_score_window", 10),
+        "score_threshold": config.get("skab_final_score_threshold", 0.2231),
+        "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+        "auto_score_percentile": None,
         "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
     }
 
@@ -747,7 +963,14 @@ def main():
             X_test = pd.read_csv(test_file).values.flatten()
             y_test = pd.read_csv(y_test_file).values.flatten()
             for seed in seeds:
-                print(f"SKAB automata fold={fold}, seed={seed}, order={config_skab['order']}, threshold={config_skab['anomaly_threshold']} çalışıyor...")
+                print(
+                    f"SKAB final automata fold={fold}, seed={seed}, "
+                    f"order={config_skab['order']}, "
+                    f"alpha={config_skab['smoothing_alpha']}, "
+                    f"mode={config_skab['decision_mode']}, "
+                    f"window={config_skab['score_window']}, "
+                    f"score_threshold={config_skab['score_threshold']} çalışıyor..."
+                )
                 fold_res, _ = run_experiment_pipeline(
                     X_train,
                     X_test,
@@ -763,8 +986,7 @@ def main():
     df_all.to_csv("results/outputs/automata_advanced_all_scenarios_metrics.csv", index=False)
     write_summary_files(df_all)
 
-    # Bu aşamada görülmemiş pattern mapping distance kararı için ayrı sweep çalıştırılır.
-    run_mapping_distance_sweep(config)
+    # Final koşuda sweep çalıştırılmaz; ana metrikler sabit final parametrelerle üretilir.
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
