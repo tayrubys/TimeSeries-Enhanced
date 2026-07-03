@@ -93,7 +93,15 @@ class ProbabilisticAutomata:
         return nearest_pattern, best_distance
 
     # test verisi üzerinde kayan pencere ile anomali tahmini yapar ve sonuçları döndürür
-    def predict(self, test_patterns, anomaly_threshold=0.05, decision_mode="probability", score_threshold=None, score_window=1):
+    def predict(
+        self,
+        test_patterns,
+        anomaly_threshold=0.05,
+        decision_mode="probability",
+        score_threshold=None,
+        score_window=1,
+        max_mapping_distance=None,
+    ):
         if len(test_patterns) < self.order:
             return [0] * (len(test_patterns) - 1), []
 
@@ -102,6 +110,9 @@ class ProbabilisticAutomata:
 
         if score_window < 1:
             raise ValueError("score_window en az 1 olmalıdır.")
+
+        if max_mapping_distance is not None and max_mapping_distance < 0:
+            raise ValueError("max_mapping_distance negatif olamaz.")
 
         eps = 1e-12
         if score_threshold is None:
@@ -115,7 +126,7 @@ class ProbabilisticAutomata:
             pat = test_patterns[i]
             if pat not in self.trained_patterns:
                 pat_mapped, _ = self._find_nearest_pattern(pat)
-                mapped_initial.append(pat_mapped)
+                mapped_initial.append(pat_mapped if pat_mapped is not None else pat)
             else:
                 mapped_initial.append(pat)
 
@@ -129,11 +140,19 @@ class ProbabilisticAutomata:
             status = "seen"
             mapped_to = incoming_pattern
             distance = 0
+            forced_distance_anomaly = False
 
             similarity_report = []
             if incoming_pattern not in self.trained_patterns:
                 status = "unseen"
                 mapped_to, distance = self._find_nearest_pattern(incoming_pattern)
+                if mapped_to is None:
+                    mapped_to = incoming_pattern
+                    distance = float("inf")
+
+                if max_mapping_distance is not None and distance > max_mapping_distance:
+                    forced_distance_anomaly = True
+
                 distances = [(tp, self._calculate_levenshtein(incoming_pattern, tp)) for tp in self.trained_patterns]
                 distances.sort(key=lambda x: x[1])
                 similarity_report = [{"pattern": p, "distance": d} for p, d in distances[:3]]
@@ -156,6 +175,11 @@ class ProbabilisticAutomata:
             else:
                 decision = "anomaly" if prob < anomaly_threshold else "normal"
                 confidence_score = float(prob)
+
+            if forced_distance_anomaly:
+                decision = "anomaly"
+                if decision_mode in {"negative_log", "avg_negative_log"}:
+                    confidence_score = max(float(confidence_score), float(distance))
 
             if decision == "normal" and self.learning_rate > 0.0:
                 self._update_transition(current_state, mapped_to)
