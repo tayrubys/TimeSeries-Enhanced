@@ -73,7 +73,46 @@ relative_score = transition_probability / best_transition_probability
 Amaç, bir geçişin yalnızca mutlak olasılığına değil, aynı state içindeki en güçlü geçişe göre ne kadar zayıf kaldığına bakmaktı. Böylece düşük göreli skora sahip geçişlerin anomali olarak daha kolay yakalanması hedeflenmiştir.
 
 Ancak yapılan deneylerde Relative Transition Score yaklaşımının hem BATADAL hem de SKAB veri setlerinde performansı düşürdüğü gözlemlenmiştir. Bu nedenle bu yöntem final modelde kullanılmamış ve kod akışından tamamen kaldırılmıştır.
-
+## 6. State-Aware Dynamic Threshold Deneyi
+ 
+Weighted Transition Probability sonrasında, sabit anomali eşiği yerine state bazlı dinamik eşikleme yaklaşımı da denenmiştir. Bu yöntemde her otomata state'i için eğitim verisindeki geçiş olasılıkları toplanmış ve bu dağılım üzerinden quantile tabanlı ayrı bir threshold değeri hesaplanmıştır.
+ 
+Kullanılan temel mantık:
+ 
+```text
+state_probs[current_state].append(transition_probability)
+state_threshold = quantile(state_probs[current_state], dynamic_threshold_quantile)
+```
+ 
+Tahmin aşamasında `use_dynamic_threshold=True` olduğunda sabit `anomaly_threshold` yerine ilgili state için hesaplanan threshold kullanılmıştır. Eğer ilgili state için yeterli örnek yoksa global dynamic threshold veya fallback olarak sabit threshold kullanılmıştır.
+ 
+İlk olarak düşük quantile değerleri denenmiştir:
+ 
+```text
+[0.01, 0.03, 0.05, 0.10, 0.20]
+```
+ 
+Daha sonra daha geniş quantile aralığı da test edilmiştir:
+ 
+```text
+[0.20, 0.40, 0.60, 0.80, 0.90, 0.95, 0.99]
+```
+ 
+En iyi dynamic threshold sonuçları:
+ 
+| Dataset | En İyi Dynamic Quantile | Dynamic F1-score | Sabit Threshold F1-score |
+|---|---|---|---|
+| BATADAL | 0.40 | 0.0876 | 0.1667 |
+| SKAB | 0.60 | 0.2971 | 0.5414 |
+ 
+Deney sonuçlarına göre state-aware dynamic threshold yaklaşımı, sabit threshold tuning yönteminden daha düşük performans göstermiştir. BATADAL tarafında yanlış pozitiflerin arttığı, SKAB tarafında ise anomali yakalama oranının sabit threshold yöntemine göre daha düşük kaldığı gözlemlenmiştir.
+ 
+Bu nedenle Dynamic Threshold yöntemi final otomata modeline dahil edilmemiştir. Kodda ek analiz amacıyla opsiyonel olarak tutulmuş, ancak ana deney konfigürasyonunda kapalı bırakılmıştır:
+ 
+```python
+use_dynamic_threshold = False
+```
+ 
 -----
 Son durumda final otomata modeli şu yapı ile devam etmektedir:
 
@@ -81,7 +120,7 @@ Son durumda final otomata modeli şu yapı ile devam etmektedir:
 - Threshold duyarlılık analizi ile seçilen eşik değerleri kullanılıyor
 - Similarity Penalty ana deneyde kapalı
 - Relative Transition Score final modelden kaldırıldı
-## 6. Final Sonuçlar
+## 7. Final Sonuçlar
 
 | Dataset | Accuracy | Precision | Recall | F1-score |
 |---|---|---|---|---|
