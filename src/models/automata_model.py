@@ -3,9 +3,10 @@ from collections import defaultdict
 from src.models.explainability import AutomataExplainer
 
 class ProbabilisticAutomata:
-    def __init__(self, smoothing=True,weight_sharpness=1.0):
+    def __init__(self, smoothing=True,weight_sharpness=1.0,use_similarity_penalty=False):
         self.smoothing = smoothing
         self.weight_sharpness = weight_sharpness
+        self.use_similarity_penalty = use_similarity_penalty
         self.transitions = defaultdict(lambda: defaultdict(int))
         self.total_exits = defaultdict(int)
         self.trained_patterns = set()
@@ -69,7 +70,10 @@ class ProbabilisticAutomata:
                 current_row.append(min(insertions, deletions, substitutions))
             previous_row = current_row
         return previous_row[-1]
-
+    
+    def _calculate_similarity_score(self, distance):
+        return 1.0 / (1.0 + distance)
+    
     def _find_nearest_pattern(self, unseen_pattern):
         best_distance = float('inf')
         nearest_pattern = None
@@ -103,10 +107,19 @@ class ProbabilisticAutomata:
                 distances = [(tp, self._calculate_levenshtein(incoming_pattern, tp)) for tp in self.trained_patterns]
                 distances.sort(key=lambda x: x[1])
                 similarity_report = [{"pattern": p, "distance": d} for p, d in distances[:3]]
+            #Unseen pattern en yakın bilinen pattern'a eşlendikten sonra similarity penalty uygulanır.
+            #Distance küçükse pattern daha benzerdir ve olasılık fazla düşmez.
+            #Distance büyüdükçe similarity_score azalır, böylece uzak eşleşmeler daha şüpheli kabul edilir.     
+            base_prob = self.get_transition_probability(current_state, mapped_to)
 
-            prob = self.get_transition_probability(current_state, mapped_to)
+            similarity_score = 1.0
+            if self.use_similarity_penalty:
+               similarity_score = self._calculate_similarity_score(distance)
+            #distance arttıkça similarity_score düşer, böylece uzak eşleşmeler anomaly'ye daha yakın olur.
+            prob = base_prob * similarity_score
+
             cumulative_path_prob *= prob
-            path_probability = float(cumulative_path_prob) 
+            path_probability = float(cumulative_path_prob)
             decision = "anomaly" if prob < anomaly_threshold else "normal"
             confidence_score = float(prob)
             
@@ -132,6 +145,9 @@ class ProbabilisticAutomata:
                 transition_history, self.total_exits[current_state],
                 counterfactuals, similarity_report
             )
+            log_entry["base_transition_probability"] = float(base_prob)
+            log_entry["similarity_score"] = float(similarity_score)
+            log_entry["penalized_transition_probability"] = float(prob)
             explainability_logs.append(log_entry)
             predictions.append(1 if decision == "anomaly" else 0)
             current_state = mapped_to

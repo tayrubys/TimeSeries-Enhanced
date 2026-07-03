@@ -63,17 +63,19 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     results = []
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
- 
+    #geçiş olasılıklarında weight_sharpness parametresi kullanılarakık görülen geçişlerin etkisi artırıldı nadir geçişler daha seçici değerlendirme
+    #use_similarity_penalty: unseen pattern geldiğinde uzaklık cezasını açıp kapatır.
     model = ProbabilisticAutomata(
        smoothing=True,
-       weight_sharpness=config.get("weight_sharpness", 1.0)
+       weight_sharpness=config.get("weight_sharpness", 1.0),
+       use_similarity_penalty=config.get("use_similarity_penalty", False)
     )
     model.fit(train_patterns)
  
     num_states = len(model.trained_patterns)
     num_transitions = sum(len(targets) for targets in model.transitions.values())
     transition_density = num_transitions / (num_states * num_states) if num_states > 0 else 0.0
-
+    #duyalık analizi ile secilen threshold değeri
     selected_threshold = config["anomaly_threshold"]
 
     common_fields = {
@@ -83,6 +85,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "window_size": config["window_size"],
         "alphabet_size": config["alphabet_size"],
         "weight_sharpness": config.get("weight_sharpness", 1.0),
+        "use_similarity_penalty": config.get("use_similarity_penalty", False),
         "num_states": num_states,
         "num_transitions": num_transitions,
         "transition_density": transition_density,
@@ -151,7 +154,8 @@ def run_parameter_sensitivity_analysis(config):
                        "alphabet_size": a,
                        "weight_sharpness": ws,
                        "anomaly_threshold": config.get("batadal_anomaly_threshold", 0.05),
-                       "noise_level": config["noise_level"]
+                       "noise_level": config["noise_level"],
+                       "use_similarity_penalty": True
                     }
 
                     res, _ = run_experiment_pipeline(
@@ -187,7 +191,8 @@ def run_parameter_sensitivity_analysis(config):
                         "alphabet_size": a,
                         "weight_sharpness": ws,
                         "anomaly_threshold": config.get("skab_anomaly_threshold", 0.90),
-                        "noise_level": config["noise_level"]
+                        "noise_level": config["noise_level"],
+                        "use_similarity_penalty": True
                     }
                     res, _ = run_experiment_pipeline(X_train_s, X_test_s, y_test_s, cc, "SKAB", "param_search", seed=config["seeds"][0])
                     orig_res = [r for r in res if r["scenario"] == "original"][0]
@@ -219,7 +224,8 @@ def run_threshold_sensitivity_analysis(config):
                 "window_size": 4,
                 "alphabet_size": 3,
                 "weight_sharpness": 6.0,
-                "anomaly_threshold": threshold
+                "anomaly_threshold": threshold,
+                "use_similarity_penalty": True
             }
 
             f1_scores = []
@@ -246,7 +252,8 @@ def run_threshold_sensitivity_analysis(config):
                 "window_size": 4,
                 "alphabet_size": 3,
                 "weight_sharpness": 6.0,
-                "f1_score_mean": mean_f1
+                "f1_score_mean": mean_f1,
+                "use_similarity_penalty": True
             })
 
             print(f"BATADAL -> Threshold: {threshold} | Ortalama F1: {mean_f1:.4f}")
@@ -260,7 +267,8 @@ def run_threshold_sensitivity_analysis(config):
             "window_size": 4,
             "alphabet_size": 4,
             "weight_sharpness": 2.0,
-            "anomaly_threshold": threshold
+            "anomaly_threshold": threshold,
+            "use_similarity_penalty": True
         }
 
         f1_scores = []
@@ -297,7 +305,8 @@ def run_threshold_sensitivity_analysis(config):
             "window_size": 4,
             "alphabet_size": 4,
             "weight_sharpness": 2.0,
-            "f1_score_mean": mean_f1
+            "f1_score_mean": mean_f1,
+            "use_similarity_penalty": True
         })
 
         print(f"SKAB -> Threshold: {threshold} | Ortalama F1: {mean_f1:.4f}")
@@ -339,7 +348,8 @@ def main():
             "window_size": 4,
             "alphabet_size": 3,
             "weight_sharpness": 6.0,
-            "anomaly_threshold": 0.01
+            "anomaly_threshold": 0.01,
+            "use_similarity_penalty": True
         }
  
         batadal_logs = None
@@ -358,7 +368,8 @@ def main():
         "window_size": 4,
         "alphabet_size": 4,
         "weight_sharpness": 2.0,
-        "anomaly_threshold": 0.99
+        "anomaly_threshold": 0.99,
+        "use_similarity_penalty": True
    }
  
     for fold in range(1, 6):
