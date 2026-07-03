@@ -1,4 +1,4 @@
-## BATADAL — LSTM Modeli, ADASYN ile Dengeleme (Ön Sonuçlar)
+## BATADAL — LSTM Modeli, ADASYN ile Dengeleme 
  
 Bu bölümde, BATADAL train setinin ADASYN ile (pencere seviyesinde) dengelenmesi sonrası LSTM modelinin performansı raporlanmaktadır. Eğitim, 5 farklı random seed (`42, 123, 2026, 7, 999`) ile tekrarlanmış, her seed için validation setinde F1-optimal eşik (threshold) bulunup bu eşik test setinde uygulanmıştır.
  
@@ -73,9 +73,9 @@ Bu bölümde, aynı deneysel protokol (pencere seviyesinde ADASYN, class_weight=
 
 >  **GRU Özeti:** GRU modeli genel olarak başlangıç ağırlıklarına (seed) karşı çok daha agresif bir hassasiyet sergilemiştir. LSTM'de olduğu gibi `seed=42` durumunda test kümesinde tamamen sıfır çekmiştir. Bununla birlikte, `seed=123` ve `seed=7` senaryolarında da model anomalileri yakalamakta (Recall) ciddi direnç göstermiş, yalnızca `seed=2026` altında güçlü bir genelleme başarısı (F1: 0.80) yakalayabilmiştir.
 ---
-## BATADAL — LSTM ve GRU Parametre Optimizasyonu (Pencere Boyutu Deneyleri)
+## 1. BATADAL — LSTM ve GRU Parametre Optimizasyonu (Pencere Boyutu Deneyleri)
 
-### 1. pencere boyutu = 40
+### pencere boyutu = 40
 Bu bölümde, ADASYN ile dengelenmiş BATADAL veri setinde `sequence_window_size` parametresi 20'den 40'a çıkarılarak, modelin daha geniş bir zaman alanını baz alması sağlanmış ve veri artırımı bu doğrultuda yenilenmiştir. Elde edilen sonuçlar varsayılan (baseline) model ile kıyaslanarak performans değişimleri test edilmiştir. Sınıf ağırlıkları (`class_weight`) sıfır tutulmuş ve eğitim parametrelerinin etkisini dürüst gözlemlemek adına süreç aynı 5 rastgele seed (`42, 123, 2026, 7, 999`) ile tekrarlanmıştır.
 
 ### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
@@ -102,7 +102,7 @@ Bu bölümde, ADASYN ile dengelenmiş BATADAL veri setinde `sequence_window_size
 
 >  **Deney Bulgusu:** Pencere boyutunun değiştirilmesi, modellerin rastgele başlangıç ağırlıklarına (seed) olan yüksek hassasiyetini ortadan kaldırmamıştır. Varyansın yüksek kalması (örneğin GRU modelinin Seed=123'te %100 Recall yakalarken diğer 3 seed'de %0 çekmesi), zaman serisi anomali tespitinde tek başına pencere boyutunun yeterli bir regülasyon sağlamadığını göstermektedir.
 >
->  **Metodolojik Değerlendirme (Boyutun Laneti):** Pencere boyutunun 20'den 40'a çıkarılmasıyla zaman ufkunu genişletmenin tek başına yeterli bir kararlılık sağlamadığı görülmüştür. Bu durumun temel nedeni, pencere boyutu büyüdükçe ADASYN algoritmasının sentetik veri üretirken çalıştığı öznitelik uzayının da doğrusal olarak büyümesidir ($40 \times 43 = 1720$ boyut). Yüksek boyutlu uzaylarda (Curse of Dimensionality), sentetik pencereler arasındaki zamansal tutarlılık ve kronolojik korelasyon zayıflamakta, bu da üretilen yapay verinin kalitesini düşürerek modelin kararlı öğrenmesini zorlaştırmaktadır.
+>  **Metodolojik Değerlendirme (Boyutun Laneti):** Pencere boyutunun 20'den 40'a çıkarılmasıyla zaman ufkunu genişletmenin tek başına yeterli bir kararlılık sağlamadığı görülmüştür. Bu durumun temel nedeni, pencere boyutu büyüdükçe ADASYN algoritmasının sentetik veri üretirken çalıştığı öznitelik uzayının da doğrusal olarak büyümesidir ($40 \times 43 = 1720$ boyut).Yüksek boyutlu uzaylarda (Curse of Dimensionality), sentetik pencereler arasındaki zamansal tutarlılık zayıflıyor olabilir; nitekim bu deneyde hem LSTM hem GRU'nun performansı düşmüştür. Ancak Bölüm 3'te tartışıldığı gibi, bu etkinin GRU'da window=10'da tersine dönmesi, açıklamanın tek başına yeterli olmadığını, model mimarisine özgü etkileşimlerin de rol oynadığını göstermektedir.
 
 ### Window Size = 10
 Bu bölümde, ADASYN ile dengelenmiş BATADAL veri setinde `sequence_window_size` parametresi 20'den 10'a düşürülerek, modelin daha kısa vadeli ve anlık zamansal değişimleri baz alması sağlanmıştır. Amaç, pencere boyutunu küçülterek ADASYN algoritmasının sentetik veri üretirken karşılaştığı öznitelik uzayını daraltmak ve veri kalitesini artırmaktır. Sınıf ağırlıkları (`class_weight`) sıfır tutulmuş ve süreç aynı 5 rastgele seed (`42, 123, 2026, 7, 999`) ile tekrarlanmıştır.
@@ -130,8 +130,49 @@ Bu bölümde, ADASYN ile dengelenmiş BATADAL veri setinde `sequence_window_size
 | **LSTM (ADASYN)** | 0.9241 ± 0.0321 | 0.4362 ± 0.3105 | 0.3800 ± 0.4867 | 0.3506 ± 0.4227 |
 
 >  **Metodolojik Değerlendirme (Daraltılmış Öznitelik Uzayı Etkisi):** Pencere boyutunun 10'a düşürülmesi, ADASYN'in sentetik veri üretirken çalıştığı öznitelik uzayını ciddi ölçüde daraltmıştır ($10 \times 43 = 430$ boyut). Boyutun küçülmesiyle birlikte, üretilen yapay pencerelerin kalitesi ve matematiksel tutarlılığı artmıştır.
-> 
-> Bu durumun en somut kanıtı **GRU modelinin performansıdır**: Varsayılan modele (`window_size=20`) kıyasla GRU'nun ortalama F1-skoru **%35.92'den %58.58'e** fırlamış, daha da önemlisi ortalama Precision değeri **%57.75'ten %82.55'e** yükselmiştir. Ayrıca Precision standart sapmasının **0.1060** seviyesine düşmesi, modelin sahte alarm üretme eğiliminin kararlı bir şekilde kontrol altına alındığını kanıtlamaktadır.
->
+
 >  **Kararsızlık Eğilimi (Seed Hassasiyeti):** Veri kalitesindeki genel artışa rağmen, modellerin rastgele başlangıç ağırlıklarına (seed) olan yüksek bağımlılığı tamamen kırılamamıştır. LSTM modeli belirli seed'lerde (Seed=7 için F1: 0.0, Seed=123 için F1: 0.02) tamamen anomali kaçırma eğilimindeyken; GRU modelinde Seed=42, 2026 ve 999 senaryolarında, LSTM modelinde ise Seed=2026 ve 999 altında **%77 ile %84 F1-skoru** bandında çok güçlü ve dengeli tepe performansları yakalanmıştır. Bu durum, model kararlılığı için sadece pencere boyutunun yeterli olmadığını, eğitim/mimari parametrelerinin de optimize edilmesi gerektiğini göstermektedir.
 
+---
+## 2. Batadal Eğitim Parametreleri Optimizasyonu: LR=0.0005, Dropout=0.4/0.3, Patience=8
+Bu bölümde, `sequence_window_size` parametresi 10'da sabit tutulmuş; modellerin rastgele başlangıç ağırlıklarına (seed) hassasiyetini azaltmak ve ADASYN kaynaklı aşırı öğrenmeyi (overfitting) engellemek amacıyla eğitim parametrelerine müdahale edilmiştir. Öğrenme oranı (learning rate) `0.0005` seviyesine çekilerek kararlı yakınsama amaçlanmış, katmanlardaki dropout oranları `0.4` ve `0.3` seviyelerine çıkarılarak model genellemeye zorlanmıştır. Süreç aynı 5 rastgele seed (`42, 123, 2026, 7, 999`) ile doğrulanmıştır.
+
+### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
+
+| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
+|---|---|---|---|---|---|---|
+| **LSTM** | 42 | 0.2 | 0.9057 | 0.6000 | 0.0750 | 0.1333 |
+| **LSTM** | 123 | 0.3 | 0.9649 | 0.7429 | 0.9750 | 0.8432 |
+| **LSTM** | 2026 | 0.5 | 0.9008 | 0.0000 | 0.0000 | 0.0000 |
+| **LSTM** | 7 | 0.5 | 0.9033 | 0.5000 | 0.0375 | 0.0698 |
+| **LSTM** | 999 | 0.1 | 0.9553 | 0.7792 | 0.7500 | 0.7643 |
+| **GRU** | 42 | 0.1 | 0.9553 | 0.7087 | 0.9125 | 0.7978 |
+| **GRU** | 123 | 0.5 | 0.9311 | 0.7949 | 0.3875 | 0.5210 |
+| **GRU** | 2026 | 0.4 | 0.9492 | 0.7879 | 0.6500 | 0.7123 |
+| **GRU** | 7 | 0.1 | 0.9577 | 0.7711 | 0.8000 | 0.7853 |
+| **GRU** | 999 | 0.1 | 0.9589 | 0.7054 | 0.9875 | 0.8229 |
+
+### Model Performans Özetleri (Ortalama ± Standart Sapma)
+
+| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
+|---|---|---|---|---|
+| **GRU (ADASYN + Opt)** | 0.9504 ± 0.0114 | 0.7536 ± 0.0434 | 0.7475 ± 0.2381 | 0.7279 ± 0.1227 |
+| **LSTM (ADASYN + Opt)** | 0.9260 ± 0.0314 | 0.5244 ± 0.3138 | 0.3675 ± 0.4596 | 0.3621 ± 0.4069 |
+
+>  **Metodolojik Değerlendirme ve Regülasyon Etkisi:** Öğrenme oranının düşürülmesi ve regresyon maskelerinin (Dropout) sıkılaştırılması, özellikle **GRU mimarisi üzerinde dönüştürücü bir etki** yaratmıştır. GRU modelinin ortalama F1-skoru baseline deneydeki %58.58 seviyesinden **%72.79'a** yükselmiştir. En kritik kazanım ise kararlılık tarafındadır; modelin Precision standart sapması **0.0434** gibi son derece düşük bir seviyeye indirilerek rastgele seed varyansı baskılanmış ve model kararlı sınıflandırma yeteneği kazanmıştır.
+>
+>  **Mimariler Arası Dayanıklılık Farkı:** GRU modeli hiperparametre optimizasyonu ile tüm seed'lerde dengeli ve yüksek genelleme başarısı gösterirken, LSTM modeli başlangıç ağırlık bağımlılığını tam olarak kıramamıştır. LSTM mimarisi `seed=123` (%84.32 F1) ve `seed=999` (%76.43 F1) senaryolarında mükemmel performans gösterse de, `seed=2026` altında test kümesinde tamamen anomali kaçırma eğilimine (F1: 0.0) girmiştir. Bu durum, GRU hücresinin (katman yapısının) daha az parametre içermesinin verdiği avantajla, kısıtlı endüstriyel veri senaryolarında regülasyon ayarlarına çok daha hızlı ve kararlı tepki verdiği görülmektedir.
+
+---
+## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
+ 
+Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin optimizasyon müdahalelerine **tamamen zıt yönde** tepki verdiği görülmektedir:
+ 
+| Deney | LSTM F1 (ort.) | GRU F1 (ort.) |
+|---|---|---|
+| Baseline (window=20, ADASYN) | **0.656** (outlier hariç: 0.820) | 0.359 |
+| Window=40 | 0.213 | 0.210 |
+| Window=10 | 0.351 | 0.586 |
+| Window=10 + HP optimizasyonu | 0.362 | **0.728** |
+
+>LSTM modelinin en iyi performansı, hiçbir ek müdahale yapılmadan, **ilk baseline denemesinde** (window=20) elde edilmiştir. Sonraki tüm optimizasyon adımları (pencere boyutu küçültme, learning rate/dropout ayarı) LSTM performansını **iyileştirmek yerine kötüleştirmiştir**. GRU ise tam tersi bir eğilim göstermiş, her adımda tutarlı biçimde iyileşmiştir (F1: 0.359 → 0.728).
