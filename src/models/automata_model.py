@@ -93,12 +93,15 @@ class ProbabilisticAutomata:
         return nearest_pattern, best_distance
 
     # test verisi üzerinde kayan pencere ile anomali tahmini yapar ve sonuçları döndürür
-    def predict(self, test_patterns, anomaly_threshold=0.05, decision_mode="probability", score_threshold=None):
+    def predict(self, test_patterns, anomaly_threshold=0.05, decision_mode="probability", score_threshold=None, score_window=1):
         if len(test_patterns) < self.order:
             return [0] * (len(test_patterns) - 1), []
 
-        if decision_mode not in {"probability", "negative_log"}:
-            raise ValueError("decision_mode 'probability' veya 'negative_log' olmalıdır.")
+        if decision_mode not in {"probability", "negative_log", "avg_negative_log"}:
+            raise ValueError("decision_mode 'probability', 'negative_log' veya 'avg_negative_log' olmalıdır.")
+
+        if score_window < 1:
+            raise ValueError("score_window en az 1 olmalıdır.")
 
         eps = 1e-12
         if score_threshold is None:
@@ -119,6 +122,7 @@ class ProbabilisticAutomata:
         current_state = tuple(mapped_initial)
         transition_history = list(current_state)
         cumulative_path_prob = 1.0
+        recent_negative_log_scores = []
 
         for t in range(self.order, len(test_patterns)):
             incoming_pattern = test_patterns[t]
@@ -138,10 +142,17 @@ class ProbabilisticAutomata:
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
             negative_log_score = float(-np.log(prob + eps))
+            recent_negative_log_scores.append(negative_log_score)
+            if len(recent_negative_log_scores) > score_window:
+                recent_negative_log_scores.pop(0)
+            avg_negative_log_score = float(np.mean(recent_negative_log_scores))
 
             if decision_mode == "negative_log":
                 decision = "anomaly" if negative_log_score > score_threshold else "normal"
                 confidence_score = negative_log_score
+            elif decision_mode == "avg_negative_log":
+                decision = "anomaly" if avg_negative_log_score > score_threshold else "normal"
+                confidence_score = avg_negative_log_score
             else:
                 decision = "anomaly" if prob < anomaly_threshold else "normal"
                 confidence_score = float(prob)
@@ -160,7 +171,7 @@ class ProbabilisticAutomata:
 
                 for alt_pattern, alt_prob in possible_transitions[:3]:
                     if alt_pattern != mapped_to:
-                        if decision_mode == "negative_log":
+                        if decision_mode in {"negative_log", "avg_negative_log"}:
                             alt_score = float(-np.log(alt_prob + eps))
                             alt_decision = "anomaly" if alt_score > score_threshold else "normal"
                         else:
