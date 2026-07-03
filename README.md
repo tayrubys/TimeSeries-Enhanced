@@ -33,7 +33,7 @@ Weighted Transition Probability sonrasında anomali karar eşiği de yeniden inc
 | BATADAL | 0.01 | 0.1667 |
 | SKAB | 0.99 | 0.5414 |
 
-## 5. Similarity Penalty Deneyi
+## 4. Similarity Penalty Deneyi
  
 Weighted Transition Probability sonrasında, özellikle eğitim verisinde görülmeyen (`unseen`) sembolik pattern'ların daha kontrollü değerlendirilmesi için Levenshtein distance tabanlı Similarity Penalty yöntemi denenmiştir.
  
@@ -58,7 +58,29 @@ Farklı `similarity_penalty_strength` değerleri denenmiştir:
 | SKAB | 0.1 | 0.5416 | 0.3027 |
  
 Deney sonuçlarına göre Similarity Penalty yöntemi BATADAL veri setinde performans artışı sağlamamış, en iyi sonuç penalty uygulanmadığında (`strength=0.0`) elde edilmiştir. SKAB veri setinde ise `strength=0.1` değerinde çok sınırlı bir artış görülmüştür. Ancak bu artış oldukça küçük olduğu için yöntem ana iyileştirme olarak değil, ek analiz deneyi olarak değerlendirilmiştir.
- 
+
+## 5. Relative Transition Score Deneyi
+
+Similarity Penalty sonrasında, geçiş olasılıklarını daha hassas değerlendirmek amacıyla Relative Transition Score yaklaşımı denenmiştir.
+
+Bu yöntemde mevcut geçiş olasılığı, aynı state üzerinden çıkabilecek en yüksek geçiş olasılığı ile karşılaştırılmıştır.
+
+Kullanılan temel hesaplama:
+
+```text
+relative_score = transition_probability / best_transition_probability
+```
+Amaç, bir geçişin yalnızca mutlak olasılığına değil, aynı state içindeki en güçlü geçişe göre ne kadar zayıf kaldığına bakmaktı. Böylece düşük göreli skora sahip geçişlerin anomali olarak daha kolay yakalanması hedeflenmiştir.
+
+Ancak yapılan deneylerde Relative Transition Score yaklaşımının hem BATADAL hem de SKAB veri setlerinde performansı düşürdüğü gözlemlenmiştir. Bu nedenle bu yöntem final modelde kullanılmamış ve kod akışından tamamen kaldırılmıştır.
+
+-----
+Son durumda final otomata modeli şu yapı ile devam etmektedir:
+
+- Weighted Transition Probability aktif
+- Threshold duyarlılık analizi ile seçilen eşik değerleri kullanılıyor
+- Similarity Penalty ana deneyde kapalı
+- Relative Transition Score final modelden kaldırıldı
 ## 6. Final Sonuçlar
 
 | Dataset | Accuracy | Precision | Recall | F1-score |
