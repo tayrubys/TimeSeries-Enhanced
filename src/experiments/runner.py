@@ -15,18 +15,25 @@ def load_json_config(config_path="src/config/settings.json"):
         "window_size": 4,
         "alphabet_size": 3,
         "window_sizes": [3, 4, 5, 6],
-        "alphabet_sizes": [3, 4, 5, 6],
+        "alphabet_sizes": [3, 4, 5, 6], 
         "weight_sharpness": 1.0,
-        "weight_sharpness_values": [0.25, 0.5, 1.0, 2.0, 4.0, 6.0], 
+        "weight_sharpness_values": [0.25, 0.5, 1.0, 2.0, 4.0, 6.0],
         "anomaly_threshold": 0.05,
-        "skab_anomaly_threshold": 0.90,
+        "skab_anomaly_threshold": 0.99,
+        "batadal_anomaly_threshold": 0.01,
         "batadal_threshold_values": [0.01, 0.02, 0.03, 0.05, 0.07, 0.10, 0.15, 0.20],
         "skab_threshold_values": [0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.99],
-        "batadal_anomaly_threshold": 0.05,
         "noise_level": 0.1,
         "seeds": [42, 123, 2026, 7, 999],
         "batadal_train_ratio": 0.60,
-        "batadal_val_ratio": 0.20
+        "batadal_val_ratio": 0.20,
+        "use_similarity_penalty": False,
+        "similarity_penalty_strength": 0.0,
+        "similarity_penalty_strength_values": [0.0, 0.1, 0.25, 0.5, 0.75, 1.0],
+        "use_dynamic_threshold": False,
+        "dynamic_threshold_quantile": 0.05,
+        "dynamic_threshold_quantile_values":  [0.01, 0.03, 0.05, 0.10, 0.20],
+        "min_dynamic_threshold_samples": 3
     }
     if os.path.exists(config_path):
         try:
@@ -48,7 +55,14 @@ def load_json_config(config_path="src/config/settings.json"):
                 "noise_level": automata_config.get("noise_level", default_config["noise_level"]),
                 "seeds": automata_config.get("seeds", default_config["seeds"]),
                 "batadal_train_ratio": automata_config.get("batadal_train_ratio", default_config["batadal_train_ratio"]),
-                "batadal_val_ratio": automata_config.get("batadal_val_ratio", default_config["batadal_val_ratio"])
+                "batadal_val_ratio": automata_config.get("batadal_val_ratio", default_config["batadal_val_ratio"]),
+                "similarity_penalty_strength": automata_config.get("similarity_penalty_strength", default_config["similarity_penalty_strength"]),
+                "use_similarity_penalty": automata_config.get("use_similarity_penalty", default_config["use_similarity_penalty"]),
+                "similarity_penalty_strength_values": automata_config.get("similarity_penalty_strength_values", default_config["similarity_penalty_strength_values"]),
+                "use_dynamic_threshold": automata_config.get("use_dynamic_threshold", default_config["use_dynamic_threshold"]),
+                "dynamic_threshold_quantile": automata_config.get("dynamic_threshold_quantile", default_config["dynamic_threshold_quantile"]),
+                "dynamic_threshold_quantile_values": automata_config.get("dynamic_threshold_quantile_values", default_config["dynamic_threshold_quantile_values"]),
+                "min_dynamic_threshold_samples": automata_config.get("min_dynamic_threshold_samples", default_config["min_dynamic_threshold_samples"])
             }
         except Exception:
             return default_config
@@ -66,9 +80,13 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     #geçiş olasılıklarında weight_sharpness parametresi kullanılarakık görülen geçişlerin etkisi artırıldı nadir geçişler daha seçici değerlendirme
     #use_similarity_penalty: unseen pattern geldiğinde uzaklık cezasını açıp kapatır.
     model = ProbabilisticAutomata(
-       smoothing=True,
-       weight_sharpness=config.get("weight_sharpness", 1.0),
-       use_similarity_penalty=config.get("use_similarity_penalty", False)
+        smoothing=True,
+        weight_sharpness=config.get("weight_sharpness", 1.0),
+        use_similarity_penalty=config.get("use_similarity_penalty", False),
+        similarity_penalty_strength=config.get("similarity_penalty_strength", 0.0),
+        use_dynamic_threshold=config.get("use_dynamic_threshold", False),
+        dynamic_threshold_quantile=config.get("dynamic_threshold_quantile", 0.05),
+        min_dynamic_threshold_samples=config.get("min_dynamic_threshold_samples", 3)
     )
     model.fit(train_patterns)
  
@@ -79,17 +97,17 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     selected_threshold = config["anomaly_threshold"]
 
     common_fields = {
-        "dataset": dataset_name,
-        "fold": fold_name,
-        "seed": seed,
-        "window_size": config["window_size"],
-        "alphabet_size": config["alphabet_size"],
+        "dataset": dataset_name, "fold": fold_name, "seed": seed,
+        "window_size": config["window_size"], "alphabet_size": config["alphabet_size"],
         "weight_sharpness": config.get("weight_sharpness", 1.0),
         "use_similarity_penalty": config.get("use_similarity_penalty", False),
-        "num_states": num_states,
-        "num_transitions": num_transitions,
-        "transition_density": transition_density,
-        "selected_threshold": selected_threshold
+        "similarity_penalty_strength": config.get("similarity_penalty_strength", 0.0),
+        "use_dynamic_threshold": config.get("use_dynamic_threshold", False),
+        "dynamic_threshold_quantile": config.get("dynamic_threshold_quantile", 0.05),
+        "min_dynamic_threshold_samples": config.get("min_dynamic_threshold_samples", 3),
+        "selected_threshold": selected_threshold,
+        "num_states": num_states, "num_transitions": num_transitions,
+        "transition_density": transition_density
     }
 
     # --- SENARYO 1: Orijinal Veri ---
@@ -153,15 +171,16 @@ def run_parameter_sensitivity_analysis(config):
                        "window_size": w,
                        "alphabet_size": a,
                        "weight_sharpness": ws,
-                       "anomaly_threshold": config.get("batadal_anomaly_threshold", 0.05),
+                       "anomaly_threshold": config.get("batadal_anomaly_threshold", 0.01),
                        "noise_level": config["noise_level"],
-                       "use_similarity_penalty": True
+                       "use_similarity_penalty": False,
+                       "similarity_penalty_strength": 0.0
                     }
 
                     res, _ = run_experiment_pipeline(
-                       X_train_b, X_test_b, y_test_b,
-                       cc, "BATADAL", "param_search",
-                       seed=config["seeds"][0]
+                      X_train_b, X_test_b, y_test_b,
+                      cc, "BATADAL", "param_search",
+                      seed=config["seeds"][0]
                     )
 
                     orig_res = [r for r in res if r["scenario"] == "original"][0]
@@ -170,8 +189,7 @@ def run_parameter_sensitivity_analysis(config):
                     print(
                        f"BATADAL -> Window Size: {w}, Alphabet Size: {a}, "
                        f"Weight Sharpness: {ws} | "
-                       f"Density: {orig_res['transition_density']:.4f}, "
-                       f"F1: {orig_res['f1_score']:.4f}"
+                       f"Density: {orig_res['transition_density']:.4f}, "                           f"F1: {orig_res['f1_score']:.4f}"
                     )
     skab_train_path = "data/processed/skab_fold1_X_train_pc1.csv"
     skab_test_path = "data/processed/skab_fold1_X_test_pc1.csv"
@@ -187,12 +205,13 @@ def run_parameter_sensitivity_analysis(config):
             for a in alphabet_sizes:
                 for ws in weight_sharpness_values:
                     cc = {
-                        "window_size": w,
-                        "alphabet_size": a,
-                        "weight_sharpness": ws,
-                        "anomaly_threshold": config.get("skab_anomaly_threshold", 0.90),
-                        "noise_level": config["noise_level"],
-                        "use_similarity_penalty": True
+                       "window_size": w,
+                       "alphabet_size": a,
+                       "weight_sharpness": ws,
+                       "anomaly_threshold": config.get("skab_anomaly_threshold", 0.99),
+                       "noise_level": config["noise_level"],
+                       "use_similarity_penalty": False,
+                       "similarity_penalty_strength": 0.0
                     }
                     res, _ = run_experiment_pipeline(X_train_s, X_test_s, y_test_s, cc, "SKAB", "param_search", seed=config["seeds"][0])
                     orig_res = [r for r in res if r["scenario"] == "original"][0]
@@ -218,14 +237,16 @@ def run_threshold_sensitivity_analysis(config):
 
         print("\n>> BATADAL Threshold Taraması...")
 
-        for threshold in config.get("batadal_threshold_values", [0.05]):
+        for threshold in config.get("batadal_threshold_values", [0.01]):
             cc = {
                 **config,
                 "window_size": 4,
                 "alphabet_size": 3,
                 "weight_sharpness": 6.0,
                 "anomaly_threshold": threshold,
-                "use_similarity_penalty": True
+                "use_similarity_penalty": False,
+                "similarity_penalty_strength": 0.0,
+                "use_dynamic_threshold": False
             }
 
             f1_scores = []
@@ -253,7 +274,8 @@ def run_threshold_sensitivity_analysis(config):
                 "alphabet_size": 3,
                 "weight_sharpness": 6.0,
                 "f1_score_mean": mean_f1,
-                "use_similarity_penalty": True
+                "use_similarity_penalty": False,
+                "similarity_penalty_strength": 0.0
             })
 
             print(f"BATADAL -> Threshold: {threshold} | Ortalama F1: {mean_f1:.4f}")
@@ -261,14 +283,16 @@ def run_threshold_sensitivity_analysis(config):
     # --- SKAB ---
     print("\n>> SKAB Threshold Taraması...")
 
-    for threshold in config.get("skab_threshold_values", [0.90]):
+    for threshold in config.get("skab_threshold_values", [0.99]):
         cc = {
             **config,
             "window_size": 4,
             "alphabet_size": 4,
             "weight_sharpness": 2.0,
             "anomaly_threshold": threshold,
-            "use_similarity_penalty": True
+            "use_similarity_penalty": False,
+            "similarity_penalty_strength": 0.0,
+            "use_dynamic_threshold": False
         }
 
         f1_scores = []
@@ -306,7 +330,8 @@ def run_threshold_sensitivity_analysis(config):
             "alphabet_size": 4,
             "weight_sharpness": 2.0,
             "f1_score_mean": mean_f1,
-            "use_similarity_penalty": True
+            "use_similarity_penalty": False,
+            "similarity_penalty_strength": 0.0
         })
 
         print(f"SKAB -> Threshold: {threshold} | Ortalama F1: {mean_f1:.4f}")
@@ -323,6 +348,298 @@ def run_threshold_sensitivity_analysis(config):
                 f"{dataset_name} -> Best Threshold: {best_row['threshold']} "
                 f"| F1: {best_row['f1_score_mean']:.4f}"
             )  
+
+#dynamic treshold deneyi için analiz fonksiyonu.
+#bu fonksiyon final modelin parçası değil kotu sonuc verdıgı icin kapatıldı
+def run_dynamic_threshold_sensitivity_analysis(config):
+    print("\n--- DINAMIK THRESHOLD DUYARLILIK ANALIZI BASLATILIYOR ---")
+
+    dynamic_results = []
+    seeds = config["seeds"]
+    quantile_values = config.get("dynamic_threshold_quantile_values", [0.01, 0.03, 0.05, 0.10, 0.20])
+    min_samples = config.get("min_dynamic_threshold_samples", 3)
+
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Dinamik Threshold Taramasi...")
+        for quantile in quantile_values:
+            cc = {
+                **config,
+                "window_size": 4,
+                "alphabet_size": 3,
+                "weight_sharpness": 6.0,
+                "anomaly_threshold": 0.01,
+                "use_similarity_penalty": False,
+                "similarity_penalty_strength": 0.0,
+                "use_dynamic_threshold": True,
+                "dynamic_threshold_quantile": quantile,
+                "min_dynamic_threshold_samples": min_samples
+            }
+
+            f1_scores = []
+            precision_scores = []
+            recall_scores = []
+
+            for seed in seeds:
+                res, _ = run_experiment_pipeline(
+                    X_train_b, X_test_b, y_test_b,
+                    cc, "BATADAL", "dynamic_threshold_search", seed=seed
+                )
+                original_result = [r for r in res if r["scenario"] == "original"][0]
+                f1_scores.append(original_result["f1_score"])
+                precision_scores.append(original_result["precision"])
+                recall_scores.append(original_result["recall"])
+
+            dynamic_results.append({
+                "dataset": "BATADAL",
+                "dynamic_threshold_quantile": quantile,
+                "min_dynamic_threshold_samples": min_samples,
+                "window_size": 4,
+                "alphabet_size": 3,
+                "weight_sharpness": 6.0,
+                "base_threshold": 0.01,
+                "precision_mean": float(np.mean(precision_scores)),
+                "recall_mean": float(np.mean(recall_scores)),
+                "f1_score_mean": float(np.mean(f1_scores)),
+                "use_dynamic_threshold": True,
+                "use_similarity_penalty": False,
+                "similarity_penalty_strength": 0.0
+            })
+            print(
+                f"BATADAL -> Quantile: {quantile} | "
+                f"Precision: {np.mean(precision_scores):.4f} | "
+                f"Recall: {np.mean(recall_scores):.4f} | "
+                f"F1: {np.mean(f1_scores):.4f}"
+            )
+
+    print("\n>> SKAB Dinamik Threshold Taramasi...")
+    for quantile in quantile_values:
+        cc = {
+            **config,
+            "window_size": 4,
+            "alphabet_size": 4,
+            "weight_sharpness": 2.0,
+            "anomaly_threshold": 0.99,
+            "use_similarity_penalty": False,
+            "similarity_penalty_strength": 0.0,
+            "use_dynamic_threshold": True,
+            "dynamic_threshold_quantile": quantile,
+            "min_dynamic_threshold_samples": min_samples
+        }
+
+        f1_scores = []
+        precision_scores = []
+        recall_scores = []
+
+        for fold in range(1, 6):
+            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+            if os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file):
+                X_train_s = pd.read_csv(train_file).values.flatten()
+                X_test_s = pd.read_csv(test_file).values.flatten()
+                y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                for seed in seeds:
+                    res, _ = run_experiment_pipeline(
+                        X_train_s, X_test_s, y_test_s,
+                        cc, "SKAB", f"dynamic_threshold_search_fold_{fold}", seed=seed
+                    )
+                    original_result = [r for r in res if r["scenario"] == "original"][0]
+                    f1_scores.append(original_result["f1_score"])
+                    precision_scores.append(original_result["precision"])
+                    recall_scores.append(original_result["recall"])
+
+        dynamic_results.append({
+            "dataset": "SKAB",
+            "dynamic_threshold_quantile": quantile,
+            "min_dynamic_threshold_samples": min_samples,
+            "window_size": 4,
+            "alphabet_size": 4,
+            "weight_sharpness": 2.0,
+            "base_threshold": 0.99,
+            "precision_mean": float(np.mean(precision_scores)) if precision_scores else 0.0,
+            "recall_mean": float(np.mean(recall_scores)) if recall_scores else 0.0,
+            "f1_score_mean": float(np.mean(f1_scores)) if f1_scores else 0.0,
+            "use_dynamic_threshold": True,
+            "use_similarity_penalty": False,
+            "similarity_penalty_strength": 0.0
+        })
+        print(
+            f"SKAB -> Quantile: {quantile} | "
+            f"Precision: {np.mean(precision_scores):.4f} | "
+            f"Recall: {np.mean(recall_scores):.4f} | "
+            f"F1: {np.mean(f1_scores):.4f}"
+            if f1_scores else
+            f"SKAB -> Quantile: {quantile} | veri bulunamadi"
+        )
+
+    if dynamic_results:
+        df_dynamic = pd.DataFrame(dynamic_results)
+        df_dynamic.to_csv("results/outputs/automata_dynamic_threshold_sensitivity.csv", index=False)
+
+        print("\nEn iyi dinamik threshold ayarlari:")
+        for dataset_name in df_dynamic["dataset"].unique():
+            dataset_df = df_dynamic[df_dynamic["dataset"] == dataset_name]
+            best_row = dataset_df.loc[dataset_df["f1_score_mean"].idxmax()]
+            print(
+                f"{dataset_name} -> Best Quantile: {best_row['dynamic_threshold_quantile']} "
+                f"| F1: {best_row['f1_score_mean']:.4f}"
+            )
+ 
+
+def run_similarity_penalty_sensitivity_analysis(config):
+    print("\n--- SIMILARITY PENALTY DUYARLILIK ANALIZI BASLATILIYOR ---")
+
+    strength_values = config.get(
+        "similarity_penalty_strength_values",
+        [0.0, 0.1, 0.25, 0.5, 0.75, 1.0]
+    )
+
+    penalty_results = []
+    seeds = config["seeds"]
+
+    # --- BATADAL ---
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Similarity Penalty Taramasi...")
+
+        for strength in strength_values:
+            cc = {
+                **config,
+                "window_size": 4,
+                "alphabet_size": 3,
+                "weight_sharpness": 6.0,
+                "anomaly_threshold": 0.01,
+                "use_similarity_penalty": True,
+                "similarity_penalty_strength": strength,
+                "use_dynamic_threshold": False
+            }
+
+            original_f1_scores = []
+            unseen_f1_scores = []
+
+            for seed in seeds:
+                res, _ = run_experiment_pipeline(
+                    X_train_b,
+                    X_test_b,
+                    y_test_b,
+                    cc,
+                    "BATADAL",
+                    "similarity_penalty_search",
+                    seed=seed
+                )
+
+                original_result = [r for r in res if r["scenario"] == "original"][0]
+                unseen_result = [r for r in res if r["scenario"] == "unseen_data"][0]
+
+                original_f1_scores.append(original_result["f1_score"])
+                unseen_f1_scores.append(unseen_result["f1_score"])
+
+            penalty_results.append({
+                "dataset": "BATADAL",
+                "similarity_penalty_strength": strength,
+                "window_size": 4,
+                "alphabet_size": 3,
+                "weight_sharpness": 6.0,
+                "threshold": 0.01,
+                "original_f1_mean": float(np.mean(original_f1_scores)),
+                "unseen_f1_mean": float(np.mean(unseen_f1_scores))
+            })
+
+            print(
+                f"BATADAL -> Strength: {strength} | "
+                f"Original F1: {np.mean(original_f1_scores):.4f} | "
+                f"Unseen F1: {np.mean(unseen_f1_scores):.4f}"
+            )
+
+    # --- SKAB ---
+    print("\n>> SKAB Similarity Penalty Taramasi...")
+
+    for strength in strength_values:
+        cc = {
+            **config,
+            "window_size": 4,
+            "alphabet_size": 4,
+            "weight_sharpness": 2.0,
+            "anomaly_threshold": 0.99,
+            "use_similarity_penalty": True,
+            "similarity_penalty_strength": strength,
+            "use_dynamic_threshold": False
+        }
+
+        original_f1_scores = []
+        unseen_f1_scores = []
+
+        for fold in range(1, 6):
+            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+            if os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file):
+                X_train_s = pd.read_csv(train_file).values.flatten()
+                X_test_s = pd.read_csv(test_file).values.flatten()
+                y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                for seed in seeds:
+                    res, _ = run_experiment_pipeline(
+                        X_train_s,
+                        X_test_s,
+                        y_test_s,
+                        cc,
+                        "SKAB",
+                        f"similarity_penalty_search_fold_{fold}",
+                        seed=seed
+                    )
+
+                    original_result = [r for r in res if r["scenario"] == "original"][0]
+                    unseen_result = [r for r in res if r["scenario"] == "unseen_data"][0]
+
+                    original_f1_scores.append(original_result["f1_score"])
+                    unseen_f1_scores.append(unseen_result["f1_score"])
+
+        penalty_results.append({
+            "dataset": "SKAB",
+            "similarity_penalty_strength": strength,
+            "window_size": 4,
+            "alphabet_size": 4,
+            "weight_sharpness": 2.0,
+            "threshold": 0.99,
+            "original_f1_mean": float(np.mean(original_f1_scores)) if original_f1_scores else 0.0,
+            "unseen_f1_mean": float(np.mean(unseen_f1_scores)) if unseen_f1_scores else 0.0
+        })
+
+        print(
+            f"SKAB -> Strength: {strength} | "
+            f"Original F1: {np.mean(original_f1_scores):.4f} | "
+            f"Unseen F1: {np.mean(unseen_f1_scores):.4f}"
+            if original_f1_scores else
+            f"SKAB -> Strength: {strength} | veri bulunamadi"
+        )
+
+    if penalty_results:
+        df_penalty = pd.DataFrame(penalty_results)
+        df_penalty.to_csv("results/outputs/automata_similarity_penalty_sensitivity.csv", index=False)
+
+        print("\nEn iyi similarity penalty strength degerleri:")
+        for dataset_name in df_penalty["dataset"].unique():
+            dataset_df = df_penalty[df_penalty["dataset"] == dataset_name]
+            best_row = dataset_df.loc[dataset_df["original_f1_mean"].idxmax()]
+            print(
+                f"{dataset_name} -> Best Strength: {best_row['similarity_penalty_strength']} "
+                f"| Original F1: {best_row['original_f1_mean']:.4f} "
+                f"| Unseen F1: {best_row['unseen_f1_mean']:.4f}"
+            )
+
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -349,7 +666,9 @@ def main():
             "alphabet_size": 3,
             "weight_sharpness": 6.0,
             "anomaly_threshold": 0.01,
-            "use_similarity_penalty": True
+            "use_similarity_penalty": False,
+            "similarity_penalty_strength": 0.0,
+            "use_dynamic_threshold": False
         }
  
         batadal_logs = None
@@ -369,7 +688,9 @@ def main():
         "alphabet_size": 4,
         "weight_sharpness": 2.0,
         "anomaly_threshold": 0.99,
-        "use_similarity_penalty": True
+        "use_similarity_penalty": False,
+        "similarity_penalty_strength": 0.0,
+        "use_dynamic_threshold": False
    }
  
     for fold in range(1, 6):
@@ -424,6 +745,9 @@ def main():
  
     run_parameter_sensitivity_analysis(config)
     run_threshold_sensitivity_analysis(config)
+    #dynamic Threshold deneyi sabit threshold yönteminden düşük performans verdiği için çalıştırılmıyor
+    #run_dynamic_threshold_sensitivity_analysis(config)
+
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
         run_statistical_main()
