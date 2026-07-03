@@ -24,6 +24,10 @@ def load_json_config(config_path="src/config/settings.json"):
         "skab_thresholds": [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05],
         "smoothing_alpha": 1.0,
         "smoothing_alphas": [1.0, 0.5, 0.1, 0.01],
+        "decision_mode": "probability",
+        "decision_modes": ["negative_log"],
+        "batadal_score_thresholds": [2.5257, 2.6593, 2.8134, 2.9957, 3.2189, 3.5066, 3.9120],
+        "skab_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108, 0.6931, 0.9163, 1.2040, 1.6094, 2.3026, 2.9957],
         # Geriye uyumluluk: eski ortak liste config'te varsa sadece fallback olarak kullanılır.
         "thresholds": [0.05, 0.01, 0.005, 0.001],
 
@@ -93,6 +97,8 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "order": config.get("order", 2),
         "anomaly_threshold": config["anomaly_threshold"],
         "smoothing_alpha": config.get("smoothing_alpha", 1.0),
+        "decision_mode": config.get("decision_mode", "probability"),
+        "score_threshold": config.get("score_threshold"),
         "num_states": num_states,
         "vocab_size": vocab_size,
         "num_transitions": num_transitions,
@@ -101,7 +107,12 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
 
     # --- SENARYO 1: Orijinal Veri ---
     test_patterns_orig = transformer.transform(X_test, window_size=config["window_size"])
-    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=config["anomaly_threshold"])
+    preds_orig, logs_orig = model.predict(
+        test_patterns_orig,
+        anomaly_threshold=config["anomaly_threshold"],
+        decision_mode=config.get("decision_mode", "probability"),
+        score_threshold=config.get("score_threshold"),
+    )
     y_test_aligned_orig = y_test[:len(preds_orig)]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
     metrics_orig.update({"scenario": "original", **common_fields})
@@ -110,7 +121,12 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     # --- SENARYO 2: Gaussian Noise ---
     X_test_noisy = inject_gaussian_noise(X_test, noise_level=config["noise_level"], seed=seed)
     test_patterns_noisy = transformer.transform(X_test_noisy, window_size=config["window_size"])
-    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=config["anomaly_threshold"])
+    preds_noisy, _ = model.predict(
+        test_patterns_noisy,
+        anomaly_threshold=config["anomaly_threshold"],
+        decision_mode=config.get("decision_mode", "probability"),
+        score_threshold=config.get("score_threshold"),
+    )
     y_test_aligned_noisy = y_test[:len(preds_noisy)]
     metrics_noisy = calculate_metrics(y_test_aligned_noisy, preds_noisy)
     metrics_noisy.update({"scenario": "gaussian_noise", **common_fields})
@@ -126,7 +142,12 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             y_test_unseen.append(y_test_sliding[idx])
 
     if len(unseen_test_patterns) > 1:
-        preds_unseen, _ = model.predict(unseen_test_patterns, anomaly_threshold=config["anomaly_threshold"])
+        preds_unseen, _ = model.predict(
+            unseen_test_patterns,
+            anomaly_threshold=config["anomaly_threshold"],
+            decision_mode=config.get("decision_mode", "probability"),
+            score_threshold=config.get("score_threshold"),
+        )
         y_test_aligned_unseen = y_test_unseen[-len(preds_unseen):]
         metrics_unseen = calculate_metrics(y_test_aligned_unseen, preds_unseen)
     else:
@@ -306,6 +327,152 @@ def run_markov_order_threshold_sweep(config):
     return df_sweep
 
 
+def run_negative_log_decision_sweep(config):
+    """Negative log probability karar modu için ayrı sweep çalıştırır."""
+    print("\n--- NEGATIVE LOG KARAR MODU SWEEP BAŞLATILIYOR ---")
+
+    orders = config.get("orders", [2, 3, 4])
+    smoothing_alphas = config.get("smoothing_alphas", [1.0, 0.5, 0.1, 0.01])
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    batadal_score_thresholds = config.get("batadal_score_thresholds", [2.5257, 2.6593, 2.8134, 2.9957, 3.2189, 3.5066, 3.9120])
+    skab_score_thresholds = config.get("skab_score_thresholds", [0.1054, 0.2231, 0.3567, 0.5108, 0.6931, 0.9163, 1.2040, 1.6094, 2.3026, 2.9957])
+
+    sweep_results = []
+
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Negative Log Order/Alpha/Score Threshold Taraması...")
+        print(f"   Score threshold aralığı: {batadal_score_thresholds}")
+        for order in orders:
+            for alpha in smoothing_alphas:
+                for score_threshold in batadal_score_thresholds:
+                    for seed in seeds:
+                        probability_equivalent = float(np.exp(-score_threshold))
+                        cc = {
+                            **config,
+                            "order": order,
+                            "smoothing_alpha": alpha,
+                            "decision_mode": "negative_log",
+                            "score_threshold": score_threshold,
+                            "anomaly_threshold": probability_equivalent,
+                        }
+                        res, _ = run_experiment_pipeline(
+                            X_train_b,
+                            X_test_b,
+                            y_test_b,
+                            cc,
+                            "BATADAL",
+                            "negative_log_sweep",
+                            seed=seed,
+                        )
+                        sweep_results.extend(res)
+
+                    temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "BATADAL"
+                                            and r["order"] == order
+                                            and r["smoothing_alpha"] == alpha
+                                            and r["score_threshold"] == score_threshold
+                                            and r["scenario"] == "original"])
+                    if not temp_df.empty:
+                        print(
+                            f"BATADAL -> order={order}, alpha={alpha}, score_threshold={score_threshold} | "
+                            f"Precision={temp_df['precision'].mean():.4f}, "
+                            f"Recall={temp_df['recall'].mean():.4f}, "
+                            f"F1={temp_df['f1_score'].mean():.4f}"
+                        )
+
+    print("\n>> SKAB Negative Log Order/Alpha/Score Threshold Taraması...")
+    print(f"   Score threshold aralığı: {skab_score_thresholds}")
+    for order in orders:
+        for alpha in smoothing_alphas:
+            for score_threshold in skab_score_thresholds:
+                for fold in range(1, 6):
+                    train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                    test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                    y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                    if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                        continue
+
+                    X_train_s = pd.read_csv(train_file).values.flatten()
+                    X_test_s = pd.read_csv(test_file).values.flatten()
+                    y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                    for seed in seeds:
+                        probability_equivalent = float(np.exp(-score_threshold))
+                        cc = {
+                            **config,
+                            "order": order,
+                            "smoothing_alpha": alpha,
+                            "decision_mode": "negative_log",
+                            "score_threshold": score_threshold,
+                            "anomaly_threshold": probability_equivalent,
+                        }
+                        res, _ = run_experiment_pipeline(
+                            X_train_s,
+                            X_test_s,
+                            y_test_s,
+                            cc,
+                            "SKAB",
+                            f"fold_{fold}",
+                            seed=seed,
+                        )
+                        sweep_results.extend(res)
+
+                temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "SKAB"
+                                        and r["order"] == order
+                                        and r["smoothing_alpha"] == alpha
+                                        and r["score_threshold"] == score_threshold
+                                        and r["scenario"] == "original"])
+                if not temp_df.empty:
+                    print(
+                        f"SKAB -> order={order}, alpha={alpha}, score_threshold={score_threshold} | "
+                        f"Precision={temp_df['precision'].mean():.4f}, "
+                        f"Recall={temp_df['recall'].mean():.4f}, "
+                        f"F1={temp_df['f1_score'].mean():.4f}"
+                    )
+
+    if not sweep_results:
+        print("[UYARI] Negative log sweep için uygun veri dosyası bulunamadı.")
+        return pd.DataFrame()
+
+    df_sweep = pd.DataFrame(sweep_results)
+    sweep_path = "results/outputs/automata_markov_negative_log_sweep_metrics.csv"
+    df_sweep.to_csv(sweep_path, index=False)
+    print(f"\n[OK] Negative log sweep sonuçları kaydedildi: {sweep_path}")
+
+    df_original = df_sweep[df_sweep["scenario"] == "original"].copy()
+    if not df_original.empty:
+        summary_df = df_original.groupby(["dataset", "decision_mode", "order", "smoothing_alpha", "score_threshold"]).agg(
+            accuracy_mean=("accuracy", "mean"),
+            accuracy_std=("accuracy", "std"),
+            precision_mean=("precision", "mean"),
+            precision_std=("precision", "std"),
+            recall_mean=("recall", "mean"),
+            recall_std=("recall", "std"),
+            f1_score_mean=("f1_score", "mean"),
+            f1_score_std=("f1_score", "std"),
+            transition_density_mean=("transition_density", "mean"),
+            num_states_mean=("num_states", "mean"),
+            num_transitions_mean=("num_transitions", "mean"),
+        ).reset_index()
+
+        summary_path = "results/outputs/automata_markov_negative_log_sweep_summary.csv"
+        best_path = "results/outputs/automata_markov_negative_log_best_candidates.csv"
+        summary_df.to_csv(summary_path, index=False)
+        summary_df.sort_values(
+            by=["dataset", "f1_score_mean", "recall_mean", "precision_mean"],
+            ascending=[True, False, False, False],
+        ).to_csv(best_path, index=False)
+        print(f"[OK] Negative log sweep özeti kaydedildi: {summary_path}")
+        print(f"[OK] Negative log en iyi adaylar kaydedildi: {best_path}")
+
+    return df_sweep
+
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -422,8 +589,8 @@ def main():
     df_all.to_csv("results/outputs/automata_advanced_all_scenarios_metrics.csv", index=False)
     write_summary_files(df_all)
 
-    # Eski window/alphabet sensitivity yerine yeni Markov order/threshold sweep.
-    run_markov_order_threshold_sweep(config)
+    # Bu aşamada alpha sweep yerine negative log karar modu için ayrı sweep çalıştırılır.
+    run_negative_log_decision_sweep(config)
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main

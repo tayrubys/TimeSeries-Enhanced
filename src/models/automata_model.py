@@ -93,9 +93,16 @@ class ProbabilisticAutomata:
         return nearest_pattern, best_distance
 
     # test verisi üzerinde kayan pencere ile anomali tahmini yapar ve sonuçları döndürür
-    def predict(self, test_patterns, anomaly_threshold=0.05):
+    def predict(self, test_patterns, anomaly_threshold=0.05, decision_mode="probability", score_threshold=None):
         if len(test_patterns) < self.order:
             return [0] * (len(test_patterns) - 1), []
+
+        if decision_mode not in {"probability", "negative_log"}:
+            raise ValueError("decision_mode 'probability' veya 'negative_log' olmalıdır.")
+
+        eps = 1e-12
+        if score_threshold is None:
+            score_threshold = -np.log(anomaly_threshold + eps)
 
         predictions = []
         explainability_logs = []
@@ -130,8 +137,14 @@ class ProbabilisticAutomata:
             prob = self.get_transition_probability(current_state, mapped_to)
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
-            decision = "anomaly" if prob < anomaly_threshold else "normal"
-            confidence_score = float(prob)
+            negative_log_score = float(-np.log(prob + eps))
+
+            if decision_mode == "negative_log":
+                decision = "anomaly" if negative_log_score > score_threshold else "normal"
+                confidence_score = negative_log_score
+            else:
+                decision = "anomaly" if prob < anomaly_threshold else "normal"
+                confidence_score = float(prob)
 
             if decision == "normal" and self.learning_rate > 0.0:
                 self._update_transition(current_state, mapped_to)
@@ -147,7 +160,11 @@ class ProbabilisticAutomata:
 
                 for alt_pattern, alt_prob in possible_transitions[:3]:
                     if alt_pattern != mapped_to:
-                        alt_decision = "normal" if alt_prob >= anomaly_threshold else "anomaly"
+                        if decision_mode == "negative_log":
+                            alt_score = float(-np.log(alt_prob + eps))
+                            alt_decision = "anomaly" if alt_score > score_threshold else "normal"
+                        else:
+                            alt_decision = "normal" if alt_prob >= anomaly_threshold else "anomaly"
                         counterfactuals.append({
                             "pattern": alt_pattern,
                             "probability": float(alt_prob),
