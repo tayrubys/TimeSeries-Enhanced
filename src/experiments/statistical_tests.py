@@ -1,7 +1,7 @@
 """
 İstatistiksel Anlamlılık Testleri
 - SKAB: LSTM vs GRU vs Automata (fold bazlı F1 skorları) → Wilcoxon Signed-Rank Test
-- BATADAL: LSTM vs GRU (seed bazlı F1 skorları) → Wilcoxon Signed-Rank Test
+- BATADAL: LSTM vs GRU vs Automata (seed bazlı F1 skorları) → Wilcoxon Signed-Rank Test
 """
 
 import os
