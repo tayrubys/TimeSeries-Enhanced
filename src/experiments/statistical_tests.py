@@ -95,10 +95,12 @@ def run_skab_tests():
 
 
 def run_batadal_tests():
-    """BATADAL: LSTM vs GRU — seed bazlı F1 skorları üzerinden Wilcoxon testi."""
+    """BATADAL: LSTM vs GRU vs Automata — seed bazlı F1 skorları üzerinden Wilcoxon testi."""
     results = []
 
     seed_path = "results/outputs/batadal_deep_learning_seed_results.csv"
+    automata_path = "results/outputs/automata_advanced_all_scenarios_metrics.csv"
+
     if not os.path.exists(seed_path):
         print("BATADAL seed sonuç dosyası bulunamadı, BATADAL testi atlanıyor.")
         return results
@@ -108,6 +110,7 @@ def run_batadal_tests():
 
     lstm_f1 = []
     gru_f1 = []
+    automata_f1 = []
 
     for seed in seeds:
         lstm_row = df[(df["model"] == "LSTM") & (df["seed"] == seed)]
@@ -120,7 +123,33 @@ def run_batadal_tests():
     if len(lstm_f1) >= 2:
         results.append(run_wilcoxon(lstm_f1, gru_f1, "LSTM", "GRU", "BATADAL"))
     else:
-        print(f"BATADAL için yeterli eşleşen seed verisi bulunamadı ({len(lstm_f1)} çift).")
+        print(f"BATADAL için yeterli eşleşen LSTM-GRU seed verisi bulunamadı ({len(lstm_f1)} çift).")
+        return results
+
+    if os.path.exists(automata_path):
+        auto_df = pd.read_csv(automata_path)
+
+        auto_batadal = auto_df[
+            (auto_df["dataset"] == "BATADAL") &
+            (auto_df["scenario"] == "original")
+        ]
+
+        for seed in seeds:
+            auto_row = auto_batadal[auto_batadal["seed"] == seed]
+
+            if not auto_row.empty:
+                automata_f1.append(auto_row["f1_score"].values[0])
+
+        if len(automata_f1) == len(lstm_f1):
+            results.append(run_wilcoxon(lstm_f1, automata_f1, "LSTM", "Automata", "BATADAL"))
+            results.append(run_wilcoxon(gru_f1, automata_f1, "GRU", "Automata", "BATADAL"))
+        else:
+            print(
+                f"BATADAL automata seed sayısı uyuşmuyor "
+                f"({len(automata_f1)} vs {len(lstm_f1)}), Automata karşılaştırması atlanıyor."
+            )
+    else:
+        print("BATADAL Automata sonuç dosyası bulunamadı, Automata karşılaştırması atlanıyor.")
 
     return results
 
