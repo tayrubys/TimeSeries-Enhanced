@@ -6,12 +6,13 @@ from src.models.explainability import AutomataExplainer
 class ProbabilisticAutomata:
 
     # yüksek dereceli olasılıksal otomata modelini başlatır
-    def __init__(self, smoothing=True, order=2, learning_rate=0.0, smoothing_alpha=1.0, distance_penalty_alpha=1.0):
+    def __init__(self, smoothing=True, order=2, learning_rate=0.0, smoothing_alpha=1.0, distance_penalty_alpha=1.0, distance_tolerance=1):
         self.smoothing = smoothing
         self.order = order
         self.learning_rate = learning_rate
         self.smoothing_alpha = smoothing_alpha
-        self.distance_penalty_alpha = distance_penalty_alpha # Levenshtein mesafesi için ceza katsayısı
+        self.distance_penalty_alpha = distance_penalty_alpha
+        self.distance_tolerance = distance_tolerance # YENİ: Ufak sapmalara ceza vermemek için tolerans
         self.transitions = defaultdict(lambda: defaultdict(float))
         self.total_exits = defaultdict(float)
         self.trained_patterns = set()
@@ -141,9 +142,11 @@ class ProbabilisticAutomata:
 
             prob = self.get_transition_probability(current_state, mapped_to)
             
-            # State-Similarity (Mesafe Cezası)
-            if distance > 0:
-                prob = prob * np.exp(-self.distance_penalty_alpha * distance)
+            # --- YENİ EKLENEN ÖZELLİK (Toleranslı): State-Similarity (Mesafe Cezası) ---
+            if distance > self.distance_tolerance:
+                effective_distance = distance - self.distance_tolerance
+                prob = prob * np.exp(-self.distance_penalty_alpha * effective_distance)
+            # --------------------------------------------------------------------------
 
             negative_log_score = float(-np.log(prob + eps))
             recent_negative_log_scores.append(negative_log_score)
@@ -232,9 +235,11 @@ class ProbabilisticAutomata:
 
             prob = self.get_transition_probability(current_state, mapped_to)
             
-            # State-Similarity (Mesafe Cezası) 
-            if distance > 0:
-                prob = prob * np.exp(-self.distance_penalty_alpha * distance)
+            # --- YENİ EKLENEN ÖZELLİK (Toleranslı): State-Similarity (Mesafe Cezası) ---
+            if distance > self.distance_tolerance:
+                effective_distance = distance - self.distance_tolerance
+                prob = prob * np.exp(-self.distance_penalty_alpha * effective_distance)
+            # --------------------------------------------------------------------------
 
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
