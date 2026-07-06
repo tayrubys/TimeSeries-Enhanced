@@ -20,7 +20,7 @@ from src.experiments.evaluator import evaluate_binary_classification
 config = load_config()
 DL_CONFIG = config["deep_learning"]
 
-SEED = DL_CONFIG["seeds"][3]
+SEED = DL_CONFIG["seeds"][0]
 THRESHOLDS = DL_CONFIG["thresholds"]
 EPOCHS = DL_CONFIG["epochs"]
 BATCH_SIZE = DL_CONFIG["batch_size"]
@@ -116,7 +116,7 @@ def train_and_predict(model_type):
     )
 
     class_weights_array = compute_class_weight(
-        class_weight="balanced",
+        class_weight=None,
         classes=np.array([0, 1]),
         y=y_train.astype(int)
     )

@@ -32,7 +32,7 @@ Bu bölümde, BATADAL train setinin ADASYN ile (pencere seviyesinde) dengelenmes
 | Recall | 0.8563 ± 0.0541 |
 | F1-score | 0.8200 ± 0.0374 |
  
->  **LSTM Özeti:** 5 seed'in 4'ünde (123, 2026, 7, 999) LSTM iyi sonuç verdi (F1: 0.78–0.88). Ama seed=42'de model test setinde hiçbir anomaliyi bulamadı (precision, recall, F1 hepsi 0). Validation'da bu seed için sonuç fena değildi (F1≈0.545), ama test'e geçince tamamen çöktü.
+>  **LSTM Özeti:** 5 seed'in 4'ünde (123, 2026, 7, 999) LSTM iyi sonuç verdi (F1: 0.78–0.88). Ama seed=42'de model test setinde hiçbir anomaliyi bulamadı (precision, recall, F1 hepsi 0). Validation'da bu seed için sonuç fena değildi (F1≈0.545), ama test'e geçince model çıktı olasılıkları, validation setinden taşınan katı threshold sınırlarını aşamadığı için test setinde anomali yakalanamamıştır.
 
 
 ---
@@ -164,7 +164,7 @@ Bu bölümde, `sequence_window_size` parametresi 10'da sabit tutulmuş; modeller
 >
 >  **Mimariler Arası Dayanıklılık Farkı:** GRU modeli hiperparametre optimizasyonu ile tüm seed'lerde dengeli ve yüksek genelleme başarısı gösterirken, LSTM modeli başlangıç ağırlık bağımlılığını tam olarak kıramamıştır. LSTM mimarisi `seed=123` (%84.32 F1) ve `seed=999` (%76.43 F1) senaryolarında mükemmel performans gösterse de, `seed=2026` altında test kümesinde tamamen anomali kaçırma eğilimine (F1: 0.0) girmiştir. Bu durum, GRU hücresinin (katman yapısının) daha az parametre içermesinin verdiği avantajla, kısıtlı endüstriyel veri senaryolarında regülasyon ayarlarına çok daha hızlı ve kararlı tepki verdiği görülmektedir.
 
-## 2.1.Melez Yöntem Deneyi: ADASYN + Balanced Class Weighting
+## 2.2.Melez Yöntem Deneyi: ADASYN + Balanced Class Weighting
 Başlık 2.1. deki tüm hiper parametreler sabit tutularak, literatürde melez yaklaşım olarak bilinen veri seviyesinde ADASYN artırımı ile model seviyesinde `class_weight="balanced"` cezalandırma mekanizması aynı anda devreye alınmıştır. Amaç, ADASYN'in sentetik pencereler üzerindeki ezber (overfitting) etkisini kayıp fonksiyonundaki sınıf ağırlıklarıyla dengelemektir.
 
 ### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
@@ -193,7 +193,7 @@ Başlık 2.1. deki tüm hiper parametreler sabit tutularak, literatürde melez y
 >
 > Buna karşın **LSTM modeli**, bünyesindeki fazla parametre yükü ve yüksek dropout oranlarının ($0.4 / 0.3$), çift yönlü sınıf dengeleme baskısıyla birleşmesi sonucu **Aşırı Düzenleme (Aşırı Regülasyon - Underfitting)** tuzağına düşmüştür. Model, anomali sınıfını ayırt etmek için gereken gradyan sinyallerini tamamen kaybetmiş ve ağırlık uzayında tüm anomali pencerelerini "Normal" olarak etiketleme kolaycılığına kaçarak çökmüştür (%0.09 Ortalama F1). Bu durum, zaman serisi anomali tespitinde her regülasyon aracının model kapasitesine göre hassas ayarlanması gerektiğini göstermektedir.
 
-## 2.2.Genişletilmiş Kapasite ve Gevşetilmiş Regülasyon Deneyi: Units=128, Dense=64, Dropout=0.3/0.2
+## 2.3.Genişletilmiş Kapasite ve Gevşetilmiş Regülasyon Deneyi: Units=128, Dense=64, Dropout=0.3/0.2
 Bu bölümde, modellerin anomali sınıflarına ait gizli zamansal örüntüleri çözme potansiyelini test etmek amacıyla mimari kapasite genişletilmiştir. Katmanlardaki nöron sayıları `128` ve `64` seviyelerine çıkarılmış; modelin öğrenmesini kolaylaştırmak adına dropout oranları `0.3` ve `0.2` değerlerine gevşetilmiştir. Öğrenme oranı `0.0005` seviyesine sabit tutulmuş, sınıf ağırlıkları devre dışı bırakılarak (`class_weight=None`) saf kapasite etkisi gözlemlenmiştir. Süreç aynı 5 rastgele seed ile tekrarlanmıştır.
 
 ### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
@@ -221,6 +221,47 @@ Bu bölümde, modellerin anomali sınıflarına ait gizli zamansal örüntüleri
 >  **Metodolojik Değerlendirme (Kapasite Artışının İki Uçlu Değneği):** Nöron kapasitesinin 128'e çıkarılması ve dropout baskısının azaltılması, modellerde **kararsız ve kutuplaşmış (polarize) bir öğrenme davranışı** doğurmuştur. LSTM modeli, kısıtlı kapasitedeki kilitlenmesini kırarak belirli başlangıç ağırlıklarında (Seed=123 ve Seed=2026) **%79.78** ve **%77.84** F1 gibi oldukça güçlü tepe performanslarına ulaşabileceğini kanıtlamıştır. Ancak varyans kontrol altına alınamamış, model diğer 3 seed senaryosunda anomali sınıfını tamamen ıskalamıştır.
 >
 > GRU mimarisinde ise kapasite artışı ters etki yaratmış, daha önce kontrollü regülasyonla (64 units) elde edilen %72.79'luk kararlı ortalama F1 başarısı, regülasyonun gevşemesiyle **%44.81** seviyesine gerilemiştir. Bu deneysel çıktı, endüstriyel anomali tespitinde salt model büyüklüğünün veya nöron hacminin başarı getirmediğini; aksine aşırı parametre yükünün, veri setindeki gürültü ve dengesizlik yapılarıyla birleşerek rassal başlangıç ağırlıklarına bağımlılığı artırdığını (yüksek varyans ve standart sapma) gözler önüne sermektedir.
+
+## 2.4. Genişletilmiş Kapasite + Orijinal Pencere Boyutu Deneyi: Window=20, Units=128, Dense=64, Dropout=0.3/0.2
+Bu bölümde, 2.3'deki genişletilmiş kapasite (units=128, dense=64) ve gevşetilmiş regülasyon (dropout=0.3/0.2, LR=0.0005) ayarları sabit tutulmuş, ancak `sequence_window_size` parametresi tekrar baseline değeri olan 20'ye çıkarılmıştır. Amaç, yüksek kapasiteli mimarilerin, ADASYN'in daha geniş (ve dolayısıyla daha yüksek boyutlu: $20 \times 43 = 860$) öznitelik uzayında nasıl davrandığını gözlemlemektir. Sınıf ağırlıkları devre dışı bırakılmış (`class_weight=None`) ve süreç aynı 5 rastgele seed (`42, 123, 2026, 7, 999`) ile tekrarlanmıştır.
+
+### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
+
+| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
+|---|---|---|---|---|---|---|
+| **LSTM** | 42 | 0.1 | 0.9694 | 0.8161 | 0.8875 | 0.8503 |
+| **LSTM** | 123 | 0.2 | 0.9009 | 0.4000 | 0.0250 | 0.0471 |
+| **LSTM** | 2026 | 0.1 | 0.9694 | 0.8235 | 0.8750 | 0.8485 |
+| **LSTM** | 7 | 0.1 | 0.9621 | 0.7526 | 0.9125 | 0.8249 |
+| **LSTM** | 999 | 0.1 | 0.9547 | 0.7087 | 0.9125 | 0.7978 |
+| **GRU** | 42 | 0.4 | 0.8984 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 123 | 0.1 | 0.9400 | 0.6281 | 0.9500 | 0.7562 |
+| **GRU** | 2026 | 0.3 | 0.9033 | 1.0000 | 0.0125 | 0.0247 |
+| **GRU** | 7 | 0.5 | 0.9082 | 0.5758 | 0.2375 | 0.3363 |
+| **GRU** | 999 | 0.2 | 0.9143 | 0.7083 | 0.2125 | 0.3269 |
+
+### Model Performans Özetleri (Ortalama ± Standart Sapma)
+
+**Tüm seed'ler (5 seed):**
+
+| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
+|---|---|---|---|---|
+| **GRU (Window=20, 128 Units)** | 0.9129 ± 0.0163 | 0.5824 ± 0.3645 | 0.2825 ± 0.3890 | 0.2888 ± 0.3063 |
+| **LSTM (Window=20, 128 Units)** | 0.9513 ± 0.0288 | 0.7002 ± 0.1743 | 0.7225 ± 0.3903 | 0.6737 ± 0.3510 |
+
+**LSTM, Seed=123 hariç (4 seed):**
+
+| Metrik | Ortalama ± Std |
+|---|---|
+| Accuracy | 0.9639 ± 0.0065 |
+| Precision | 0.7752 ± 0.0554 |
+| Recall | 0.8969 ± 0.0177 |
+| F1-score | 0.8304 ± 0.0234 |
+
+>
+>  **LSTM İçin En İyi Konfigürasyon:** Seed=123 dışındaki 4 seed'de LSTM, %80–85 F1 bandında son derece tutarlı sonuçlar vermiştir (outlier hariç ortalama F1: **0.8304 ± 0.0234**) — bu, dokümandaki tüm LSTM deneyleri arasında en yüksek ve en kararlı ortalamadır (baseline'ın outlier hariç F1: 0.820 değerini de geçmektedir). Yani LSTM için ideal tarif, kapasiteyi artırmak (units=128) fakat pencere boyutunu **küçültmemek** (window=20'de bırakmak) olarak ortaya çıkmaktadır.
+>
+>  **GRU İçin Ters Etki:** Aynı kapasite artışı ve window=20 kombinasyonu GRU için performansı belirgin şekilde kötüleştirmiştir (F1 ort. 0.2888, oysa aynı kapasitede window=10'da F1 ort. 0.4481'di — bkz. Bölüm 2.2). Bu, GRU'nun optimal çalışma noktasının küçük pencere boyutlarında (window=10) kaldığını, window=20'nin GRU için hem gereksiz hem de zararlı bir kapasite/boyut kombinasyonu oluşturduğunu doğrulamaktadır.
 ---
 ## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
  
@@ -234,5 +275,17 @@ Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin 
 | Window=10 + HP optimizasyonu | 0.362 | **0.728** |
 | Melez Yaklaşım (window=10, LR=0.0005, Dropout + class_weight="balanced") | 0.098 | 0.641 |
 |Genişletilmiş Kapasite (window=10, Units=128, Dropout=0.3/0.2) | 0.315 | 0.448|
+|Genişletilmiş Kapasite + Window=20 (Units=128, Dropout=0.3/0.2)| **0.674** (outlier hariç: **0.830**) | 0.289 |
 
->LSTM modelinin en iyi performansı, hiçbir ek müdahale yapılmadan, **ilk baseline denemesinde** (window=20) elde edilmiştir. Sonraki tüm optimizasyon adımları (pencere boyutu küçültme, learning rate/dropout ayarı) LSTM performansını **iyileştirmek yerine kötüleştirmiştir**. GRU ise tam tersi bir eğilim göstermiş, her adımda tutarlı biçimde iyileşmiştir (F1: 0.359 → 0.728).
+> **Sonuç — Mimariye Özel Optimal Konfigürasyonlar:** Tek bir "genel en iyi konfigürasyon" yerine, her mimarinin kendi optimal ayarına sahip olduğu görülmektedir:
+
+>LSTM modeli, karmaşık ve çok kapılı (gate) yapısı gereği yüksek parametre kapasitesine ihtiyaç duyar. Pencere boyutunu 10'a düşürmek veya aşırı regülasyon uygulamak (Bölüm 2.2'deki Melez Yaklaşım gibi) LSTM'in gradyan sinyallerini kaybetmesine ve Underfitting tuzağına düşerek çökmesine neden olmuştur. LSTM için ideal denge, öznitelik uzayı geniş olsa bile pencere boyutunu 20'de tutmak ve nöron kapasitesini 128'e çıkarmaktır. Bu kombinasyon, outlier (Seed=123) hariç tutulduğunda 0.8304 ± 0.0234 F1-skoru ile dokümandaki en yüksek ve en kararlı (en düşük varyanslı) performansı üretmiştir.
+
+>GRU, LSTM'e kıyasla daha sade bir hücre yapısına (daha az parametreye) sahiptir. Bu durum, ADASYN'in yüksek boyutlu uzaylardaki gürültüsünden (Boyutun Laneti) GRU'nun çok daha hızlı etkilenmesine yol açmaktadır. GRU için en başarılı hamle, pencere boyutunu 10'a düşürerek öznitelik uzayını daraltmak ve düşük öğrenme oranı + sıkı dropout ile modeli kısıtlamaktır. Bu sayede GRU, rastgele başlangıç ağırlıklarına (seed) olan hassasiyetini tamamen kırmış, Precision standart sapmasını 0.0434 gibi mükemmel bir seviyeye indirerek 0.7279 kararlı ortalama F1 başarısı yakalamıştır.
+
+
+###  Metodolojik Güvence (Veri Sızıntısı Önlemleri)
+
+Projede veri sızıntısını (data leakage) engellemek ve modellerin gerçek dünya performansını dürüstçe ölçmek adına aşağıdaki protokole kesin olarak sadık kalınmıştır:
+1. **Saf Doğrulama ve Test:** ADASYN ile veri artırımı (pencere seviyesinde) **yalnızca Eğitim (Train) kümesine** uygulanmıştır. Doğrulama (Validation) ve Test kümelerine hiçbir şekilde sentetik veri bulaştırılmamış; bu kümeler tamamen orijinal ve ham zaman serisi akışından koparılmıştır.
+2. **Eşik Kararsızlığı Notu:** Bazı konfigürasyonlarda ve belirli başlangıç ağırlıklarında (örneğin Seed=42) test F1 skorunun `0.0000` çıkması, bir veri sızıntısından değil; tamamen saf validation setinden öğrenilen katı eşik değerlerinin (threshold), ADASYN ile eğitilen modelin ham test kümesindeki tahmin olasılık aralığını (confidence interval) karşılayamamış olmasından kaynaklanmaktadır.

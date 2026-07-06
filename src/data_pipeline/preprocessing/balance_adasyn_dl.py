@@ -48,8 +48,8 @@ def balance_batadal_train_sequences_adasyn(
 
     print(f"ADASYN sonrası dağılım: {np.bincount(y_resampled.astype(int))}")
 
-    X_output_path = processed_dir / "batadal_X_train_seq_adasyn.npy"
-    y_output_path = processed_dir / "batadal_y_train_seq_adasyn.npy"
+    X_output_path = processed_dir / "batadal_X_train_seq_adasyn_20.npy"
+    y_output_path = processed_dir / "batadal_y_train_seq_adasyn_20.npy"
 
     np.save(X_output_path, X_resampled)
     np.save(y_output_path, y_resampled)

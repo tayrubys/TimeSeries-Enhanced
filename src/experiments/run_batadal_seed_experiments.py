@@ -25,8 +25,8 @@ def load_batadal_sequence_data(processed_dir="data/processed", balancing_method=
         X_train = np.load(f"{processed_dir}/batadal_X_train_seq_balanced.npy").astype("float32")
         y_train = np.load(f"{processed_dir}/batadal_y_train_seq_balanced.npy").astype("float32")
     elif balancing_method == "adasyn":
-        X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn.npy").astype("float32")
-        y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn.npy").astype("float32")
+        X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_20.npy").astype("float32")
+        y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_20.npy").astype("float32")
     else:
         raise ValueError(f"Bilinmeyen balancing_method: {balancing_method}")
 
