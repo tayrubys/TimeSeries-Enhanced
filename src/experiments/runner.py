@@ -7,7 +7,8 @@ import numpy as np
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
  
 from src.data_pipeline.sax_paa import SaxPaaTransformer
-from src.models.automata_model import ProbabilisticAutomata
+#from src.models.automata_model import ProbabilisticAutomata
+from src.models.vomm_model import VariableOrderMarkovModel
 from src.experiments.evaluator import calculate_metrics
  
 def load_json_config(config_path="src/config/settings.json"):
@@ -56,7 +57,12 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
  
-    model = ProbabilisticAutomata(smoothing=True)
+    model = VariableOrderMarkovModel(
+    max_depth=config["window_size"],
+    min_count=2,
+    smoothing=True,
+    smoothing_alpha=1.0
+    )
     model.fit(train_patterns)
  
     num_states = len(model.trained_patterns)
@@ -73,7 +79,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     # --- SENARYO 1: Orijinal Veri ---
     test_patterns_orig = transformer.transform(X_test, window_size=config["window_size"])
     preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=config["anomaly_threshold"])
-    y_test_aligned_orig = y_test[:len(preds_orig)]
+    y_test_aligned_orig = y_test[1:len(preds_orig) + 1]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
     metrics_orig.update({"scenario": "original", **common_fields})
     results.append(metrics_orig)
@@ -82,7 +88,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     X_test_noisy = inject_gaussian_noise(X_test, noise_level=config["noise_level"], seed=seed)
     test_patterns_noisy = transformer.transform(X_test_noisy, window_size=config["window_size"])
     preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=config["anomaly_threshold"])
-    y_test_aligned_noisy = y_test[:len(preds_noisy)]
+    y_test_aligned_noisy = y_test[1:len(preds_noisy) + 1]
     metrics_noisy = calculate_metrics(y_test_aligned_noisy, preds_noisy)
     metrics_noisy.update({"scenario": "gaussian_noise", **common_fields})
     results.append(metrics_noisy)
@@ -161,7 +167,88 @@ def run_parameter_sensitivity_analysis(config):
  
     if sensitivity_results:
         pd.DataFrame(sensitivity_results).to_csv("results/outputs/automata_param_sensitivity_metrics.csv", index=False)
- 
+
+#threshold analızı
+def run_vomm_threshold_sensitivity_analysis(config):
+    print("\n--- VOMM/PST THRESHOLD DUYARLILIK ANALİZİ BAŞLATILIYOR ---")
+
+    threshold_results = []
+
+    batadal_thresholds = [0.001, 0.005, 0.01, 0.02, 0.03, 0.05]
+    skab_thresholds = [0.01, 0.03, 0.05, 0.10, 0.20, 0.30, 0.50]
+
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL VOMM/PST Threshold Taraması...")
+
+        for threshold in batadal_thresholds:
+            cc = {
+                **config,
+                "window_size": 4,
+                "alphabet_size": 3,
+                "anomaly_threshold": threshold
+            }
+
+            res, _ = run_experiment_pipeline(
+                X_train_b, X_test_b, y_test_b,
+                cc, "BATADAL", "vomm_threshold_search",
+                seed=config["seeds"][0]
+            )
+
+            orig_res = [r for r in res if r["scenario"] == "original"][0]
+            threshold_results.append(orig_res)
+
+            print(
+                f"BATADAL -> Threshold: {threshold} | "
+                f"Precision: {orig_res['precision']:.4f} | "
+                f"Recall: {orig_res['recall']:.4f} | "
+                f"F1: {orig_res['f1_score']:.4f}"
+            )
+
+    skab_train_path = "data/processed/skab_fold1_X_train_pc1.csv"
+    skab_test_path = "data/processed/skab_fold1_X_test_pc1.csv"
+    skab_y_path = "data/processed/skab_fold1_y_test.csv"
+
+    if os.path.exists(skab_train_path) and os.path.exists(skab_test_path) and os.path.exists(skab_y_path):
+        X_train_s = pd.read_csv(skab_train_path).values.flatten()
+        X_test_s = pd.read_csv(skab_test_path).values.flatten()
+        y_test_s = pd.read_csv(skab_y_path).values.flatten()
+
+        print("\n>> SKAB VOMM/PST Threshold Taraması...")
+
+        for threshold in skab_thresholds:
+            cc = {
+                **config,
+                "window_size": 4,
+                "alphabet_size": 4,
+                "anomaly_threshold": threshold
+            }
+
+            res, _ = run_experiment_pipeline(
+                X_train_s, X_test_s, y_test_s,
+                cc, "SKAB", "vomm_threshold_search",
+                seed=config["seeds"][0]
+            )
+
+            orig_res = [r for r in res if r["scenario"] == "original"][0]
+            threshold_results.append(orig_res)
+
+            print(
+                f"SKAB -> Threshold: {threshold} | "
+                f"Precision: {orig_res['precision']:.4f} | "
+                f"Recall: {orig_res['recall']:.4f} | "
+                f"F1: {orig_res['f1_score']:.4f}"
+            )
+
+    if threshold_results:
+        pd.DataFrame(threshold_results).to_csv(
+            "results/outputs/vomm_pst_threshold_sensitivity.csv",
+            index=False
+        ) 
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -182,7 +269,12 @@ def main():
         y_test = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test = np.where(y_test == -999, 0, y_test)
  
-        config_batadal = {**config, "anomaly_threshold": config.get("batadal_anomaly_threshold", 0.05)}
+        config_batadal = {
+            **config,
+            "window_size": 4,
+            "alphabet_size": 3,
+            "anomaly_threshold": 0.005
+        }
  
         batadal_logs = None
         for seed in seeds:
@@ -195,7 +287,12 @@ def main():
         with open("results/outputs/automata_batadal_advanced_explainability.json", "w") as f:
             json.dump(batadal_logs[:100], f, indent=4)
  
-    config_skab = {**config, "anomaly_threshold": config.get("skab_anomaly_threshold", 0.90)}
+    config_skab = {
+        **config,
+        "window_size": 4,
+        "alphabet_size": 4,
+        "anomaly_threshold": 0.5 
+    }
  
     for fold in range(1, 6):
         train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
@@ -227,7 +324,7 @@ def main():
             f1_score_std=('f1_score', 'std')
         ).reset_index()
         summary_df.to_csv("results/outputs/automata_skab_fold_summary.csv", index=False)
-        print("\nSKAB Otomata Özet (5 fold x 5 seed):")
+        print("\nSKAB VOMM/PST (5 fold x 5 seed):")
         print(summary_df)
  
     # BATADAL özet
@@ -244,10 +341,11 @@ def main():
             f1_score_std=('f1_score', 'std')
         ).reset_index()
         batadal_summary.to_csv("results/outputs/automata_batadal_seed_summary.csv", index=False)
-        print("\nBATADAL Otomata Özet (5 seed):")
+        print("\nBATADAL VOMM/PST (5 seed):")
         print(batadal_summary)
  
     run_parameter_sensitivity_analysis(config)
+    run_vomm_threshold_sensitivity_analysis(config)
  
     try:
         from src.experiments.statistical_tests import main as run_statistical_main

@@ -1,117 +1,84 @@
-import numpy as np
-
 class PSTNode:
-    def __init__(self, symbol=None):
-        self.symbol = symbol  #düğümdeki SAX sembolü
-        self.children = {}    #alt dallara hızlı erişmek için dict
-        self.counts = {}      #bu düğümden sonra hangi sembolden kaç tane gelmiş sayacı
-    #next_symbol un gelme olasılığını hesaplama
-    def get_probability(self, next_symbol, alphabet_size, smoothing=True):
+    def __init__(self):
+        self.children = {}
+        self.counts = {}
 
-        total_counts = sum(self.counts.values())
-        #laplace uygulama sıfırı cozmek için
-        if smoothing:
-            total = total_counts + alphabet_size
-            count = self.counts.get(next_symbol, 0) + 1
-        else:
-            if total_counts == 0:
-                return 1.0 / alphabet_size
-            total = total_counts
-            count = self.counts.get(next_symbol, 0)
-            
-        return count / total
-
-    def get_probability_distribution(self, alphabet_size):
-        """
-        KL-Divergence budaması için bu düğümün (bağlamın) tüm olası 
-        sembollere karşı olasılık dağılımını (P veya Q) çıkarıyoruz.
-        """
-        dist = {}
-        # SAX sembolleri genelde 'a', 'b', 'c' diye gider. 
-        # ASCII tablosundan alfabeyi dinamik oluştur
-        alphabet = [chr(i) for i in range(97, 97 + alphabet_size)] 
-        
-        for symbol in alphabet:
-            dist[symbol] = self.get_probability(symbol, alphabet_size, smoothing=True)
-        return dist
+    def total_count(self):
+        return sum(self.counts.values())
 
 
 class ProbabilisticSuffixTree:
-    def __init__(self, max_depth, alphabet_size):
-        self.max_depth = max_depth
-        self.alphabet_size = alphabet_size
-        self.root = PSTNode() # Kök düğüm
-        
-    def fit(self, sax_sequence):
-        """
-        Eğitim verisindeki SAX dizisini ağaca beslediğimiz ana döngü.
-        """
-        n = len(sax_sequence)
-        
-        for i in range(n):
-            for length in range(1, self.max_depth + 1):
-                if i - length >= 0:
-                    context = sax_sequence[i-length : i]
-                    next_symbol = sax_sequence[i]
-                    self._add_sequence(context, next_symbol)
-    #suffix mantığıyla ağaçta aşağı inip sayacı güncelle
-    def _add_sequence(self, context, next_symbol):
- 
-        current_node = self.root
-        
-        # En yakın geçmiş en çok etkiye sahip olduğu için context'i tersten okuyoruz.
-        for symbol in reversed(context):
-            if symbol not in current_node.children:
-                current_node.children[symbol] = PSTNode(symbol)
-            current_node = current_node.children[symbol]
-            
-        current_node.counts[next_symbol] = current_node.counts.get(next_symbol, 0) + 1
-    #agacı egıttıten hemen sonra gereksiz dalları (KL) Iraksamasi ile budala
-    def prune(self, kl_threshold=0.01):
+    def __init__(self, max_depth=3, min_count=2, smoothing=True, smoothing_alpha=1.0):
+        self.max_depth = max_depth #gecmise ne kadar bakicagimizi belirler
+        self.min_count = min_count #belirli bir contextin minimum kac kez gectigini belirler
+        self.smoothing = smoothing
+        self.smoothing_alpha = smoothing_alpha
+        self.root = PSTNode()
+        self.vocabulary = set() # modelin gordugu tum sembollerin seti
 
-        self._prune_node(self.root, kl_threshold)
-        
-    def _prune_node(self, node, kl_threshold):
-        if not node.children:
-            return #budanacak dal yok 
-            
-        #kendi olasılık dağılımımız:(Q - Ebeveyn / Daha kısa geçmiş)
-        q_dist = node.get_probability_distribution(self.alphabet_size)
-        children_to_remove = []
-        
-        for symbol, child_node in node.children.items():
-            #child olasılık dağılımı:P - Alt Dal / Daha derin geçmiş
-            p_dist = child_node.get_probability_distribution(self.alphabet_size)
-            
-            # KL Iraksamasını hesapla: D_KL(P || Q) = sum( P(x) * log(P(x) / Q(x)) )
-            kl_div = 0.0
-            for x in p_dist:
-                p_x = p_dist[x]
-                q_x = q_dist[x]
-                if p_x > 0 and q_x > 0:
-                    kl_div += p_x * np.log(p_x / q_x)
-                    
-            # Eğer alt dalın sunduğu yeni olasılık dağılımı parentten farklı değilse ve threshold'dan küçükse dalı budala
-            if kl_div < kl_threshold:
-                children_to_remove.append(symbol)
-            else:
-                #dalı kesmiyorsak, onun da alt dallarını kontrole devam et
-                self._prune_node(child_node, kl_threshold)
-                
-        # Gereksiz çocukları (ve dolayısıyla tüm alt ağacını) acımadan sil
-        for symbol in children_to_remove:
-            del node.children[symbol]
-    #test asamasında ağaçta inebildiğimiz en derin (budanmamış) geçmişe kadar inip olasılığı bulma
-    def predict_probability(self, context, next_symbol):
+    def fit(self, sequence):
+        if len(sequence) < 2:
+            raise ValueError("PST egitimi icin en az 2 pattern gereklidir.")
 
-        current_node = self.root
-        best_prob = current_node.get_probability(next_symbol, self.alphabet_size)
-        
+        self.vocabulary = set(sequence)#benzersiz sembollerin setini olusturur
+        self.root = PSTNode()#her eğitimde agacin rootunu sifirlar
+        #verilen sequence uzerinde agaci olusturur (ilki geciyorux cunku gecmisi yok)
+        for i in range(1, len(sequence)):
+            next_symbol = sequence[i]
+
+            self.root.counts[next_symbol] = self.root.counts.get(next_symbol, 0) + 1
+
+            max_context = min(self.max_depth, i)#siniri asmamak için max derşnligi belirler
+            #farklı derinliklerdeki geçmişleri (suffix'leri) ağaca ekliyor
+            for depth in range(1, max_context + 1):
+                context = sequence[i - depth:i]
+                self._add_context(context, next_symbol)
+
+    def _add_context(self, context, next_symbol):
+        node = self.root#Verilen context'i ağaçta oluşturup sayacını artır
+        #agaca geriye dogru suffix kurma
         for symbol in reversed(context):
-            if symbol in current_node.children:
-                current_node = current_node.children[symbol]
-                best_prob = current_node.get_probability(next_symbol, self.alphabet_size)
-            else:
-                break
-                
-        return best_prob
+            if symbol not in node.children:
+                node.children[symbol] = PSTNode()
+            node = node.children[symbol]
+
+        node.counts[next_symbol] = node.counts.get(next_symbol, 0) + 1
+    #aradığı context'i bulmak için agacı dolaşır ve node'u döndürür
+    def _find_node(self, context):
+        node = self.root
+
+        for symbol in reversed(context):
+            if symbol not in node.children:
+                return None # bu gecmıs yoksa
+            node = node.children[symbol]
+
+        return node
+    #en uzun geçmişi(context) bulur ve node'u döndürür
+    def find_best_context(self, history):
+        max_context = min(self.max_depth, len(history))
+        #en uzun geçmişten başlayarak en kısa geçmişe kadar bakar ve uygun node'u bulur
+        for depth in range(max_context, 0, -1):
+            context = history[-depth:]
+            node = self._find_node(context)
+
+            if node is not None and node.total_count() >= self.min_count:
+                return context, node
+        #hicbir sey yoksa root'u döndür
+        return [], self.root
+
+    def predict_probability(self, history, next_symbol):
+        context, node = self.find_best_context(history)
+
+        total = node.total_count()
+        vocab_size = max(1, len(self.vocabulary))
+        #Smoothing aktifse Laplace formülünü uygula
+        if self.smoothing:
+            count = node.counts.get(next_symbol, 0)
+            return (count + self.smoothing_alpha) / (
+                total + self.smoothing_alpha * vocab_size
+            )
+        #smoothing aktif değilse, sadece olasılığı hesapla
+        if total == 0:
+            return 0.0
+
+        return node.counts.get(next_symbol, 0) / total
