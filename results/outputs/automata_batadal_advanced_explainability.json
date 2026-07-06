@@ -6,7 +6,7 @@
         ],
         "target": "babb",
         "probability": 0.189873417721519,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -17,8 +17,8 @@
         ],
         "target": "abbc",
         "probability": 0.012658227848101266,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 3,
@@ -29,7 +29,7 @@
         ],
         "target": "bbcc",
         "probability": 0.056338028169014086,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -42,8 +42,8 @@
         ],
         "target": "bcca",
         "probability": 0.014705882352941176,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 5,
@@ -55,7 +55,7 @@
         ],
         "target": "ccab",
         "probability": 0.057971014492753624,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -68,7 +68,7 @@
         ],
         "target": "cabb",
         "probability": 0.058823529411764705,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -81,7 +81,7 @@
         ],
         "target": "abbb",
         "probability": 0.058823529411764705,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -94,8 +94,8 @@
         ],
         "target": "bbbc",
         "probability": 0.014705882352941176,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 9,
@@ -107,8 +107,8 @@
         ],
         "target": "bbcc",
         "probability": 0.0379746835443038,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 10,
@@ -120,8 +120,8 @@
         ],
         "target": "bcca",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 11,
@@ -133,8 +133,8 @@
         ],
         "target": "ccaa",
         "probability": 0.028985507246376812,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 12,
@@ -146,8 +146,8 @@
         ],
         "target": "caab",
         "probability": 0.014492753623188406,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 13,
@@ -159,8 +159,8 @@
         ],
         "target": "aaba",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 14,
@@ -172,8 +172,8 @@
         ],
         "target": "abab",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 15,
@@ -185,8 +185,8 @@
         ],
         "target": "babc",
         "probability": 0.0071146245059288534,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 16,
@@ -198,7 +198,7 @@
         ],
         "target": "abcb",
         "probability": 0.10810810810810811,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -211,7 +211,7 @@
         ],
         "target": "bcbb",
         "probability": 0.06944444444444445,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -224,8 +224,8 @@
         ],
         "target": "cbbc",
         "probability": 0.028985507246376812,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 19,
@@ -237,8 +237,8 @@
         ],
         "target": "bbca",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 20,
@@ -250,8 +250,8 @@
         ],
         "target": "bcac",
         "probability": 0.013888888888888888,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 21,
@@ -263,8 +263,8 @@
         ],
         "target": "cacc",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 22,
@@ -276,8 +276,8 @@
         ],
         "target": "accb",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 23,
@@ -289,7 +289,7 @@
         ],
         "target": "ccbc",
         "probability": 0.0023715415019762848,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -302,8 +302,8 @@
         ],
         "target": "cbcb",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 25,
@@ -315,7 +315,7 @@
         ],
         "target": "bcba",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -328,7 +328,7 @@
         ],
         "target": "cbab",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -341,7 +341,7 @@
         ],
         "target": "babb",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -354,8 +354,8 @@
         ],
         "target": "abba",
         "probability": 0.028985507246376812,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 29,
@@ -367,8 +367,8 @@
         ],
         "target": "bbab",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 30,
@@ -380,7 +380,7 @@
         ],
         "target": "babb",
         "probability": 0.12987012987012986,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -393,7 +393,7 @@
         ],
         "target": "abbb",
         "probability": 0.06756756756756757,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -406,8 +406,8 @@
         ],
         "target": "bbbc",
         "probability": 0.04285714285714286,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 33,
@@ -419,8 +419,8 @@
         ],
         "target": "bbcc",
         "probability": 0.025974025974025976,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 34,
@@ -432,8 +432,8 @@
         ],
         "target": "bcca",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 35,
@@ -445,7 +445,7 @@
         ],
         "target": "ccab",
         "probability": 0.057971014492753624,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -458,8 +458,8 @@
         ],
         "target": "cabc",
         "probability": 0.014705882352941176,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 37,
@@ -471,7 +471,7 @@
         ],
         "target": "abca",
         "probability": 0.0023715415019762848,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -484,8 +484,8 @@
         ],
         "target": "bcac",
         "probability": 0.04477611940298507,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 39,
@@ -497,8 +497,8 @@
         ],
         "target": "cacc",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 40,
@@ -510,8 +510,8 @@
         ],
         "target": "acca",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 41,
@@ -523,8 +523,8 @@
         ],
         "target": "ccaa",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 42,
@@ -536,7 +536,7 @@
         ],
         "target": "caaa",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -549,7 +549,7 @@
         ],
         "target": "aaaa",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -562,8 +562,8 @@
         ],
         "target": "aaac",
         "probability": 0.014492753623188406,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 45,
@@ -575,7 +575,7 @@
         ],
         "target": "aacc",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -588,8 +588,8 @@
         ],
         "target": "accb",
         "probability": 0.014492753623188406,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 47,
@@ -601,7 +601,7 @@
         ],
         "target": "ccbc",
         "probability": 0.0023715415019762848,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -614,8 +614,8 @@
         ],
         "target": "cbcb",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 49,
@@ -627,7 +627,7 @@
         ],
         "target": "bcba",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -640,7 +640,7 @@
         ],
         "target": "cbab",
         "probability": 0.07246376811594203,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -653,8 +653,8 @@
         ],
         "target": "babc",
         "probability": 0.014492753623188406,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 52,
@@ -666,8 +666,8 @@
         ],
         "target": "abcc",
         "probability": 0.013513513513513514,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 53,
@@ -679,7 +679,7 @@
         ],
         "target": "bccb",
         "probability": 0.0031620553359683794,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -692,8 +692,8 @@
         ],
         "target": "ccba",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 55,
@@ -705,8 +705,8 @@
         ],
         "target": "cbaa",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 56,
@@ -718,8 +718,8 @@
         ],
         "target": "baab",
         "probability": 0.04477611940298507,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 57,
@@ -731,8 +731,8 @@
         ],
         "target": "aabb",
         "probability": 0.04477611940298507,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 58,
@@ -744,8 +744,8 @@
         ],
         "target": "abbb",
         "probability": 0.04477611940298507,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 59,
@@ -757,8 +757,8 @@
         ],
         "target": "bbbc",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 60,
@@ -770,8 +770,8 @@
         ],
         "target": "bbcc",
         "probability": 0.0379746835443038,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 61,
@@ -783,8 +783,8 @@
         ],
         "target": "bccb",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 62,
@@ -796,8 +796,8 @@
         ],
         "target": "ccbc",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 63,
@@ -809,8 +809,8 @@
         ],
         "target": "cbcc",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 64,
@@ -822,7 +822,7 @@
         ],
         "target": "bcca",
         "probability": 0.057971014492753624,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -835,8 +835,8 @@
         ],
         "target": "ccaa",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 66,
@@ -848,8 +848,8 @@
         ],
         "target": "caab",
         "probability": 0.014492753623188406,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 67,
@@ -861,8 +861,8 @@
         ],
         "target": "aaba",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 68,
@@ -874,8 +874,8 @@
         ],
         "target": "abab",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 69,
@@ -887,8 +887,8 @@
         ],
         "target": "babc",
         "probability": 0.0071146245059288534,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 70,
@@ -900,7 +900,7 @@
         ],
         "target": "abcb",
         "probability": 0.10810810810810811,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -913,7 +913,7 @@
         ],
         "target": "bcbb",
         "probability": 0.06944444444444445,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -926,8 +926,8 @@
         ],
         "target": "cbbc",
         "probability": 0.028985507246376812,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 73,
@@ -939,8 +939,8 @@
         ],
         "target": "bbca",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 74,
@@ -952,7 +952,7 @@
         ],
         "target": "bcab",
         "probability": 0.08333333333333333,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -965,7 +965,7 @@
         ],
         "target": "cabb",
         "probability": 0.08571428571428572,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -978,7 +978,7 @@
         ],
         "target": "abbb",
         "probability": 0.05714285714285714,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 0
     },
     {
@@ -991,8 +991,8 @@
         ],
         "target": "bbba",
         "probability": 0.014705882352941176,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 78,
@@ -1004,8 +1004,8 @@
         ],
         "target": "bbac",
         "probability": 0.008333333333333333,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 79,
@@ -1017,8 +1017,8 @@
         ],
         "target": "bacb",
         "probability": 0.04477611940298507,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 80,
@@ -1030,8 +1030,8 @@
         ],
         "target": "acbc",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 81,
@@ -1043,8 +1043,8 @@
         ],
         "target": "cbcc",
         "probability": 0.04411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 82,
@@ -1056,8 +1056,8 @@
         ],
         "target": "bccb",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 83,
@@ -1069,8 +1069,8 @@
         ],
         "target": "ccba",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 84,
@@ -1082,8 +1082,8 @@
         ],
         "target": "cbaa",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 85,
@@ -1095,8 +1095,8 @@
         ],
         "target": "baaa",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 86,
@@ -1108,8 +1108,8 @@
         ],
         "target": "aaab",
         "probability": 0.03896103896103896,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 87,
@@ -1121,8 +1121,8 @@
         ],
         "target": "aabc",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 88,
@@ -1134,7 +1134,7 @@
         ],
         "target": "abcc",
         "probability": 0.0007905138339920949,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -1147,7 +1147,7 @@
         ],
         "target": "bccc",
         "probability": 0.0031620553359683794,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -1160,8 +1160,8 @@
         ],
         "target": "cccc",
         "probability": 0.04411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 91,
@@ -1173,8 +1173,8 @@
         ],
         "target": "ccca",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 92,
@@ -1186,8 +1186,8 @@
         ],
         "target": "ccac",
         "probability": 0.029411764705882353,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 93,
@@ -1199,7 +1199,7 @@
         ],
         "target": "cacc",
         "probability": 0.0023715415019762848,
-        "threshold": 0.005,
+        "threshold": 0.05,
         "prediction": 1
     },
     {
@@ -1212,8 +1212,8 @@
         ],
         "target": "accc",
         "probability": 0.014925373134328358,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 95,
@@ -1225,8 +1225,8 @@
         ],
         "target": "cccb",
         "probability": 0.014705882352941176,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 96,
@@ -1238,8 +1238,8 @@
         ],
         "target": "ccbb",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 97,
@@ -1251,8 +1251,8 @@
         ],
         "target": "cbba",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 98,
@@ -1264,8 +1264,8 @@
         ],
         "target": "bbaa",
         "probability": 0.014492753623188406,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 99,
@@ -1277,8 +1277,8 @@
         ],
         "target": "baab",
         "probability": 0.038461538461538464,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     },
     {
         "index": 100,
@@ -1290,7 +1290,7 @@
         ],
         "target": "aaba",
         "probability": 0.029850746268656716,
-        "threshold": 0.005,
-        "prediction": 0
+        "threshold": 0.05,
+        "prediction": 1
     }
 ]

@@ -51,8 +51,69 @@ def inject_gaussian_noise(series, noise_level=0.1, seed=42):
     rng = np.random.default_rng(seed)
     noise = rng.normal(0, noise_level, series.shape)
     return series + noise
- 
-def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42):
+# 
+def split_train_validation(X_train, y_train, val_ratio=0.2):
+    split_idx = int(len(X_train) * (1 - val_ratio))
+
+    X_model_train = X_train[:split_idx]
+    X_val = X_train[split_idx:]
+
+    y_model_train = y_train[:split_idx]
+    y_val = y_train[split_idx:]
+
+    return X_model_train, X_val, y_model_train, y_val
+
+#
+def align_labels_to_patterns(y, num_patterns, window_size):
+    aligned_labels = []
+
+    for i in range(1, num_patterns):
+        start_idx = i * window_size
+        end_idx = min(start_idx + window_size, len(y))
+
+        if end_idx <= start_idx:
+            break
+
+        label = 1 if np.any(y[start_idx:end_idx] == 1) else 0
+        aligned_labels.append(label)
+
+    return np.array(aligned_labels)
+
+#threshold secme
+def select_best_threshold_on_validation(
+    model,
+    transformer,
+    X_val,
+    y_val,
+    threshold_values,
+    window_size
+):
+    best_threshold = threshold_values[0]
+    best_f1 = -1.0
+    best_metrics = None
+
+    val_patterns = transformer.transform(X_val, window_size=window_size)
+
+    for threshold in threshold_values:
+        preds_val, _ = model.predict(val_patterns, anomaly_threshold=threshold)
+        label_start = window_size
+        y_val_aligned = align_labels_to_patterns(
+            y_val,
+            len(val_patterns),
+            window_size
+        )
+        preds_val = preds_val[:len(y_val_aligned)]
+
+        metrics = calculate_metrics(y_val_aligned, preds_val)
+
+        if metrics["f1_score"] > best_f1:
+            best_f1 = metrics["f1_score"]
+            best_threshold = threshold
+            best_metrics = metrics
+
+    return best_threshold, best_metrics
+
+def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42,X_val=None,y_val=None):
     results = []
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
@@ -64,7 +125,28 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     smoothing_alpha=1.0
     )
     model.fit(train_patterns)
- 
+    selected_threshold = config["anomaly_threshold"]
+    validation_threshold_f1 = None
+    if X_val is not None and y_val is not None:
+       threshold_values = config.get(
+           "vomm_threshold_values",
+           [0.001, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5]
+        )
+       selected_threshold, val_metrics = select_best_threshold_on_validation(
+            model,
+            transformer,
+            X_val,
+            y_val,
+            threshold_values,
+            config["window_size"]
+        )
+       validation_threshold_f1 = val_metrics["f1_score"]
+    if X_val is not None and y_val is not None:   
+        print(
+            f"{dataset_name} {fold_name} validation selected threshold: "
+            f"{selected_threshold} | val F1: {validation_threshold_f1:.4f}"
+         )
+
     num_states = len(model.trained_patterns)
     num_transitions = sum(len(targets) for targets in model.transitions.values())
     transition_density = num_transitions / (num_states * num_states) if num_states > 0 else 0.0
@@ -73,13 +155,21 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "dataset": dataset_name, "fold": fold_name, "seed": seed,
         "window_size": config["window_size"], "alphabet_size": config["alphabet_size"],
         "num_states": num_states, "num_transitions": num_transitions,
-        "transition_density": transition_density
+        "transition_density": transition_density,
+        "selected_threshold": selected_threshold,
+        "validation_threshold_f1": validation_threshold_f1
     }
  
     # --- SENARYO 1: Orijinal Veri ---
     test_patterns_orig = transformer.transform(X_test, window_size=config["window_size"])
-    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=config["anomaly_threshold"])
-    y_test_aligned_orig = y_test[1:len(preds_orig) + 1]
+    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=selected_threshold)
+    label_start = config["window_size"]
+    y_test_aligned_orig = align_labels_to_patterns(
+        y_test,
+        len(test_patterns_orig),
+        config["window_size"]
+    )
+    preds_orig = preds_orig[:len(y_test_aligned_orig)]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
     metrics_orig.update({"scenario": "original", **common_fields})
     results.append(metrics_orig)
@@ -87,8 +177,13 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     # --- SENARYO 2: Gaussian Noise ---
     X_test_noisy = inject_gaussian_noise(X_test, noise_level=config["noise_level"], seed=seed)
     test_patterns_noisy = transformer.transform(X_test_noisy, window_size=config["window_size"])
-    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=config["anomaly_threshold"])
-    y_test_aligned_noisy = y_test[1:len(preds_noisy) + 1]
+    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=selected_threshold)
+    y_test_aligned_noisy = align_labels_to_patterns(
+        y_test,
+        len(test_patterns_noisy),
+        config["window_size"]
+    )
+    preds_noisy = preds_noisy[:len(y_test_aligned_noisy)]
     metrics_noisy = calculate_metrics(y_test_aligned_noisy, preds_noisy)
     metrics_noisy.update({"scenario": "gaussian_noise", **common_fields})
     results.append(metrics_noisy)
@@ -103,7 +198,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             y_test_unseen.append(y_test_sliding[idx])
  
     if len(unseen_test_patterns) > 1:
-        preds_unseen, _ = model.predict(unseen_test_patterns, anomaly_threshold=config["anomaly_threshold"])
+        preds_unseen, _ = model.predict(unseen_test_patterns, anomaly_threshold=selected_threshold)
         y_test_aligned_unseen = y_test_unseen[-len(preds_unseen):]
         metrics_unseen = calculate_metrics(y_test_aligned_unseen, preds_unseen)
     else:
@@ -268,18 +363,31 @@ def main():
         X_test = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
         y_test = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
         y_test = np.where(y_test == -999, 0, y_test)
+        X_val = pd.read_csv("data/processed/batadal_X_val_pc1.csv").values.flatten()
+        y_val = pd.read_csv("data/processed/batadal_y_val.csv").values.flatten()
+        y_val = np.where(y_val == -999, 0, y_val)
  
         config_batadal = {
             **config,
             "window_size": 4,
             "alphabet_size": 3,
-            "anomaly_threshold": 0.005
+            "anomaly_threshold": 0.03
         }
  
         batadal_logs = None
         for seed in seeds:
             print(f"BATADAL automata seed={seed} çalışıyor...")
-            batadal_res, logs = run_experiment_pipeline(X_train, X_test, y_test, config_batadal, "BATADAL", "single", seed=seed)
+            batadal_res, logs = run_experiment_pipeline(
+                X_train,
+                X_test,
+                y_test,
+                config_batadal,
+                "BATADAL",
+                "single",
+                seed=seed,
+                X_val=X_val,
+                y_val=y_val
+           )
             all_res.extend(batadal_res)
             if batadal_logs is None:
                 batadal_logs = logs
@@ -302,9 +410,28 @@ def main():
             X_train = pd.read_csv(train_file).values.flatten()
             X_test = pd.read_csv(test_file).values.flatten()
             y_test = pd.read_csv(y_test_file).values.flatten()
+            y_train_file = f"data/processed/skab_fold{fold}_y_train.csv"
+            if os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file) and os.path.exists(y_train_file):
+                y_train = pd.read_csv(y_train_file).values.flatten()
+                X_model_train, X_val, _, y_val = split_train_validation(
+                    X_train,
+                    y_train,
+                    val_ratio=0.2
+                )
+                
             for seed in seeds:
                 print(f"SKAB automata fold={fold}, seed={seed} çalışıyor...")
-                fold_res, _ = run_experiment_pipeline(X_train, X_test, y_test, config_skab, "SKAB", f"fold_{fold}", seed=seed)
+                fold_res, _ = run_experiment_pipeline(
+                    X_model_train,
+                    X_test,
+                    y_test,
+                    config_skab,
+                    "SKAB",
+                    f"fold_{fold}",
+                    seed=seed,
+                    X_val=X_val,
+                    y_val=y_val
+                )
                 all_res.extend(fold_res)
  
     df_all = pd.DataFrame(all_res)
