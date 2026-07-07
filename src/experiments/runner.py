@@ -51,7 +51,7 @@ def inject_gaussian_noise(series, noise_level=0.1, seed=42):
     rng = np.random.default_rng(seed)
     noise = rng.normal(0, noise_level, series.shape)
     return series + noise
-# 
+#zaman sırasını bozmadan val ayırma 
 def split_train_validation(X_train, y_train, val_ratio=0.2):
     split_idx = int(len(X_train) * (1 - val_ratio))
 
@@ -63,7 +63,9 @@ def split_train_validation(X_train, y_train, val_ratio=0.2):
 
     return X_model_train, X_val, y_model_train, y_val
 
-#
+#sembolik örüntülerin sayısı orijinal etiket sayısından az olacağı için
+#anomali etiketlerini (0 veya 1) örüntülerle hizala
+#window içindeki herhangi bir noktada anomali varsa, o örüntünün etiketini de 1 kabul et
 def align_labels_to_patterns(y, num_patterns, window_size):
     aligned_labels = []
 
@@ -73,7 +75,7 @@ def align_labels_to_patterns(y, num_patterns, window_size):
 
         if end_idx <= start_idx:
             break
-
+        #herhangi bir hucre anomali içeriyr mu
         label = 1 if np.any(y[start_idx:end_idx] == 1) else 0
         aligned_labels.append(label)
 
@@ -97,6 +99,7 @@ def select_best_threshold_on_validation(
     for threshold in threshold_values:
         preds_val, _ = model.predict(val_patterns, anomaly_threshold=threshold)
         label_start = window_size
+        #labellari oruntu boyutuyla hizalama
         y_val_aligned = align_labels_to_patterns(
             y_val,
             len(val_patterns),
@@ -105,14 +108,14 @@ def select_best_threshold_on_validation(
         preds_val = preds_val[:len(y_val_aligned)]
 
         metrics = calculate_metrics(y_val_aligned, preds_val)
-
+        #en iyi f1 veren esik değeri ile guncelle
         if metrics["f1_score"] > best_f1:
             best_f1 = metrics["f1_score"]
             best_threshold = threshold
             best_metrics = metrics
 
     return best_threshold, best_metrics
-#
+#hiperparametre optimizasyonu
 def select_best_vomm_config_on_validation(
     X_train,
     X_val,
@@ -135,13 +138,14 @@ def select_best_vomm_config_on_validation(
 
     for window_size in window_sizes:
         for alphabet_size in alphabet_sizes:
+            #ilk veriyi sembolik hale getir
             transformer = SaxPaaTransformer(alphabet_size=alphabet_size)
 
             train_patterns = transformer.transform(
                 X_train,
                 window_size=window_size
             )
-
+            #ikinci vomm modeli tanıtma ve eğitme
             model = VariableOrderMarkovModel(
                 max_depth=window_size,
                 min_count=2,
@@ -149,12 +153,12 @@ def select_best_vomm_config_on_validation(
                 smoothing_alpha=1.0
             )
             model.fit(train_patterns)
-
+            #ucuncu validation setini dönüştür ve hizala
             val_patterns = transformer.transform(
                 X_val,
                 window_size=window_size
             )
-
+            #dorduncu bu parametre seti için en iyi anomali eşik değerini tara
             y_val_aligned = align_labels_to_patterns(
                 y_val,
                 len(val_patterns),
@@ -191,18 +195,20 @@ def select_best_vomm_config_on_validation(
 
 def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42,X_val=None,y_val=None,use_validation_threshold=True):
     results = []
+    #SAX-PAA Dönüşümü ve Model Eğitimi
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
  
     model = VariableOrderMarkovModel(
-    max_depth=config["window_size"],
-    min_count=2,
-    smoothing=True,
-    smoothing_alpha=1.0
+        max_depth=config["window_size"],
+        min_count=config.get("min_count", 2),
+        smoothing=True,
+        smoothing_alpha=config.get("smoothing_alpha", 1.0)
     )
     model.fit(train_patterns)
     selected_threshold = config["anomaly_threshold"]
     validation_threshold_f1 = None
+    #eğer aktifse dinamik eşik bulma mekanizmasını çalıştırır
     if use_validation_threshold and X_val is not None and y_val is not None:
        threshold_values = config.get(
            "vomm_threshold_values",
@@ -222,14 +228,17 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             f"{dataset_name} {fold_name} validation selected threshold: "
             f"{selected_threshold} | val F1: {validation_threshold_f1:.4f}"
          )
-
+    #modelin yapısal karmaşıklığını ve durum/geçiş yoğunluğunu hesaplama
     num_states = len(model.trained_patterns)
     num_transitions = sum(len(targets) for targets in model.transitions.values())
     transition_density = num_transitions / (num_states * num_states) if num_states > 0 else 0.0
  
     common_fields = {
         "dataset": dataset_name, "fold": fold_name, "seed": seed,
-        "window_size": config["window_size"], "alphabet_size": config["alphabet_size"],
+        "window_size": config["window_size"],
+        "alphabet_size": config["alphabet_size"],
+        "min_count": config.get("min_count", 2),
+        "smoothing_alpha": config.get("smoothing_alpha", 1.0),
         "num_states": num_states, "num_transitions": num_transitions,
         "transition_density": transition_density,
         "selected_threshold": selected_threshold,
@@ -285,6 +294,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
  
     return results, logs_orig
  
+#parametre duyarlık analizi
 def run_parameter_sensitivity_analysis(config):
     print("\n--- PARAMETRE DUYARLILIK ANALİZİ (GRID SEARCH) BAŞLATILIYOR ---")
     
@@ -292,7 +302,7 @@ def run_parameter_sensitivity_analysis(config):
     alphabet_sizes = config.get("alphabet_sizes", [3, 4, 5, 6])
     sensitivity_results = []
     
-    # PARAMETRE TARAMASI İÇİN DE ADASYN VERİSİ BAĞLANDI
+    # 1. batada (adasyn ile dengelenmiş veri) için parametre taraması
     if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
         X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
         X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
@@ -312,7 +322,7 @@ def run_parameter_sensitivity_analysis(config):
                 orig_res = [r for r in res if r["scenario"] == "original"][0]
                 sensitivity_results.append(orig_res)
                 print(f"BATADAL -> Window Size: {w}, Alphabet Size: {a} | Density: {orig_res['transition_density']:.4f}, F1: {orig_res['f1_score']:.4f}")
-
+    #skab ıcın parametre taraması
     skab_train_path = "data/processed/skab_fold1_X_train_pc1.csv"
     skab_test_path = "data/processed/skab_fold1_X_test_pc1.csv"
     skab_y_path = "data/processed/skab_fold1_y_test.csv"
@@ -420,6 +430,80 @@ def run_vomm_threshold_sensitivity_analysis(config):
             "results/outputs/vomm_pst_threshold_sensitivity.csv",
             index=False
         ) 
+
+#batadal ıyılestırma
+def run_batadal_vomm_regularization_analysis(config):
+    print("\n--- BATADAL VOMM/PST MIN_COUNT & SMOOTHING ANALİZİ BAŞLATILIYOR ---")
+
+    results = []
+
+    min_count_values = [1, 2, 3, 5, 10]
+    smoothing_alpha_values = [0.01, 0.05, 0.1, 0.5, 1.0]
+
+    if not os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        print("BATADAL verisi bulunamadı.")
+        return
+
+    X_train = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+    X_val = pd.read_csv("data/processed/batadal_X_val_pc1.csv").values.flatten()
+    y_val = pd.read_csv("data/processed/batadal_y_val.csv").values.flatten()
+    X_test = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+    y_test = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+
+    y_val = np.where(y_val == -999, 0, y_val)
+    y_test = np.where(y_test == -999, 0, y_test)
+
+    for min_count in min_count_values:
+        for smoothing_alpha in smoothing_alpha_values:
+            cc = {
+                **config,
+                "window_size": 6,
+                "alphabet_size": 4,
+                "anomaly_threshold": 0.05,
+                "min_count": min_count,
+                "smoothing_alpha": smoothing_alpha
+            }
+
+            res, _ = run_experiment_pipeline(
+                X_train,
+                X_test,
+                y_test,
+                cc,
+                "BATADAL",
+                "regularization_search",
+                seed=config["seeds"][0],
+                X_val=X_val,
+                y_val=y_val,
+                use_validation_threshold=True
+            )
+
+            original_result = [r for r in res if r["scenario"] == "original"][0]
+            results.append(original_result)
+
+            print(
+                f"BATADAL -> min_count={min_count}, "
+                f"smoothing_alpha={smoothing_alpha} | "
+                f"threshold={original_result['selected_threshold']} | "
+                f"Precision={original_result['precision']:.4f} | "
+                f"Recall={original_result['recall']:.4f} | "
+                f"F1={original_result['f1_score']:.4f}"
+            )
+
+    if results:
+        df_results = pd.DataFrame(results)
+        df_results.to_csv(
+            "results/outputs/batadal_vomm_regularization_sensitivity.csv",
+            index=False
+        )
+
+        best_row = df_results.loc[df_results["f1_score"].idxmax()]
+        print("\nEn iyi BATADAL min_count & smoothing ayarı:")
+        print(
+            f"min_count={best_row['min_count']}, "
+            f"smoothing_alpha={best_row['smoothing_alpha']}, "
+            f"threshold={best_row['selected_threshold']} | "
+            f"F1={best_row['f1_score']:.4f}"
+        )        
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -447,8 +531,10 @@ def main():
             **config,
             "window_size": 6,
             "alphabet_size": 4,
-            "anomaly_threshold": 0.05
-     }
+            "anomaly_threshold": 0.001,
+            "min_count": 3,
+            "smoothing_alpha": 0.1
+        }
  
         batadal_logs = None
         for seed in seeds:
@@ -563,6 +649,7 @@ def main():
  
     run_parameter_sensitivity_analysis(config)
     run_vomm_threshold_sensitivity_analysis(config)
+    run_batadal_vomm_regularization_analysis(config)
  
     try:
         from src.experiments.statistical_tests import main as run_statistical_main

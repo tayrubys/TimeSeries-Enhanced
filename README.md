@@ -88,3 +88,18 @@ Bu özel ayar BATADAL performansını iyileştirdi:
 | `window=6`, `alphabet=4`, validation threshold | 0.1085 | 0.9333 | 0.1944 |
 
 Bu sonuç BATADAL tarafında daha uzun sembolik pencere kullanımının anomalileri yakalamada daha etkili olduğunu göstermektedir. Özellikle recall değerinin `0.5909` seviyesinden `0.9333` seviyesine çıkması, modelin saldırı örüntülerini daha başarılı yakaladığını göstermektedir.
+
+### BATADAL Min Count ve Smoothing Analizi
+
+BATADAL tarafında `window_size=6`, `alphabet_size=4` ayarı ile elde edilen performansı daha da iyileştirmek için VOMM/PST modelinde `min_count` ve `smoothing_alpha` parametreleri taranmıştır.
+
+`min_count`, bir bağlamın güvenilir kabul edilmesi için eğitim verisinde en az kaç kez görülmesi gerektiğini belirler. `smoothing_alpha` ise görülmeyen veya nadir geçişlere verilen olasılığı kontrol eder.
+
+Yapılan taramada en iyi sonuç `min_count=3`, `smoothing_alpha=0.1` ve validation üzerinden seçilen `threshold=0.001` ile elde edilmiştir.
+
+| Ayar | Precision | Recall | F1-score |
+|---|---:|---:|---:|
+| `window=6`, `alphabet=4`, varsayılan `min_count=2`, `alpha=1.0` | 0.1085 | 0.9333 | 0.1944 |
+| `window=6`, `alphabet=4`, `min_count=3`, `alpha=0.1` | 0.1163 | 1.0000 | 0.2083 |
+
+Bu sonuç, bağlam güvenilirliğini kontrol eden `min_count` parametresinin artırılmasının BATADAL üzerinde false positive davranışını kısmen azaltabildiğini ve modelin F1-score değerini iyileştirdiğini göstermektedir.
