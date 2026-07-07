@@ -103,3 +103,6 @@ Yapılan taramada en iyi sonuç `min_count=3`, `smoothing_alpha=0.1` ve validati
 | `window=6`, `alphabet=4`, `min_count=3`, `alpha=0.1` | 0.1163 | 1.0000 | 0.2083 |
 
 Bu sonuç, bağlam güvenilirliğini kontrol eden `min_count` parametresinin artırılmasının BATADAL üzerinde false positive davranışını kısmen azaltabildiğini ve modelin F1-score değerini iyileştirdiğini göstermektedir.
+
+
+Ek olarak BATADAL için daha ince threshold aralıkları (`0.00001` - `0.01`) denenmiştir. Ancak F1-score değerinde ek bir artış gözlenmemiştir. Bu sonuç, mevcut aşamada performans artışının yalnızca threshold seçimiyle sınırlı kalmadığını; sembolik temsil, bağlam seçimi ve regularization parametrelerinin daha belirleyici olduğunu göstermektedir.
