@@ -106,3 +106,12 @@ Bu sonuç, bağlam güvenilirliğini kontrol eden `min_count` parametresinin art
 
 
 Ek olarak BATADAL için daha ince threshold aralıkları (`0.00001` - `0.01`) denenmiştir. Ancak F1-score değerinde ek bir artış gözlenmemiştir. Bu sonuç, mevcut aşamada performans artışının yalnızca threshold seçimiyle sınırlı kalmadığını; sembolik temsil, bağlam seçimi ve regularization parametrelerinin daha belirleyici olduğunu göstermektedir.
+### Ardışık Anomali Filtresi Denemesi
+
+BATADAL tarafında VOMM/PST modelinin recall değerinin oldukça yüksek, precision değerinin ise düşük olduğu gözlemlenmişti. Bu durum modelin anomalileri yakalayabildiğini, ancak normal örneklerin bir kısmını da anomali olarak işaretlediğini göstermektedir. Bu nedenle false positive oranını azaltmak amacıyla VOMM/PST tahminleri üzerinde ardışık anomali filtresi denenmiştir.
+
+Bu yöntemde tekil anomali tahminleri doğrudan kabul edilmemiş, yalnızca art arda belirli sayıda anomali tahmini geldiğinde bu bölge anomali olarak korunmuştur. Örneğin `min_consecutive=2` için tek başına kalan anomali tahminleri silinirken, en az iki ardışık anomali tahmini korunmaktadır. Amaç, gerçek siber-fiziksel anomalilerin genellikle zaman içinde devam eden olaylar olması varsayımından yararlanarak izole false positive tahminlerini azaltmaktır.
+
+Deneyde `min_consecutive` değeri validation seti üzerinde `[1, 2, 3, 4]` aralığında denenmiştir. Ancak validation sonucunda en iyi F1-score değeri `min_consecutive=1` iken elde edilmiştir. Bu değer filtrenin uygulanmadığı temel duruma karşılık gelmektedir. Dolayısıyla ardışık anomali filtresi BATADAL performansında ek bir iyileştirme sağlamamıştır.
+
+Bu sonuç, BATADAL tarafındaki false positive tahminlerin çoğunun tekil ve izole noktalardan oluşmadığını; daha çok ardışık bloklar halinde ortaya çıktığını göstermektedir. Bu nedenle ardışık filtre final modele dahil edilmemiştir.
