@@ -289,6 +289,63 @@ Bu bölümde, baseline model ayarlarından yola çıkılarak modelin öğrenme s
 | **LSTM (Epoch=75)** | 0.9488 ± 0.0291 | 0.6248 ± 0.3516 | 0.6800 ± 0.3916 | 0.6479 ± 0.3649 |
 
 >Model bazlı dinamik pencere seçimi, her iki mimarinin de güçlü olduğu alanları (GRU için dar/kaliteli uzay, LSTM için geniş zaman ufku) ortaya çıkarmıştır. Genişletilmiş eğitim süresi, LSTM modelinin tepe performanslarını %81-85 F1 bandına stabilize ederken; GRU modelinin 5 rastgele başlangıç ağırlığının 3'ünde %80+ F1 başarısı yakalamasını sağlamıştır. Her iki modelde de tekil seed bazlı görülen sıfır çekme (anomali kaçırma) durumları, modellerin yetersizliğinden ziyade validation setinden taşınan sabit eşik listesi adımlarının test kümesi olasılık dağılımlarına tam adapte olamamasından kaynaklanmaktadır.
+
+## Deney 2.6: Genişletilmiş Rassal Başlangıç (15-Seed) ve Optimize Kapasite Analizi
+Bu deneysel senaryoda, modellerin başlangıç ağırlıklarına (seed) olan duyarlılığını ve genelleme yeteneğini en üst düzeyde test etmek amacıyla rastgele başlangıç varyasyonu 5'ten **15 farklı seed değerine** çıkarılmıştır (`42, 123, 2026, 7, 999, 1, 13, 101, 256, 314, 512, 1024, 2048, 4096, 8192`). (lstm window=20 gru window=10)
+
+Önceki deneylerde görülen aşırı öğrenme (overfitting) eğilimini ve yüksek standart sapmayı kontrol altına almak adına, model mimarilerinde yapısal bir optimizasyona gidilmiş; `lstm_units` ve `gru_units` kapasiteleri **64** seviyesine indirilmiş, `dense_units` ise **32** olarak dengelenmiştir. Eğitim parametreleri `epochs: 100` ve `early_stopping_patience: 15` olarak pürüzsüz yakınsamaya izin verecek şekilde korunmuştur.
+
+### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
+ 
+| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
+|---|---|---|---|---|---|---|
+| **LSTM** | 42 | 0.5 | 0.9033 | 0.6667 | 0.0250 | 0.0482 |
+| **LSTM** | 123 | 0.1 | 0.9670 | 0.7849 | 0.9125 | 0.8439 |
+| **LSTM** | 2026 | 0.1 | 0.9400 | 0.6202 | 1.0000 | 0.7656 |
+| **LSTM** | 7 | 0.2 | 0.9168 | 0.7727 | 0.2125 | 0.3333 |
+| **LSTM** | 999 | 0.1 | 0.9400 | 0.6220 | 0.9875 | 0.7633 |
+| **LSTM** | 1 | 0.2 | 0.9486 | 0.6759 | 0.9125 | 0.7766 |
+| **LSTM** | 13 | 0.5 | 0.8972 | 0.0000 | 0.0000 | 0.0000 |
+| **LSTM** | 101 | 0.2 | 0.8984 | 0.4615 | 0.2250 | 0.3025 |
+| **LSTM** | 256 | 0.5 | 0.9400 | 0.8780 | 0.4500 | 0.5950 |
+| **LSTM** | 314 | 0.1 | 0.9584 | 0.8286 | 0.7250 | 0.7733 |
+| **LSTM** | 512 | 0.3 | 0.9009 | 0.3333 | 0.0125 | 0.0241 |
+| **LSTM** | 1024 | 0.5 | 0.9009 | 0.0000 | 0.0000 | 0.0000 |
+| **LSTM** | 2048 | 0.1 | 0.9229 | 0.5594 | 1.0000 | 0.7175 |
+| **LSTM** | 4096 | 0.2 | 0.9498 | 0.6757 | 0.9375 | 0.7853 |
+| **LSTM** | 8192 | 0.1 | 0.9192 | 0.5507 | 0.9500 | 0.6972 |
+| **GRU** | 42 | 0.3 | 0.9311 | 0.5935 | 0.9125 | 0.7192 |
+| **GRU** | 123 | 0.5 | 0.9069 | 0.5556 | 0.1875 | 0.2804 |
+| **GRU** | 2026 | 0.5 | 0.9553 | 0.7654 | 0.7750 | 0.7702 |
+| **GRU** | 7 | 0.4 | 0.8912 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 999 | 0.5 | 0.8912 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 1 | 0.5 | 0.8960 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 13 | 0.5 | 0.9033 | 0.5000 | 0.4750 | 0.4872 |
+| **GRU** | 101 | 0.5 | 0.9432 | 0.7143 | 0.6875 | 0.7006 |
+| **GRU** | 256 | 0.5 | 0.9420 | 0.6633 | 0.8125 | 0.7303 |
+| **GRU** | 314 | 0.5 | 0.9021 | 0.4872 | 0.2375 | 0.3193 |
+| **GRU** | 512 | 0.5 | 0.8899 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 1024 | 0.2 | 0.9274 | 0.5758 | 0.9500 | 0.7170 |
+| **GRU** | 2048 | 0.5 | 0.8948 | 0.1818 | 0.0250 | 0.0440 |
+| **GRU** | 4096 | 0.4 | 0.9408 | 0.6566 | 0.8125 | 0.7263 |
+| **GRU** | 8192 | 0.5 | 0.8899 | 0.1765 | 0.0375 | 0.0619 |
+ 
+### Model Performans Özetleri (Ortalama ± Standart Sapma)
+ 
+| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
+|---|---|---|---|---|
+| **GRU (ADASYN Baseline)** | 0.9137 ± 0.0235 | 0.3913 ± 0.2945 | 0.3942 ± 0.3889 | 0.3704 ± 0.3319 |
+| **LSTM (ADASYN Baseline)** | 0.9269 ± 0.0237 | 0.5620 ± 0.2677 | 0.5567 ± 0.4308 | 0.4951 ± 0.3363 |
+
+> Sonuçlarının Değerlendirilmesi: Bu deneyde seed sayısı 15’e çıkarılarak modellerin başlangıç ağırlıklarına karşı dayanıklılığı daha kapsamlı biçimde incelenmiştir. Ayrıca model kapasiteleri azaltılarak daha sade mimarilerin eğitim kararlılığı üzerindeki etkisi analiz edilmiştir.
+
+>Sonuçlar, LSTM modelinin ortalama performans açısından GRU modelinden daha başarılı olduğunu göstermiştir. LSTM modeli bazı seed değerlerinde oldukça yüksek F1-score değerlerine ulaşırken, her iki modelde de standart sapmaların yüksek olması seed duyarlılığının halen önemli bir problem olduğunu ortaya koymuştur.
+
+>Bazı seed değerlerinde precision, recall ve F1-score değerlerinin sıfıra düşmesi, modellerin belirli başlangıçlarda anomalileri tamamen kaçırabildiğini göstermektedir. Özellikle başarısız seed’lerde threshold değerlerinin çoğunlukla 0.5 seviyesinde kalması, model çıktı olasılıklarının düşük bölgede sıkıştığını ve anomalilerin yeterli güvenle tahmin edilemediğini düşündürmektedir.
+
+>Genel olarak değerlendirildiğinde, kapasite azaltımı bazı seed’lerde daha kararlı sonuçlar üretilmesine katkı sağlamış olsa da, seed duyarlılığı problemi tamamen giderilememiştir. Bu nedenle yalnızca ortalama performans değerlerinin değil, seed bazlı kararlılık analizlerinin de dikkate alınması gerektiği sonucuna ulaşılmıştır.
+
+
 ---
 ## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
  

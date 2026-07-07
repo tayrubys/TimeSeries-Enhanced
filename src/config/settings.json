@@ -43,9 +43,9 @@
         "batch_size": 32,
         "early_stopping_patience": 12,
         "learning_rate": 0.0005,
-        "lstm_units": 128,
-        "gru_units": 128,
-        "dense_units": 64,
+        "lstm_units": 64,
+        "gru_units": 64,
+        "dense_units": 32,
         "dropout_rate_1": 0.3,
         "dropout_rate_2": 0.2,
         "val_ratio": 0.2,
@@ -63,7 +63,9 @@
             123,
             2026,
             7,
-            999
+            999,
+            1, 13, 101, 256, 314, 512, 1024, 2048, 4096, 8192
+
         ],
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20
