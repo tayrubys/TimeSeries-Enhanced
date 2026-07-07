@@ -93,6 +93,21 @@
             2026,
             7,
             999
-        ]
+        ],
+    
+        "run_entropy_threshold_sweep": true,
+        "entropy_threshold": 0.85,
+        "batadal_final_entropy_threshold": 0.85,
+        "skab_final_entropy_threshold": 0.85,
+        "entropy_thresholds": [
+            0.70,
+            0.75,
+            0.80,
+            0.85,
+            0.90,
+            0.95
+        ],
+        "entropy_mode": "normalized",
+        "entropy_min_total_exits": 1
     }
 }

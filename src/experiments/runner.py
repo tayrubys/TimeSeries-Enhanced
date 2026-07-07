@@ -28,7 +28,16 @@ def load_json_config(config_path="src/config/settings.json"):
         "max_mapping_distances": [None, 1, 2, 3],
         "auto_score_percentiles": [90, 95, 97, 99],
         "decision_mode": "avg_negative_log",
-        "decision_modes": ["negative_log", "avg_negative_log"],
+        "decision_modes": ["negative_log", "avg_negative_log", "entropy"],
+
+        # Entropy-threshold feature parametreleri
+        # entropy_threshold=None yaparsanız feature kapanır ve baseline davranışı korunur.
+        # normalized modda threshold 0.0-1.0 aralığında yorumlanır.
+        "entropy_threshold": 0.85,
+        "entropy_thresholds": [0.70, 0.75, 0.80, 0.85, 0.90, 0.95],
+        "entropy_mode": "normalized",
+        "entropy_min_total_exits": 1,
+        "run_entropy_threshold_sweep": False,
 
         # Final seçilen Markov otomata parametreleri
         "batadal_final_order": 3,
@@ -37,6 +46,9 @@ def load_json_config(config_path="src/config/settings.json"):
         "batadal_final_score_window": 5,
         "batadal_final_score_threshold": 3.9120,
         "batadal_final_max_mapping_distance": None,
+        "batadal_final_entropy_threshold": 0.85,
+        "batadal_final_entropy_mode": "normalized",
+        "batadal_final_entropy_min_total_exits": 1,
 
         "skab_final_order": 3,
         "skab_final_smoothing_alpha": 0.5,
@@ -44,6 +56,9 @@ def load_json_config(config_path="src/config/settings.json"):
         "skab_final_score_window": 10,
         "skab_final_score_threshold": 0.2231,
         "skab_final_max_mapping_distance": None,
+        "skab_final_entropy_threshold": 0.85,
+        "skab_final_entropy_mode": "normalized",
+        "skab_final_entropy_min_total_exits": 1,
 
         "batadal_score_thresholds": [2.5257, 2.6593, 2.8134, 2.9957, 3.2189, 3.5066, 3.9120],
         "skab_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108, 0.6931, 0.9163, 1.2040, 1.6094, 2.3026, 2.9957],
@@ -97,6 +112,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         order=config.get("order", 2),
         learning_rate=config.get("learning_rate", 0.0),
         smoothing_alpha=config.get("smoothing_alpha", 1.0),
+        entropy_threshold=config.get("entropy_threshold"),
+        entropy_mode=config.get("entropy_mode", "normalized"),
+        entropy_min_total_exits=config.get("entropy_min_total_exits", 1),
     )
     model.fit(train_patterns)
 
@@ -138,6 +156,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "auto_score_percentile": auto_score_percentile,
         "score_window": config.get("score_window", 1),
         "max_mapping_distance": config.get("max_mapping_distance"),
+        "entropy_threshold": config.get("entropy_threshold"),
+        "entropy_mode": config.get("entropy_mode", "normalized"),
+        "entropy_min_total_exits": config.get("entropy_min_total_exits", 1),
         "num_states": num_states,
         "vocab_size": vocab_size,
         "num_transitions": num_transitions,
@@ -153,6 +174,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         score_threshold=computed_score_threshold,
         score_window=config.get("score_window", 1),
         max_mapping_distance=config.get("max_mapping_distance"),
+        entropy_threshold=config.get("entropy_threshold"),
+        entropy_mode=config.get("entropy_mode", "normalized"),
+        entropy_min_total_exits=config.get("entropy_min_total_exits", 1),
     )
     y_test_aligned_orig = y_test[:len(preds_orig)]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
@@ -169,6 +193,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         score_threshold=computed_score_threshold,
         score_window=config.get("score_window", 1),
         max_mapping_distance=config.get("max_mapping_distance"),
+        entropy_threshold=config.get("entropy_threshold"),
+        entropy_mode=config.get("entropy_mode", "normalized"),
+        entropy_min_total_exits=config.get("entropy_min_total_exits", 1),
     )
     y_test_aligned_noisy = y_test[:len(preds_noisy)]
     metrics_noisy = calculate_metrics(y_test_aligned_noisy, preds_noisy)
@@ -192,6 +219,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             score_threshold=computed_score_threshold,
             score_window=config.get("score_window", 1),
             max_mapping_distance=config.get("max_mapping_distance"),
+        entropy_threshold=config.get("entropy_threshold"),
+        entropy_mode=config.get("entropy_mode", "normalized"),
+        entropy_min_total_exits=config.get("entropy_min_total_exits", 1),
         )
         y_test_aligned_unseen = y_test_unseen[-len(preds_unseen):]
         metrics_unseen = calculate_metrics(y_test_aligned_unseen, preds_unseen)
@@ -845,6 +875,178 @@ def run_validation_threshold_sweep(config):
     print(f"[OK] Validation threshold en iyi adaylar kaydedildi: {best_path}")
 
 
+
+def run_entropy_threshold_sweep(config):
+    """Entropy-threshold feature için dataset bazlı threshold sweep çalıştırır."""
+    print("\n--- ENTROPY-THRESHOLD SWEEP BAŞLATILIYOR ---")
+
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    entropy_thresholds = config.get("entropy_thresholds", [0.70, 0.75, 0.80, 0.85, 0.90, 0.95])
+    entropy_mode = config.get("entropy_mode", "normalized")
+    entropy_min_total_exits = config.get("entropy_min_total_exits", 1)
+    sweep_results = []
+
+    # Final Markov ayarlarının üzerine sadece entropy threshold'u değiştiriyoruz.
+    # Böylece branch etkisi, daha önce seçilmiş en iyi Markov baseline üzerinde izole ölçülür.
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Entropy Threshold Taraması...")
+        print(f"   entropy_threshold aralığı: {entropy_thresholds}")
+        for entropy_threshold in entropy_thresholds:
+            for seed in seeds:
+                cc = {
+                    **config,
+                    "order": config.get("batadal_final_order", 3),
+                    "smoothing_alpha": config.get("batadal_final_smoothing_alpha", 0.1),
+                    "decision_mode": config.get("batadal_final_decision_mode", "avg_negative_log"),
+                    "score_window": config.get("batadal_final_score_window", 5),
+                    "score_threshold": config.get("batadal_final_score_threshold", 3.9120),
+                    "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+                    "auto_score_percentile": None,
+                    "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+                    "entropy_threshold": entropy_threshold,
+                    "entropy_mode": entropy_mode,
+                    "entropy_min_total_exits": entropy_min_total_exits,
+                }
+                res, _ = run_experiment_pipeline(
+                    X_train_b,
+                    X_test_b,
+                    y_test_b,
+                    cc,
+                    "BATADAL",
+                    "entropy_threshold_sweep",
+                    seed=seed,
+                )
+                sweep_results.extend(res)
+
+            temp_df = pd.DataFrame([
+                r for r in sweep_results
+                if r["dataset"] == "BATADAL"
+                and r["scenario"] == "original"
+                and r["entropy_threshold"] == entropy_threshold
+            ])
+            if not temp_df.empty:
+                print(
+                    f"BATADAL -> entropy_threshold={entropy_threshold}, mode={entropy_mode}, "
+                    f"Precision={temp_df['precision'].mean():.4f}, "
+                    f"Recall={temp_df['recall'].mean():.4f}, "
+                    f"F1={temp_df['f1_score'].mean():.4f}"
+                )
+
+    print("\n>> SKAB Entropy Threshold Taraması...")
+    print(f"   entropy_threshold aralığı: {entropy_thresholds}")
+    for entropy_threshold in entropy_thresholds:
+        for fold in range(1, 6):
+            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+            if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                continue
+
+            X_train_s = pd.read_csv(train_file).values.flatten()
+            X_test_s = pd.read_csv(test_file).values.flatten()
+            y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+            for seed in seeds:
+                cc = {
+                    **config,
+                    "order": config.get("skab_final_order", 3),
+                    "smoothing_alpha": config.get("skab_final_smoothing_alpha", 0.5),
+                    "decision_mode": config.get("skab_final_decision_mode", "avg_negative_log"),
+                    "score_window": config.get("skab_final_score_window", 10),
+                    "score_threshold": config.get("skab_final_score_threshold", 0.2231),
+                    "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+                    "auto_score_percentile": None,
+                    "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+                    "entropy_threshold": entropy_threshold,
+                    "entropy_mode": entropy_mode,
+                    "entropy_min_total_exits": entropy_min_total_exits,
+                }
+                res, _ = run_experiment_pipeline(
+                    X_train_s,
+                    X_test_s,
+                    y_test_s,
+                    cc,
+                    "SKAB",
+                    f"entropy_threshold_fold_{fold}",
+                    seed=seed,
+                )
+                sweep_results.extend(res)
+
+        temp_df = pd.DataFrame([
+            r for r in sweep_results
+            if r["dataset"] == "SKAB"
+            and r["scenario"] == "original"
+            and r["entropy_threshold"] == entropy_threshold
+        ])
+        if not temp_df.empty:
+            print(
+                f"SKAB -> entropy_threshold={entropy_threshold}, mode={entropy_mode}, "
+                f"Precision={temp_df['precision'].mean():.4f}, "
+                f"Recall={temp_df['recall'].mean():.4f}, "
+                f"F1={temp_df['f1_score'].mean():.4f}"
+            )
+
+    if not sweep_results:
+        print("[UYARI] Entropy-threshold sweep için uygun veri bulunamadı.")
+        return pd.DataFrame()
+
+    df_sweep = pd.DataFrame(sweep_results)
+    os.makedirs("results/outputs", exist_ok=True)
+
+    metrics_path = "results/outputs/automata_entropy_threshold_sweep_metrics.csv"
+    summary_path = "results/outputs/automata_entropy_threshold_sweep_summary.csv"
+    best_path = "results/outputs/automata_entropy_threshold_best_candidates.csv"
+
+    df_sweep.to_csv(metrics_path, index=False)
+
+    summary_cols = [
+        "dataset",
+        "decision_mode",
+        "order",
+        "smoothing_alpha",
+        "score_window",
+        "score_threshold",
+        "max_mapping_distance",
+        "entropy_threshold",
+        "entropy_mode",
+        "entropy_min_total_exits",
+    ]
+
+    df_original = df_sweep[df_sweep["scenario"] == "original"].copy()
+    if not df_original.empty:
+        summary = df_original.groupby(summary_cols, dropna=False).agg(
+            accuracy_mean=("accuracy", "mean"),
+            accuracy_std=("accuracy", "std"),
+            precision_mean=("precision", "mean"),
+            precision_std=("precision", "std"),
+            recall_mean=("recall", "mean"),
+            recall_std=("recall", "std"),
+            f1_score_mean=("f1_score", "mean"),
+            f1_score_std=("f1_score", "std"),
+            transition_density_mean=("transition_density", "mean"),
+            num_states_mean=("num_states", "mean"),
+            num_transitions_mean=("num_transitions", "mean"),
+        ).reset_index()
+
+        summary = summary.sort_values(
+            ["dataset", "f1_score_mean", "recall_mean", "precision_mean"],
+            ascending=[True, False, False, False],
+        )
+        summary.to_csv(summary_path, index=False)
+        summary.groupby("dataset").head(10).to_csv(best_path, index=False)
+
+        print(f"\n[OK] Entropy-threshold sweep sonuçları kaydedildi: {metrics_path}")
+        print(f"[OK] Entropy-threshold sweep özeti kaydedildi: {summary_path}")
+        print(f"[OK] Entropy-threshold en iyi adaylar kaydedildi: {best_path}")
+
+    return df_sweep
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -911,6 +1113,12 @@ def main():
             "score_window": config.get("batadal_final_score_window", 5),
             "score_threshold": config.get("batadal_final_score_threshold", 3.9120),
             "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+            "entropy_threshold": config.get("batadal_final_entropy_threshold", config.get("entropy_threshold")),
+            "entropy_mode": config.get("batadal_final_entropy_mode", config.get("entropy_mode", "normalized")),
+            "entropy_min_total_exits": config.get(
+                "batadal_final_entropy_min_total_exits",
+                config.get("entropy_min_total_exits", 1),
+            ),
             "auto_score_percentile": None,
             "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
         }
@@ -923,7 +1131,9 @@ def main():
                 f"alpha={config_batadal['smoothing_alpha']}, "
                 f"mode={config_batadal['decision_mode']}, "
                 f"window={config_batadal['score_window']}, "
-                f"score_threshold={config_batadal['score_threshold']} çalışıyor..."
+                f"score_threshold={config_batadal['score_threshold']}, "
+                f"entropy_threshold={config_batadal['entropy_threshold']}, "
+                f"entropy_mode={config_batadal['entropy_mode']} çalışıyor..."
             )
             batadal_res, logs = run_experiment_pipeline(
                 X_train,
@@ -950,6 +1160,12 @@ def main():
         "score_window": config.get("skab_final_score_window", 10),
         "score_threshold": config.get("skab_final_score_threshold", 0.2231),
         "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+        "entropy_threshold": config.get("skab_final_entropy_threshold", config.get("entropy_threshold")),
+        "entropy_mode": config.get("skab_final_entropy_mode", config.get("entropy_mode", "normalized")),
+        "entropy_min_total_exits": config.get(
+            "skab_final_entropy_min_total_exits",
+            config.get("entropy_min_total_exits", 1),
+        ),
         "auto_score_percentile": None,
         "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
     }
@@ -969,7 +1185,9 @@ def main():
                     f"alpha={config_skab['smoothing_alpha']}, "
                     f"mode={config_skab['decision_mode']}, "
                     f"window={config_skab['score_window']}, "
-                    f"score_threshold={config_skab['score_threshold']} çalışıyor..."
+                    f"score_threshold={config_skab['score_threshold']}, "
+                    f"entropy_threshold={config_skab['entropy_threshold']}, "
+                    f"entropy_mode={config_skab['entropy_mode']} çalışıyor..."
                 )
                 fold_res, _ = run_experiment_pipeline(
                     X_train,
@@ -986,7 +1204,12 @@ def main():
     df_all.to_csv("results/outputs/automata_advanced_all_scenarios_metrics.csv", index=False)
     write_summary_files(df_all)
 
-    # Final koşuda sweep çalıştırılmaz; ana metrikler sabit final parametrelerle üretilir.
+    # Entropy-threshold branch için isteğe bağlı threshold sweep.
+    # Varsayılan kapalıdır; settings.json içinde automata.run_entropy_threshold_sweep=true yaparak açabilirsiniz.
+    if config.get("run_entropy_threshold_sweep", False):
+        run_entropy_threshold_sweep(config)
+    else:
+        print("[INFO] Entropy-threshold sweep kapalı. Açmak için settings.json -> automata.run_entropy_threshold_sweep=true")
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
