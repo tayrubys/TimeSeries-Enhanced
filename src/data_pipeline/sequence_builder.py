@@ -80,8 +80,8 @@ def build_and_save_batadal_sequences(
             window_size=window_size
         )
 
-        X_output_path = processed_dir / f"batadal_X_{split_name}_seq.npy"
-        y_output_path = processed_dir / f"batadal_y_{split_name}_seq.npy"
+        X_output_path = processed_dir / f"batadal_X_{split_name}_seq_{window_size}.npy"
+        y_output_path = processed_dir / f"batadal_y_{split_name}_seq_{window_size}.npy"
 
         np.save(X_output_path, X_seq)
         np.save(y_output_path, y_seq)

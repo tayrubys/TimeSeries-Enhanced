@@ -11,12 +11,12 @@ from src.experiments.evaluator import evaluate_binary_classification
 from src.config import get_dl_config
 
 
-def load_batadal_sequence_data(processed_dir="data/processed", balancing_method="class_weight"):
+def load_batadal_sequence_data(processed_dir="data/processed", balancing_method="class_weight", model_type="LSTM"):
     """
     balancing_method:
       "class_weight" -> ham (dengesiz) train + class_weight kullanılacak
       "smote"        -> SMOTE ile dengelenmiş train (class_weight KULLANILMAZ)
-      "adasyn"       -> ADASYN ile dengelenmiş train (class_weight KULLANILMAZ)
+      "adasyn"       -> ADASYN ile dengelenmiş train (Model tipine göre pencere boyutu değişir)
     """
     if balancing_method == "class_weight":
         X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
@@ -25,16 +25,28 @@ def load_batadal_sequence_data(processed_dir="data/processed", balancing_method=
         X_train = np.load(f"{processed_dir}/batadal_X_train_seq_balanced.npy").astype("float32")
         y_train = np.load(f"{processed_dir}/batadal_y_train_seq_balanced.npy").astype("float32")
     elif balancing_method == "adasyn":
-        X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_20.npy").astype("float32")
-        y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_20.npy").astype("float32")
+        # GRU için window=10, LSTM için window=20 dosyaları yükleniyor
+        if model_type == "GRU":
+            X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_10.npy").astype("float32")
+            y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_10.npy").astype("float32")
+        else:  # LSTM
+            X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_20.npy").astype("float32")
+            y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_20.npy").astype("float32")
     else:
         raise ValueError(f"Bilinmeyen balancing_method: {balancing_method}")
 
-    # val/test HER ZAMAN dengesiz, orijinal hâliyle yüklenir
-    X_val   = np.load(f"{processed_dir}/batadal_X_val_seq.npy").astype("float32")
-    y_val   = np.load(f"{processed_dir}/batadal_y_val_seq.npy").astype("float32")
-    X_test  = np.load(f"{processed_dir}/batadal_X_test_seq.npy").astype("float32")
-    y_test  = np.load(f"{processed_dir}/batadal_y_test_seq.npy").astype("float32")
+    # Validation ve Test setleri model tipine (pencere boyutuna) göre dinamik yükleniyor
+    if model_type == "GRU":
+        X_val   = np.load(f"{processed_dir}/batadal_X_val_seq_10.npy").astype("float32")
+        y_val   = np.load(f"{processed_dir}/batadal_y_val_seq_10.npy").astype("float32")
+        X_test  = np.load(f"{processed_dir}/batadal_X_test_seq_10.npy").astype("float32")
+        y_test  = np.load(f"{processed_dir}/batadal_y_test_seq_10.npy").astype("float32")
+    else:  # LSTM (Window=20)
+        X_val   = np.load(f"{processed_dir}/batadal_X_val_seq_20.npy").astype("float32")
+        y_val   = np.load(f"{processed_dir}/batadal_y_val_seq_20.npy").astype("float32")
+        X_test  = np.load(f"{processed_dir}/batadal_X_test_seq_20.npy").astype("float32")
+        y_test  = np.load(f"{processed_dir}/batadal_y_test_seq_20.npy").astype("float32")
+        
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 
@@ -55,6 +67,7 @@ def find_best_threshold(y_true, y_pred_prob, thresholds):
             best_f1 = metrics["f1"]
             best_threshold = threshold
             best_metrics = metrics
+            
     return best_threshold, best_metrics
 
 
@@ -68,9 +81,13 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
     np.random.seed(seed)
     tf.random.set_seed(seed)
 
+    # Değişiklik: model_type parametresi artık veri yükleyiciye iletiliyor
     X_train, y_train, X_val, y_val, X_test, y_test = load_batadal_sequence_data(
-        balancing_method=balancing_method
+        balancing_method=balancing_method,
+        model_type=model_type
     )
+    actual_window_size = X_train.shape[1]  # Pencere boyutu, veri yükleyiciye göre dinamik olarak belirleniyor
+    cfg["sequence_window_size"] = actual_window_size
 
     model = build_model(model_type=model_type, input_shape=X_train.shape[1:])
 
@@ -104,7 +121,7 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
     best_threshold, val_metrics = find_best_threshold(
         y_val,
         y_val_pred_prob,
-        cfg["thresholds"]
+        thresholds=cfg["thresholds"]
     )
 
     y_test_pred_prob = model.predict(X_test)
