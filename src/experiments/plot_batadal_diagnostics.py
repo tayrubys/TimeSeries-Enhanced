@@ -28,26 +28,38 @@ EARLY_STOPPING_PATIENCE = DL_CONFIG["early_stopping_patience"]
 LEARNING_RATE = DL_CONFIG["learning_rate"]
 
 # BATADAL sequence dosyalarını yükler
-def load_batadal_sequence_data(processed_dir="data/processed"):
+def load_batadal_sequence_data(processed_dir="data/processed", balancing_method="adasyn", model_type="LSTM"):
+    """
+    Diagnostics scriptinin dinamik pencere boyutlarına (10 ve 20) uyum sağlaması 
+    ve FileNotFoundError hatasını çözmesi için güncellenmiş yükleyici.
+    """
+    import numpy as np
+    
+    # Model tipine göre hangi pencere boyutundaki ADASYN dosyasının okunacağı seçilir
+    if balancing_method == "adasyn":
+        if model_type == "GRU":
+            X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_10.npy").astype("float32")
+            y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_10.npy").astype("float32")
+        else:  # LSTM
+            X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_20.npy").astype("float32")
+            y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_20.npy").astype("float32")
+    else:
+        # Alternatif dengelemeler kullanılıyorsa (opsiyonel)
+        X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
+        y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
 
-    X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn.npy")
-    y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn.npy")
-
-    X_val = np.load(f"{processed_dir}/batadal_X_val_seq.npy")
-    y_val = np.load(f"{processed_dir}/batadal_y_val_seq.npy")
-
-    X_test = np.load(f"{processed_dir}/batadal_X_test_seq.npy")
-    y_test = np.load(f"{processed_dir}/batadal_y_test_seq.npy")
-
-    X_train = X_train.astype("float32")
-    y_train = y_train.astype("float32")
-
-    X_val = X_val.astype("float32")
-    y_val = y_val.astype("float32")
-
-    X_test = X_test.astype("float32")
-    y_test = y_test.astype("float32")
-
+    # Validation ve Test setleri de model tipine (pencere boyutuna) göre dinamik yüklenir
+    if model_type == "GRU":
+        X_val   = np.load(f"{processed_dir}/batadal_X_val_seq_10.npy").astype("float32")
+        y_val   = np.load(f"{processed_dir}/batadal_y_val_seq_10.npy").astype("float32")
+        X_test  = np.load(f"{processed_dir}/batadal_X_test_seq_10.npy").astype("float32")
+        y_test  = np.load(f"{processed_dir}/batadal_y_test_seq_10.npy").astype("float32")
+    else:  # LSTM (Window=20)
+        X_val   = np.load(f"{processed_dir}/batadal_X_val_seq_20.npy").astype("float32")
+        y_val   = np.load(f"{processed_dir}/batadal_y_val_seq_20.npy").astype("float32")
+        X_test  = np.load(f"{processed_dir}/batadal_X_test_seq_20.npy").astype("float32")
+        y_test  = np.load(f"{processed_dir}/batadal_y_test_seq_20.npy").astype("float32")
+        
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 

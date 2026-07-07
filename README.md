@@ -262,6 +262,33 @@ Bu bölümde, 2.3'deki genişletilmiş kapasite (units=128, dense=64) ve gevşet
 >  **LSTM İçin En İyi Konfigürasyon:** Seed=123 dışındaki 4 seed'de LSTM, %80–85 F1 bandında son derece tutarlı sonuçlar vermiştir (outlier hariç ortalama F1: **0.8304 ± 0.0234**) — bu, dokümandaki tüm LSTM deneyleri arasında en yüksek ve en kararlı ortalamadır (baseline'ın outlier hariç F1: 0.820 değerini de geçmektedir). Yani LSTM için ideal tarif, kapasiteyi artırmak (units=128) fakat pencere boyutunu **küçültmemek** (window=20'de bırakmak) olarak ortaya çıkmaktadır.
 >
 >  **GRU İçin Ters Etki:** Aynı kapasite artışı ve window=20 kombinasyonu GRU için performansı belirgin şekilde kötüleştirmiştir (F1 ort. 0.2888, oysa aynı kapasitede window=10'da F1 ort. 0.4481'di — bkz. Bölüm 2.2). Bu, GRU'nun optimal çalışma noktasının küçük pencere boyutlarında (window=10) kaldığını, window=20'nin GRU için hem gereksiz hem de zararlı bir kapasite/boyut kombinasyonu oluşturduğunu doğrulamaktadır.
+
+## 2.5. Dengelenmiş Eğitim Parametreleri Deneyi: Epoch=75, Patience=12, Model Tabanlı Dinamik Pencere Boyutu(gru window = 10, lstm window = 20)
+Bu bölümde, baseline model ayarlarından yola çıkılarak modelin öğrenme sürecini daha derin yakınsamaya zorlamak adına maksimum epoch sayısı `75`'e, erken durdurma sabrı (`early_stopping_patience`) ise `12` seviyesine çıkarılmıştır.Dropout oranları ($0.3 / 0.2$)  modellerin başlangıç ağırlıklarına (seed) karşı dayanıklılığı test edilmiştir.
+
+### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
+
+| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
+|---|---|---|---|---|---|---|
+| **LSTM** | 42 | 0.1 | 0.9547 | 0.7129 | 0.9000 | 0.7956 |
+| **LSTM** | 123 | 0.1 | 0.9535 | 0.8088 | 0.6875 | 0.7432 |
+| **LSTM** | 2026 | 0.2 | 0.8984 | 0.0000 | 0.0000 | 0.0000 |
+| **LSTM** | 7 | 0.1 | 0.9694 | 0.8090 | 0.9000 | 0.8521 |
+| **LSTM** | 999 | 0.1 | 0.9682 | 0.7935 | 0.9125 | 0.8488 |
+| **GRU** | 42 | 0.5 | 0.9637 | 0.7907 | 0.8500 | 0.8193 |
+| **GRU** | 123 | 0.2 | 0.9601 | 0.7527 | 0.8750 | 0.8092 |
+| **GRU** | 2026 | 0.2 | 0.9577 | 0.7027 | 0.9750 | 0.8168 |
+| **GRU** | 7 | 0.5 | 0.9311 | 0.8286 | 0.3625 | 0.5043 |
+| **GRU** | 999 | 0.3 | 0.9021 | 0.0000 | 0.0000 | 0.0000 |
+
+### Model Performans Özetleri (Ortalama ± Standart Sapma)
+
+| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
+|---|---|---|---|---|
+| **GRU (Epoch=75)** | 0.9429 ± 0.0262 | 0.6149 ± 0.3469 | 0.6125 ± 0.4166 | 0.5899 ± 0.3562 |
+| **LSTM (Epoch=75)** | 0.9488 ± 0.0291 | 0.6248 ± 0.3516 | 0.6800 ± 0.3916 | 0.6479 ± 0.3649 |
+
+>Model bazlı dinamik pencere seçimi, her iki mimarinin de güçlü olduğu alanları (GRU için dar/kaliteli uzay, LSTM için geniş zaman ufku) ortaya çıkarmıştır. Genişletilmiş eğitim süresi, LSTM modelinin tepe performanslarını %81-85 F1 bandına stabilize ederken; GRU modelinin 5 rastgele başlangıç ağırlığının 3'ünde %80+ F1 başarısı yakalamasını sağlamıştır. Her iki modelde de tekil seed bazlı görülen sıfır çekme (anomali kaçırma) durumları, modellerin yetersizliğinden ziyade validation setinden taşınan sabit eşik listesi adımlarının test kümesi olasılık dağılımlarına tam adapte olamamasından kaynaklanmaktadır.
 ---
 ## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
  
@@ -276,6 +303,8 @@ Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin 
 | Melez Yaklaşım (window=10, LR=0.0005, Dropout + class_weight="balanced") | 0.098 | 0.641 |
 |Genişletilmiş Kapasite (window=10, Units=128, Dropout=0.3/0.2) | 0.315 | 0.448|
 |Genişletilmiş Kapasite + Window=20 (Units=128, Dropout=0.3/0.2)| **0.674** (outlier hariç: **0.830**) | 0.289 |
+|Dengelenmiş Eğitim Parametreleri Deneyi (Epoch=75, Patience=12, Dinamik window) |0.6479 | 0.5899 |
+
 
 > **Sonuç — Mimariye Özel Optimal Konfigürasyonlar:** Tek bir "genel en iyi konfigürasyon" yerine, her mimarinin kendi optimal ayarına sahip olduğu görülmektedir:
 

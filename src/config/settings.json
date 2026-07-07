@@ -39,9 +39,9 @@
         ]
     },
     "deep_learning": {
-        "epochs": 50,
+        "epochs": 75,
         "batch_size": 32,
-        "early_stopping_patience": 8,
+        "early_stopping_patience": 12,
         "learning_rate": 0.0005,
         "lstm_units": 128,
         "gru_units": 128,
