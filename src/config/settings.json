@@ -69,6 +69,17 @@
         "batadal_val_ratio": 0.20
     },
     "automata": {
+        "run_transition_confidence_sweep": true,
+        "transition_confidence_enabled": true,
+        "transition_confidence_k": 10.0,
+        "transition_confidence_weight": 0.5,
+        "transition_confidence_mode": "additive",
+        "transition_confidence_use_transition_count": true,
+        "transition_confidence_ks": [1.0, 2.0, 5.0, 10.0, 20.0],
+        "transition_confidence_weights": [0.05, 0.1, 0.25, 0.5],
+        "transition_confidence_modes": ["additive"],
+        "transition_confidence_use_transition_count_options": [true],
+        
         "window_size": 4,
         "alphabet_size": 3,
         "anomaly_threshold": 0.05,

@@ -59,6 +59,34 @@ def load_json_config(config_path="src/config/settings.json"):
         "batadal_anomaly_threshold": 0.05,
         "noise_level": 0.1,
         "seeds": [42, 123, 2026, 7, 999],
+
+        # Transition-confidence branch parametreleri
+        "transition_confidence_enabled": True,
+        "transition_confidence_k": 10.0,
+        "transition_confidence_weight": 0.5,
+        "transition_confidence_mode": "additive",
+        "transition_confidence_use_transition_count": True,
+
+        # Final koşularda dataset bazlı override imkanı
+        "batadal_final_transition_confidence_enabled": True,
+        "batadal_final_transition_confidence_k": 10.0,
+        "batadal_final_transition_confidence_weight": 0.5,
+        "batadal_final_transition_confidence_mode": "additive",
+        "batadal_final_transition_confidence_use_transition_count": True,
+
+        "skab_final_transition_confidence_enabled": True,
+        "skab_final_transition_confidence_k": 10.0,
+        "skab_final_transition_confidence_weight": 0.5,
+        "skab_final_transition_confidence_mode": "additive",
+        "skab_final_transition_confidence_use_transition_count": True,
+
+        # Sweep varsayılan olarak kapalıdır; settings.json ile açılır.
+        "run_transition_confidence_sweep": False,
+        "transition_confidence_ks": [1.0, 5.0, 10.0, 20.0, 50.0],
+        "transition_confidence_weights": [0.1, 0.25, 0.5, 1.0],
+        "transition_confidence_modes": ["additive"],
+        "transition_confidence_use_transition_count_options": [True],
+
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20,
     }
@@ -97,6 +125,11 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         order=config.get("order", 2),
         learning_rate=config.get("learning_rate", 0.0),
         smoothing_alpha=config.get("smoothing_alpha", 1.0),
+        transition_confidence_enabled=config.get("transition_confidence_enabled", False),
+        transition_confidence_k=config.get("transition_confidence_k", 10.0),
+        transition_confidence_weight=config.get("transition_confidence_weight", 0.5),
+        transition_confidence_mode=config.get("transition_confidence_mode", "additive"),
+        transition_confidence_use_transition_count=config.get("transition_confidence_use_transition_count", True),
     )
     model.fit(train_patterns)
 
@@ -113,6 +146,11 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             decision_mode=config.get("decision_mode", "avg_negative_log"),
             score_window=config.get("score_window", 1),
             max_mapping_distance=config.get("max_mapping_distance"),
+            transition_confidence_enabled=config.get("transition_confidence_enabled"),
+            transition_confidence_k=config.get("transition_confidence_k"),
+            transition_confidence_weight=config.get("transition_confidence_weight"),
+            transition_confidence_mode=config.get("transition_confidence_mode"),
+            transition_confidence_use_transition_count=config.get("transition_confidence_use_transition_count"),
         )
         if reference_scores:
             computed_score_threshold = float(np.percentile(reference_scores, auto_score_percentile))
@@ -138,6 +176,11 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "auto_score_percentile": auto_score_percentile,
         "score_window": config.get("score_window", 1),
         "max_mapping_distance": config.get("max_mapping_distance"),
+        "transition_confidence_enabled": config.get("transition_confidence_enabled", False),
+        "transition_confidence_k": config.get("transition_confidence_k", 10.0),
+        "transition_confidence_weight": config.get("transition_confidence_weight", 0.5),
+        "transition_confidence_mode": config.get("transition_confidence_mode", "additive"),
+        "transition_confidence_use_transition_count": config.get("transition_confidence_use_transition_count", True),
         "num_states": num_states,
         "vocab_size": vocab_size,
         "num_transitions": num_transitions,
@@ -153,6 +196,11 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         score_threshold=computed_score_threshold,
         score_window=config.get("score_window", 1),
         max_mapping_distance=config.get("max_mapping_distance"),
+        transition_confidence_enabled=config.get("transition_confidence_enabled"),
+        transition_confidence_k=config.get("transition_confidence_k"),
+        transition_confidence_weight=config.get("transition_confidence_weight"),
+        transition_confidence_mode=config.get("transition_confidence_mode"),
+        transition_confidence_use_transition_count=config.get("transition_confidence_use_transition_count"),
     )
     y_test_aligned_orig = y_test[:len(preds_orig)]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
@@ -169,6 +217,11 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         score_threshold=computed_score_threshold,
         score_window=config.get("score_window", 1),
         max_mapping_distance=config.get("max_mapping_distance"),
+        transition_confidence_enabled=config.get("transition_confidence_enabled"),
+        transition_confidence_k=config.get("transition_confidence_k"),
+        transition_confidence_weight=config.get("transition_confidence_weight"),
+        transition_confidence_mode=config.get("transition_confidence_mode"),
+        transition_confidence_use_transition_count=config.get("transition_confidence_use_transition_count"),
     )
     y_test_aligned_noisy = y_test[:len(preds_noisy)]
     metrics_noisy = calculate_metrics(y_test_aligned_noisy, preds_noisy)
@@ -192,6 +245,11 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             score_threshold=computed_score_threshold,
             score_window=config.get("score_window", 1),
             max_mapping_distance=config.get("max_mapping_distance"),
+            transition_confidence_enabled=config.get("transition_confidence_enabled"),
+            transition_confidence_k=config.get("transition_confidence_k"),
+            transition_confidence_weight=config.get("transition_confidence_weight"),
+            transition_confidence_mode=config.get("transition_confidence_mode"),
+            transition_confidence_use_transition_count=config.get("transition_confidence_use_transition_count"),
         )
         y_test_aligned_unseen = y_test_unseen[-len(preds_unseen):]
         metrics_unseen = calculate_metrics(y_test_aligned_unseen, preds_unseen)
@@ -845,6 +903,196 @@ def run_validation_threshold_sweep(config):
     print(f"[OK] Validation threshold en iyi adaylar kaydedildi: {best_path}")
 
 
+
+def run_transition_confidence_sweep(config):
+    """Transition-confidence parametrelerini final Markov ayarları üzerinde tarar."""
+    print("\n--- TRANSITION-CONFIDENCE SWEEP BAŞLATILIYOR ---")
+
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    confidence_ks = config.get("transition_confidence_ks", [1.0, 5.0, 10.0, 20.0, 50.0])
+    confidence_weights = config.get("transition_confidence_weights", [0.1, 0.25, 0.5, 1.0])
+    confidence_modes = config.get("transition_confidence_modes", ["additive"])
+    use_transition_count_options = config.get("transition_confidence_use_transition_count_options", [True])
+
+    sweep_results = []
+
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Transition-Confidence Taraması...")
+        print(f"   k aralığı: {confidence_ks}")
+        print(f"   weight aralığı: {confidence_weights}")
+        print(f"   mode aralığı: {confidence_modes}")
+
+        for mode in confidence_modes:
+            for use_transition_count in use_transition_count_options:
+                for k in confidence_ks:
+                    for weight in confidence_weights:
+                        for seed in seeds:
+                            cc = {
+                                **config,
+                                "order": config.get("batadal_final_order", 3),
+                                "smoothing_alpha": config.get("batadal_final_smoothing_alpha", 0.1),
+                                "decision_mode": config.get("batadal_final_decision_mode", "avg_negative_log"),
+                                "score_window": config.get("batadal_final_score_window", 5),
+                                "score_threshold": config.get("batadal_final_score_threshold", 3.9120),
+                                "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+                                "auto_score_percentile": None,
+                                "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+                                "transition_confidence_enabled": True,
+                                "transition_confidence_k": k,
+                                "transition_confidence_weight": weight,
+                                "transition_confidence_mode": mode,
+                                "transition_confidence_use_transition_count": use_transition_count,
+                            }
+                            res, _ = run_experiment_pipeline(
+                                X_train_b,
+                                X_test_b,
+                                y_test_b,
+                                cc,
+                                "BATADAL",
+                                "transition_confidence_sweep",
+                                seed=seed,
+                            )
+                            sweep_results.extend(res)
+
+                        temp_df = pd.DataFrame([
+                            r for r in sweep_results
+                            if r["dataset"] == "BATADAL"
+                            and r["scenario"] == "original"
+                            and r["transition_confidence_k"] == k
+                            and r["transition_confidence_weight"] == weight
+                            and r["transition_confidence_mode"] == mode
+                            and r["transition_confidence_use_transition_count"] == use_transition_count
+                        ])
+                        if not temp_df.empty:
+                            print(
+                                f"BATADAL -> mode={mode}, use_transition_count={use_transition_count}, "
+                                f"k={k}, weight={weight} | "
+                                f"Precision={temp_df['precision'].mean():.4f}, "
+                                f"Recall={temp_df['recall'].mean():.4f}, "
+                                f"F1={temp_df['f1_score'].mean():.4f}"
+                            )
+
+    print("\n>> SKAB Transition-Confidence Taraması...")
+    print(f"   k aralığı: {confidence_ks}")
+    print(f"   weight aralığı: {confidence_weights}")
+    print(f"   mode aralığı: {confidence_modes}")
+
+    for mode in confidence_modes:
+        for use_transition_count in use_transition_count_options:
+            for k in confidence_ks:
+                for weight in confidence_weights:
+                    for fold in range(1, 6):
+                        train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                        test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                        y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                        if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                            continue
+
+                        X_train_s = pd.read_csv(train_file).values.flatten()
+                        X_test_s = pd.read_csv(test_file).values.flatten()
+                        y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                        for seed in seeds:
+                            cc = {
+                                **config,
+                                "order": config.get("skab_final_order", 3),
+                                "smoothing_alpha": config.get("skab_final_smoothing_alpha", 0.5),
+                                "decision_mode": config.get("skab_final_decision_mode", "avg_negative_log"),
+                                "score_window": config.get("skab_final_score_window", 10),
+                                "score_threshold": config.get("skab_final_score_threshold", 0.2231),
+                                "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+                                "auto_score_percentile": None,
+                                "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+                                "transition_confidence_enabled": True,
+                                "transition_confidence_k": k,
+                                "transition_confidence_weight": weight,
+                                "transition_confidence_mode": mode,
+                                "transition_confidence_use_transition_count": use_transition_count,
+                            }
+                            res, _ = run_experiment_pipeline(
+                                X_train_s,
+                                X_test_s,
+                                y_test_s,
+                                cc,
+                                "SKAB",
+                                f"transition_confidence_fold_{fold}",
+                                seed=seed,
+                            )
+                            sweep_results.extend(res)
+
+                    temp_df = pd.DataFrame([
+                        r for r in sweep_results
+                        if r["dataset"] == "SKAB"
+                        and r["scenario"] == "original"
+                        and r["transition_confidence_k"] == k
+                        and r["transition_confidence_weight"] == weight
+                        and r["transition_confidence_mode"] == mode
+                        and r["transition_confidence_use_transition_count"] == use_transition_count
+                    ])
+                    if not temp_df.empty:
+                        print(
+                            f"SKAB -> mode={mode}, use_transition_count={use_transition_count}, "
+                            f"k={k}, weight={weight} | "
+                            f"Precision={temp_df['precision'].mean():.4f}, "
+                            f"Recall={temp_df['recall'].mean():.4f}, "
+                            f"F1={temp_df['f1_score'].mean():.4f}"
+                        )
+
+    if not sweep_results:
+        print("[UYARI] Transition-confidence sweep için uygun veri bulunamadı.")
+        return pd.DataFrame()
+
+    df_sweep = pd.DataFrame(sweep_results)
+    os.makedirs("results/outputs", exist_ok=True)
+
+    metrics_path = "results/outputs/automata_transition_confidence_sweep_metrics.csv"
+    summary_path = "results/outputs/automata_transition_confidence_sweep_summary.csv"
+    best_path = "results/outputs/automata_transition_confidence_best_candidates.csv"
+
+    df_sweep.to_csv(metrics_path, index=False)
+
+    summary_cols = [
+        "dataset", "order", "smoothing_alpha", "decision_mode", "score_window", "score_threshold",
+        "max_mapping_distance", "transition_confidence_mode", "transition_confidence_k",
+        "transition_confidence_weight", "transition_confidence_use_transition_count"
+    ]
+
+    summary = df_sweep[df_sweep["scenario"] == "original"].groupby(summary_cols, dropna=False).agg(
+        accuracy_mean=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        precision_mean=("precision", "mean"),
+        precision_std=("precision", "std"),
+        recall_mean=("recall", "mean"),
+        recall_std=("recall", "std"),
+        f1_score_mean=("f1_score", "mean"),
+        f1_score_std=("f1_score", "std"),
+        transition_density_mean=("transition_density", "mean"),
+        num_states_mean=("num_states", "mean"),
+        num_transitions_mean=("num_transitions", "mean"),
+    ).reset_index()
+
+    summary = summary.sort_values(
+        ["dataset", "f1_score_mean", "recall_mean", "precision_mean"],
+        ascending=[True, False, False, False],
+    )
+    summary.to_csv(summary_path, index=False)
+
+    best_candidates = summary.groupby("dataset", group_keys=False).head(10)
+    best_candidates.to_csv(best_path, index=False)
+
+    print(f"\n[OK] Transition-confidence sweep sonuçları kaydedildi: {metrics_path}")
+    print(f"[OK] Transition-confidence sweep özeti kaydedildi: {summary_path}")
+    print(f"[OK] Transition-confidence en iyi adaylar kaydedildi: {best_path}")
+
+    return df_sweep
+
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -852,7 +1100,14 @@ def write_summary_files(df_all):
 
     df_skab = df_all[df_all["dataset"] == "SKAB"]
     if not df_skab.empty:
-        summary_df = df_skab.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
+        summary_group_cols = [
+            "scenario", "order", "smoothing_alpha", "anomaly_threshold",
+            "transition_confidence_enabled", "transition_confidence_k",
+            "transition_confidence_weight", "transition_confidence_mode",
+            "transition_confidence_use_transition_count"
+        ]
+        summary_group_cols = [c for c in summary_group_cols if c in df_skab.columns]
+        summary_df = df_skab.groupby(summary_group_cols, dropna=False).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -868,7 +1123,14 @@ def write_summary_files(df_all):
 
     df_batadal = df_all[df_all["dataset"] == "BATADAL"]
     if not df_batadal.empty:
-        batadal_summary = df_batadal.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
+        batadal_group_cols = [
+            "scenario", "order", "smoothing_alpha", "anomaly_threshold",
+            "transition_confidence_enabled", "transition_confidence_k",
+            "transition_confidence_weight", "transition_confidence_mode",
+            "transition_confidence_use_transition_count"
+        ]
+        batadal_group_cols = [c for c in batadal_group_cols if c in df_batadal.columns]
+        batadal_summary = df_batadal.groupby(batadal_group_cols, dropna=False).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -913,6 +1175,26 @@ def main():
             "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
             "auto_score_percentile": None,
             "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+            "transition_confidence_enabled": config.get(
+                "batadal_final_transition_confidence_enabled",
+                config.get("transition_confidence_enabled", True),
+            ),
+            "transition_confidence_k": config.get(
+                "batadal_final_transition_confidence_k",
+                config.get("transition_confidence_k", 10.0),
+            ),
+            "transition_confidence_weight": config.get(
+                "batadal_final_transition_confidence_weight",
+                config.get("transition_confidence_weight", 0.5),
+            ),
+            "transition_confidence_mode": config.get(
+                "batadal_final_transition_confidence_mode",
+                config.get("transition_confidence_mode", "additive"),
+            ),
+            "transition_confidence_use_transition_count": config.get(
+                "batadal_final_transition_confidence_use_transition_count",
+                config.get("transition_confidence_use_transition_count", True),
+            ),
         }
 
         batadal_logs = None
@@ -923,7 +1205,11 @@ def main():
                 f"alpha={config_batadal['smoothing_alpha']}, "
                 f"mode={config_batadal['decision_mode']}, "
                 f"window={config_batadal['score_window']}, "
-                f"score_threshold={config_batadal['score_threshold']} çalışıyor..."
+                f"score_threshold={config_batadal['score_threshold']}, "
+                f"transition_confidence_enabled={config_batadal['transition_confidence_enabled']}, "
+                f"tc_k={config_batadal['transition_confidence_k']}, "
+                f"tc_weight={config_batadal['transition_confidence_weight']}, "
+                f"tc_mode={config_batadal['transition_confidence_mode']} çalışıyor..."
             )
             batadal_res, logs = run_experiment_pipeline(
                 X_train,
@@ -952,6 +1238,26 @@ def main():
         "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
         "auto_score_percentile": None,
         "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+        "transition_confidence_enabled": config.get(
+            "skab_final_transition_confidence_enabled",
+            config.get("transition_confidence_enabled", True),
+        ),
+        "transition_confidence_k": config.get(
+            "skab_final_transition_confidence_k",
+            config.get("transition_confidence_k", 10.0),
+        ),
+        "transition_confidence_weight": config.get(
+            "skab_final_transition_confidence_weight",
+            config.get("transition_confidence_weight", 0.5),
+        ),
+        "transition_confidence_mode": config.get(
+            "skab_final_transition_confidence_mode",
+            config.get("transition_confidence_mode", "additive"),
+        ),
+        "transition_confidence_use_transition_count": config.get(
+            "skab_final_transition_confidence_use_transition_count",
+            config.get("transition_confidence_use_transition_count", True),
+        ),
     }
 
     for fold in range(1, 6):
@@ -969,7 +1275,11 @@ def main():
                     f"alpha={config_skab['smoothing_alpha']}, "
                     f"mode={config_skab['decision_mode']}, "
                     f"window={config_skab['score_window']}, "
-                    f"score_threshold={config_skab['score_threshold']} çalışıyor..."
+                    f"score_threshold={config_skab['score_threshold']}, "
+                    f"transition_confidence_enabled={config_skab['transition_confidence_enabled']}, "
+                    f"tc_k={config_skab['transition_confidence_k']}, "
+                    f"tc_weight={config_skab['transition_confidence_weight']}, "
+                    f"tc_mode={config_skab['transition_confidence_mode']} çalışıyor..."
                 )
                 fold_res, _ = run_experiment_pipeline(
                     X_train,
@@ -986,7 +1296,10 @@ def main():
     df_all.to_csv("results/outputs/automata_advanced_all_scenarios_metrics.csv", index=False)
     write_summary_files(df_all)
 
-    # Final koşuda sweep çalıştırılmaz; ana metrikler sabit final parametrelerle üretilir.
+    if config.get("run_transition_confidence_sweep", False):
+        run_transition_confidence_sweep(config)
+    else:
+        print("[INFO] Transition-confidence sweep kapalı. Açmak için settings.json -> automata.run_transition_confidence_sweep=true")
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main

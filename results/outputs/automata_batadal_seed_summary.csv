@@ -1,4 +1,4 @@
-scenario,order,smoothing_alpha,anomaly_threshold,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_score_mean,f1_score_std
-gaussian_noise,3,0.1,0.05,0.9463414634146341,0.01144003843859369,0.31212121212121213,0.12090871117127275,0.48571428571428565,0.19166296949998196,0.37963536291709665,0.14750094975600908
-original,3,0.1,0.05,0.9512195121951219,0.0,0.36363636363636365,0.0,0.5714285714285714,0.0,0.4444444444444445,0.0
-unseen_data,3,0.1,0.05,0.8125,0.0,0.25,0.0,1.0,0.0,0.4,0.0
+scenario,order,smoothing_alpha,anomaly_threshold,transition_confidence_enabled,transition_confidence_k,transition_confidence_weight,transition_confidence_mode,transition_confidence_use_transition_count,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_score_mean,f1_score_std
+gaussian_noise,3,0.1,0.05,True,10.0,0.5,additive,True,0.8185365853658537,0.00938311417642502,0.11215786982795968,0.032678648102153506,0.6285714285714286,0.191662969499982,0.19032438165185622,0.055815403867519
+original,3,0.1,0.05,True,10.0,0.5,additive,True,0.8243902439024391,0.0,0.1282051282051282,0.0,0.7142857142857143,0.0,0.21739130434782608,0.0
+unseen_data,3,0.1,0.05,True,10.0,0.5,additive,True,0.5625,0.0,0.125,0.0,1.0,0.0,0.22222222222222224,0.0
