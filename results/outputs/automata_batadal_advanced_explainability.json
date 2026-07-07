@@ -2,1295 +2,1486 @@
     {
         "index": 1,
         "context": [
-            "cbab"
+            "dacccb"
         ],
-        "target": "babb",
-        "probability": 0.189873417721519,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "acccbc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 2,
         "context": [
-            "cbab",
-            "babb"
+            "dacccb",
+            "acccbc"
         ],
-        "target": "abbc",
-        "probability": 0.012658227848101266,
-        "threshold": 0.05,
+        "target": "cccbcd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 3,
         "context": [
-            "cbab",
-            "babb",
-            "abbc"
+            "dacccb",
+            "acccbc",
+            "cccbcd"
         ],
-        "target": "bbcc",
-        "probability": 0.056338028169014086,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "ccbcdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 4,
         "context": [
-            "cbab",
-            "babb",
-            "abbc",
-            "bbcc"
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc"
         ],
-        "target": "bcca",
-        "probability": 0.014705882352941176,
-        "threshold": 0.05,
+        "target": "cbcdca",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 5,
         "context": [
-            "babb",
-            "abbc",
-            "bbcc",
-            "bcca"
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca"
         ],
-        "target": "ccab",
-        "probability": 0.057971014492753624,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "bcdcab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 6,
         "context": [
-            "abbc",
-            "bbcc",
-            "bcca",
-            "ccab"
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab"
         ],
-        "target": "cabb",
-        "probability": 0.058823529411764705,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cdcabb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 7,
         "context": [
-            "bbcc",
-            "bcca",
-            "ccab",
-            "cabb"
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb"
         ],
-        "target": "abbb",
-        "probability": 0.058823529411764705,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "dcabbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 8,
         "context": [
-            "bcca",
-            "ccab",
-            "cabb",
-            "abbb"
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd"
         ],
-        "target": "bbbc",
-        "probability": 0.014705882352941176,
-        "threshold": 0.05,
+        "target": "cabbdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 9,
         "context": [
-            "ccab",
-            "cabb",
-            "abbb",
-            "bbbc"
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc"
         ],
-        "target": "bbcc",
-        "probability": 0.0379746835443038,
-        "threshold": 0.05,
+        "target": "abbdcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 10,
         "context": [
-            "cabb",
-            "abbb",
-            "bbbc",
-            "bbcc"
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc"
         ],
-        "target": "bcca",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "bbdccb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 11,
         "context": [
-            "abbb",
-            "bbbc",
-            "bbcc",
-            "bcca"
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb"
         ],
-        "target": "ccaa",
-        "probability": 0.028985507246376812,
-        "threshold": 0.05,
+        "target": "bdccbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 12,
         "context": [
-            "bbbc",
-            "bbcc",
-            "bcca",
-            "ccaa"
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd"
         ],
-        "target": "caab",
-        "probability": 0.014492753623188406,
-        "threshold": 0.05,
+        "target": "dccbdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 13,
         "context": [
-            "bbcc",
-            "bcca",
-            "ccaa",
-            "caab"
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc"
         ],
-        "target": "aaba",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "ccbdcb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 14,
         "context": [
-            "bcca",
-            "ccaa",
-            "caab",
-            "aaba"
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb"
         ],
-        "target": "abab",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "cbdcba",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 15,
         "context": [
-            "ccaa",
-            "caab",
-            "aaba",
-            "abab"
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba"
         ],
-        "target": "babc",
-        "probability": 0.0071146245059288534,
-        "threshold": 0.05,
+        "target": "bdcbac",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 16,
         "context": [
-            "caab",
-            "aaba",
-            "abab",
-            "babc"
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac"
         ],
-        "target": "abcb",
-        "probability": 0.10810810810810811,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "dcbacc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 17,
         "context": [
-            "aaba",
-            "abab",
-            "babc",
-            "abcb"
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc"
         ],
-        "target": "bcbb",
-        "probability": 0.06944444444444445,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cbaccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 18,
         "context": [
-            "abab",
-            "babc",
-            "abcb",
-            "bcbb"
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc"
         ],
-        "target": "cbbc",
-        "probability": 0.028985507246376812,
-        "threshold": 0.05,
+        "target": "bacccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 19,
         "context": [
-            "babc",
-            "abcb",
-            "bcbb",
-            "cbbc"
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc"
         ],
-        "target": "bbca",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "accccd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 20,
         "context": [
-            "abcb",
-            "bcbb",
-            "cbbc",
-            "bbca"
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd"
         ],
-        "target": "bcac",
-        "probability": 0.013888888888888888,
-        "threshold": 0.05,
+        "target": "ccccdb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 21,
         "context": [
-            "bcbb",
-            "cbbc",
-            "bbca",
-            "bcac"
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb"
         ],
-        "target": "cacc",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "cccdbc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 22,
         "context": [
-            "cbbc",
-            "bbca",
-            "bcac",
-            "cacc"
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc"
         ],
-        "target": "accb",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "ccdbcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 23,
         "context": [
-            "bbca",
-            "bcac",
-            "cacc",
-            "accb"
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc"
         ],
-        "target": "ccbc",
-        "probability": 0.0023715415019762848,
-        "threshold": 0.05,
+        "target": "cdbccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 24,
         "context": [
-            "bcac",
-            "cacc",
-            "accb",
-            "ccbc"
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc"
         ],
-        "target": "cbcb",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "dbccca",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 25,
         "context": [
-            "cacc",
-            "accb",
-            "ccbc",
-            "cbcb"
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca"
         ],
-        "target": "bcba",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "bcccaa",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 26,
         "context": [
-            "accb",
-            "ccbc",
-            "cbcb",
-            "bcba"
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa"
         ],
-        "target": "cbab",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cccaac",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 27,
         "context": [
-            "ccbc",
-            "cbcb",
-            "bcba",
-            "cbab"
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac"
         ],
-        "target": "babb",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "ccaacd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 28,
         "context": [
-            "cbcb",
-            "bcba",
-            "cbab",
-            "babb"
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd"
         ],
-        "target": "abba",
-        "probability": 0.028985507246376812,
-        "threshold": 0.05,
+        "target": "caacdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 29,
         "context": [
-            "bcba",
-            "cbab",
-            "babb",
-            "abba"
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc"
         ],
-        "target": "bbab",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "aacdca",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 30,
         "context": [
-            "cbab",
-            "babb",
-            "abba",
-            "bbab"
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca"
         ],
-        "target": "babb",
-        "probability": 0.12987012987012986,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "acdcab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 31,
         "context": [
-            "babb",
-            "abba",
-            "bbab",
-            "babb"
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab"
         ],
-        "target": "abbb",
-        "probability": 0.06756756756756757,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cdcabd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 32,
         "context": [
-            "abba",
-            "bbab",
-            "babb",
-            "abbb"
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd"
         ],
-        "target": "bbbc",
-        "probability": 0.04285714285714286,
-        "threshold": 0.05,
+        "target": "dcabdb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 33,
         "context": [
-            "bbab",
-            "babb",
-            "abbb",
-            "bbbc"
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb"
         ],
-        "target": "bbcc",
-        "probability": 0.025974025974025976,
-        "threshold": 0.05,
+        "target": "cabdba",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 34,
         "context": [
-            "babb",
-            "abbb",
-            "bbbc",
-            "bbcc"
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba"
         ],
-        "target": "bcca",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "abdbaa",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 35,
         "context": [
-            "abbb",
-            "bbbc",
-            "bbcc",
-            "bcca"
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa"
         ],
-        "target": "ccab",
-        "probability": 0.057971014492753624,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "bdbaac",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 36,
         "context": [
-            "bbbc",
-            "bbcc",
-            "bcca",
-            "ccab"
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac"
         ],
-        "target": "cabc",
-        "probability": 0.014705882352941176,
-        "threshold": 0.05,
+        "target": "dbaacc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 37,
         "context": [
-            "bbcc",
-            "bcca",
-            "ccab",
-            "cabc"
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc"
         ],
-        "target": "abca",
-        "probability": 0.0023715415019762848,
-        "threshold": 0.05,
+        "target": "baaccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 38,
         "context": [
-            "bcca",
-            "ccab",
-            "cabc",
-            "abca"
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc"
         ],
-        "target": "bcac",
-        "probability": 0.04477611940298507,
-        "threshold": 0.05,
+        "target": "aacccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 39,
         "context": [
-            "ccab",
-            "cabc",
-            "abca",
-            "bcac"
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc"
         ],
-        "target": "cacc",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "accccd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 40,
         "context": [
-            "cabc",
-            "abca",
-            "bcac",
-            "cacc"
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd"
         ],
-        "target": "acca",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "ccccda",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 41,
         "context": [
-            "abca",
-            "bcac",
-            "cacc",
-            "acca"
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda"
         ],
-        "target": "ccaa",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "cccdab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 42,
         "context": [
-            "bcac",
-            "cacc",
-            "acca",
-            "ccaa"
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab"
         ],
-        "target": "caaa",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "ccdabb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 43,
         "context": [
-            "cacc",
-            "acca",
-            "ccaa",
-            "caaa"
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb"
         ],
-        "target": "aaaa",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cdabbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 44,
         "context": [
-            "acca",
-            "ccaa",
-            "caaa",
-            "aaaa"
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd"
         ],
-        "target": "aaac",
-        "probability": 0.014492753623188406,
-        "threshold": 0.05,
+        "target": "dabbdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 45,
         "context": [
-            "ccaa",
-            "caaa",
-            "aaaa",
-            "aaac"
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc"
         ],
-        "target": "aacc",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "abbdcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 46,
         "context": [
-            "caaa",
-            "aaaa",
-            "aaac",
-            "aacc"
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc"
         ],
-        "target": "accb",
-        "probability": 0.014492753623188406,
-        "threshold": 0.05,
+        "target": "bbdccb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 47,
         "context": [
-            "aaaa",
-            "aaac",
-            "aacc",
-            "accb"
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb"
         ],
-        "target": "ccbc",
-        "probability": 0.0023715415019762848,
-        "threshold": 0.05,
+        "target": "bdccbc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 48,
         "context": [
-            "aaac",
-            "aacc",
-            "accb",
-            "ccbc"
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc"
         ],
-        "target": "cbcb",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "dccbcb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 49,
         "context": [
-            "aacc",
-            "accb",
-            "ccbc",
-            "cbcb"
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb"
         ],
-        "target": "bcba",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "ccbcbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 50,
         "context": [
-            "accb",
-            "ccbc",
-            "cbcb",
-            "bcba"
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd"
         ],
-        "target": "cbab",
-        "probability": 0.07246376811594203,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cbcbdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 51,
         "context": [
-            "ccbc",
-            "cbcb",
-            "bcba",
-            "cbab"
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc"
         ],
-        "target": "babc",
-        "probability": 0.014492753623188406,
-        "threshold": 0.05,
+        "target": "bcbdcd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 52,
         "context": [
-            "cbcb",
-            "bcba",
-            "cbab",
-            "babc"
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd"
         ],
-        "target": "abcc",
-        "probability": 0.013513513513513514,
-        "threshold": 0.05,
+        "target": "cbdcda",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 53,
         "context": [
-            "bcba",
-            "cbab",
-            "babc",
-            "abcc"
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda"
         ],
-        "target": "bccb",
-        "probability": 0.0031620553359683794,
-        "threshold": 0.05,
+        "target": "bdcdaa",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 54,
         "context": [
-            "cbab",
-            "babc",
-            "abcc",
-            "bccb"
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa"
         ],
-        "target": "ccba",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "dcdaab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 55,
         "context": [
-            "babc",
-            "abcc",
-            "bccb",
-            "ccba"
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab"
         ],
-        "target": "cbaa",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "cdaabd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 56,
         "context": [
-            "abcc",
-            "bccb",
-            "ccba",
-            "cbaa"
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd"
         ],
-        "target": "baab",
-        "probability": 0.04477611940298507,
-        "threshold": 0.05,
+        "target": "daabdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 57,
         "context": [
-            "bccb",
-            "ccba",
-            "cbaa",
-            "baab"
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc"
         ],
-        "target": "aabb",
-        "probability": 0.04477611940298507,
-        "threshold": 0.05,
+        "target": "aabdcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 58,
         "context": [
-            "ccba",
-            "cbaa",
-            "baab",
-            "aabb"
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc"
         ],
-        "target": "abbb",
-        "probability": 0.04477611940298507,
-        "threshold": 0.05,
+        "target": "abdccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 59,
         "context": [
-            "cbaa",
-            "baab",
-            "aabb",
-            "abbb"
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc"
         ],
-        "target": "bbbc",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "bdcccd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 60,
         "context": [
-            "baab",
-            "aabb",
-            "abbb",
-            "bbbc"
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd"
         ],
-        "target": "bbcc",
-        "probability": 0.0379746835443038,
-        "threshold": 0.05,
+        "target": "dcccdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 61,
         "context": [
-            "aabb",
-            "abbb",
-            "bbbc",
-            "bbcc"
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc"
         ],
-        "target": "bccb",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "cccdcb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 62,
         "context": [
-            "abbb",
-            "bbbc",
-            "bbcc",
-            "bccb"
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb"
         ],
-        "target": "ccbc",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "ccdcba",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 63,
         "context": [
-            "bbbc",
-            "bbcc",
-            "bccb",
-            "ccbc"
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba"
         ],
-        "target": "cbcc",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "cdcbab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 64,
         "context": [
-            "bbcc",
-            "bccb",
-            "ccbc",
-            "cbcc"
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab"
         ],
-        "target": "bcca",
-        "probability": 0.057971014492753624,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "dcbabb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 65,
         "context": [
-            "bccb",
-            "ccbc",
-            "cbcc",
-            "bcca"
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb"
         ],
-        "target": "ccaa",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "cbabbb",
+        "probability": 0.0031413612565445027,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 66,
         "context": [
-            "ccbc",
-            "cbcc",
-            "bcca",
-            "ccaa"
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb"
         ],
-        "target": "caab",
-        "probability": 0.014492753623188406,
-        "threshold": 0.05,
-        "prediction": 1
+        "target": "babbbc",
+        "probability": 0.00625,
+        "threshold": 0.005,
+        "prediction": 0
     },
     {
         "index": 67,
         "context": [
-            "cbcc",
-            "bcca",
-            "ccaa",
-            "caab"
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc"
         ],
-        "target": "aaba",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "abbbcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 68,
         "context": [
-            "bcca",
-            "ccaa",
-            "caab",
-            "aaba"
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc"
         ],
-        "target": "abab",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "bbbcca",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 69,
         "context": [
-            "ccaa",
-            "caab",
-            "aaba",
-            "abab"
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca"
         ],
-        "target": "babc",
-        "probability": 0.0071146245059288534,
-        "threshold": 0.05,
+        "target": "bbccaa",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 70,
         "context": [
-            "caab",
-            "aaba",
-            "abab",
-            "babc"
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa"
         ],
-        "target": "abcb",
-        "probability": 0.10810810810810811,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "bccaac",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 71,
         "context": [
-            "aaba",
-            "abab",
-            "babc",
-            "abcb"
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac"
         ],
-        "target": "bcbb",
-        "probability": 0.06944444444444445,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "ccaacc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 72,
         "context": [
-            "abab",
-            "babc",
-            "abcb",
-            "bcbb"
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc"
         ],
-        "target": "cbbc",
-        "probability": 0.028985507246376812,
-        "threshold": 0.05,
+        "target": "caaccb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 73,
         "context": [
-            "babc",
-            "abcb",
-            "bcbb",
-            "cbbc"
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb"
         ],
-        "target": "bbca",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "aaccbb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 74,
         "context": [
-            "abcb",
-            "bcbb",
-            "cbbc",
-            "bbca"
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb"
         ],
-        "target": "bcab",
-        "probability": 0.08333333333333333,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "accbbb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 75,
         "context": [
-            "bcbb",
-            "cbbc",
-            "bbca",
-            "bcab"
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb"
         ],
-        "target": "cabb",
-        "probability": 0.08571428571428572,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "ccbbbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 76,
         "context": [
-            "cbbc",
-            "bbca",
-            "bcab",
-            "cabb"
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd"
         ],
-        "target": "abbb",
-        "probability": 0.05714285714285714,
-        "threshold": 0.05,
-        "prediction": 0
+        "target": "cbbbda",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
+        "prediction": 1
     },
     {
         "index": 77,
         "context": [
-            "bbca",
-            "bcab",
-            "cabb",
-            "abbb"
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda"
         ],
-        "target": "bbba",
-        "probability": 0.014705882352941176,
-        "threshold": 0.05,
+        "target": "bbbdab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 78,
         "context": [
-            "bcab",
-            "cabb",
-            "abbb",
-            "bbba"
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab"
         ],
-        "target": "bbac",
-        "probability": 0.008333333333333333,
-        "threshold": 0.05,
+        "target": "bbdabc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 79,
         "context": [
-            "cabb",
-            "abbb",
-            "bbba",
-            "bbac"
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc"
         ],
-        "target": "bacb",
-        "probability": 0.04477611940298507,
-        "threshold": 0.05,
+        "target": "bdabcd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 80,
         "context": [
-            "abbb",
-            "bbba",
-            "bbac",
-            "bacb"
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd"
         ],
-        "target": "acbc",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "dabcda",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 81,
         "context": [
-            "bbba",
-            "bbac",
-            "bacb",
-            "acbc"
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda"
         ],
-        "target": "cbcc",
-        "probability": 0.04411764705882353,
-        "threshold": 0.05,
+        "target": "abcdab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 82,
         "context": [
-            "bbac",
-            "bacb",
-            "acbc",
-            "cbcc"
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab"
         ],
-        "target": "bccb",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "bcdabc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 83,
         "context": [
-            "bacb",
-            "acbc",
-            "cbcc",
-            "bccb"
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc"
         ],
-        "target": "ccba",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "cdabcd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 84,
         "context": [
-            "acbc",
-            "cbcc",
-            "bccb",
-            "ccba"
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd"
         ],
-        "target": "cbaa",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "dabcda",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 85,
         "context": [
-            "cbcc",
-            "bccb",
-            "ccba",
-            "cbaa"
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda"
         ],
-        "target": "baaa",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "abcdab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 86,
         "context": [
-            "bccb",
-            "ccba",
-            "cbaa",
-            "baaa"
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab"
         ],
-        "target": "aaab",
-        "probability": 0.03896103896103896,
-        "threshold": 0.05,
+        "target": "bcdabb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 87,
         "context": [
-            "ccba",
-            "cbaa",
-            "baaa",
-            "aaab"
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb"
         ],
-        "target": "aabc",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "cdabbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 88,
         "context": [
-            "cbaa",
-            "baaa",
-            "aaab",
-            "aabc"
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd"
         ],
-        "target": "abcc",
-        "probability": 0.0007905138339920949,
-        "threshold": 0.05,
+        "target": "dabbdc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 89,
         "context": [
-            "baaa",
-            "aaab",
-            "aabc",
-            "abcc"
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc"
         ],
-        "target": "bccc",
-        "probability": 0.0031620553359683794,
-        "threshold": 0.05,
+        "target": "abbdcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 90,
         "context": [
-            "aaab",
-            "aabc",
-            "abcc",
-            "bccc"
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc"
         ],
-        "target": "cccc",
-        "probability": 0.04411764705882353,
-        "threshold": 0.05,
+        "target": "bbdccb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 91,
         "context": [
-            "aabc",
-            "abcc",
-            "bccc",
-            "cccc"
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb"
         ],
-        "target": "ccca",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "bdccbd",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 92,
         "context": [
-            "abcc",
-            "bccc",
-            "cccc",
-            "ccca"
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd"
         ],
-        "target": "ccac",
-        "probability": 0.029411764705882353,
-        "threshold": 0.05,
+        "target": "dccbda",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 93,
         "context": [
-            "bccc",
-            "cccc",
-            "ccca",
-            "ccac"
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda"
         ],
-        "target": "cacc",
-        "probability": 0.0023715415019762848,
-        "threshold": 0.05,
+        "target": "ccbdab",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 94,
         "context": [
-            "cccc",
-            "ccca",
-            "ccac",
-            "cacc"
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab"
         ],
-        "target": "accc",
-        "probability": 0.014925373134328358,
-        "threshold": 0.05,
+        "target": "cbdabb",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 95,
         "context": [
-            "ccca",
-            "ccac",
-            "cacc",
-            "accc"
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb"
         ],
-        "target": "cccb",
-        "probability": 0.014705882352941176,
-        "threshold": 0.05,
+        "target": "bdabbc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 96,
         "context": [
-            "ccac",
-            "cacc",
-            "accc",
-            "cccb"
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc"
         ],
-        "target": "ccbb",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "dabbcc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 97,
         "context": [
-            "cacc",
-            "accc",
-            "cccb",
-            "ccbb"
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc"
         ],
-        "target": "cbba",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
+        "target": "abbccc",
+        "probability": 0.0010471204188481676,
+        "threshold": 0.005,
         "prediction": 1
     },
     {
         "index": 98,
         "context": [
-            "accc",
-            "cccb",
-            "ccbb",
-            "cbba"
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc"
         ],
-        "target": "bbaa",
-        "probability": 0.014492753623188406,
-        "threshold": 0.05,
-        "prediction": 1
+        "target": "bbcccc",
+        "probability": 0.007329842931937173,
+        "threshold": 0.005,
+        "prediction": 0
     },
     {
         "index": 99,
         "context": [
-            "cccb",
-            "ccbb",
-            "cbba",
-            "bbaa"
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc",
+            "bbcccc"
         ],
-        "target": "baab",
-        "probability": 0.038461538461538464,
-        "threshold": 0.05,
-        "prediction": 1
+        "target": "bccccc",
+        "probability": 0.030303030303030304,
+        "threshold": 0.005,
+        "prediction": 0
     },
     {
         "index": 100,
         "context": [
-            "ccbb",
-            "cbba",
-            "bbaa",
-            "baab"
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc",
+            "bbcccc",
+            "bccccc"
         ],
-        "target": "aaba",
-        "probability": 0.029850746268656716,
-        "threshold": 0.05,
-        "prediction": 1
+        "target": "ccccca",
+        "probability": 0.006172839506172839,
+        "threshold": 0.005,
+        "prediction": 0
     }
 ]

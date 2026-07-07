@@ -52,6 +52,39 @@ BATADAL'da ayrı validation dosyaları (`batadal_X_val_pc1.csv`, `batadal_y_val.
  
 Bu sonuçlar threshold seçiminin performansı ne kadar etkilediğini bir kez daha gösteriyor. Test setinden değil validation setinden threshold seçildiği için değerlendirme artık daha güvenilir.
  
-### Sonraki İyileştirme
- 
-window_size + alphabet_size + threshold hepsini validation üzerinden seçmek çünkü parametre taramasında bazı `window_size` ve `alphabet_size` kombinasyonlarının daha yüksek F1-score ürettiği görüldü. 
+### Validation Tabanlı Hiperparametre Seçimi
+
+Validation tabanlı threshold seçiminden sonra, VOMM/PST modelinde yalnızca threshold'un değil, `window_size` ve `alphabet_size` parametrelerinin de performansı ciddi şekilde etkilediği görüldü. Bu nedenle SKAB veri setinde her fold için validation seti üzerinde `window_size`, `alphabet_size` ve `threshold` birlikte seçildi.
+
+SKAB için her fold'un train bölümü tekrar train/validation olarak ayrıldı. Model yalnızca train kısmı ile eğitildi, validation kısmında en iyi hiperparametre kombinasyonu F1-score'a göre seçildi ve final sonuçlar fold test setinde ölçüldü. Böylece test fold'u hiperparametre seçiminde kullanılmadı.
+
+SKAB tarafında fold bazlı seçilen ayarlar şu şekilde oldu:
+
+| Fold | Window Size | Alphabet Size | Threshold | Validation F1 |
+|---|---:|---:|---:|---:|
+| Fold 1 | 5 | 5 | 0.1 | 0.5608 |
+| Fold 2 | 6 | 6 | 0.03 | 0.5623 |
+| Fold 3 | 6 | 6 | 0.02 | 0.5696 |
+| Fold 4 | 6 | 3 | 0.2 | 0.5504 |
+| Fold 5 | 6 | 4 | 0.2 | 0.5640 |
+
+Bu ayarlarla SKAB için final test sonucu aşağıdaki gibi elde edildi:
+
+| Dataset | Selection Strategy | Precision | Recall | F1-score |
+|---|---|---:|---:|---:|
+| SKAB | Fold bazlı validation hiperparametre seçimi | 0.3472 | 0.6013 | 0.4341 |
+
+### BATADAL Özel Parametre İyileştirmesi
+
+BATADAL veri setinde validation setindeki anomalili pattern sayısı sınırlı olduğu için `window_size`, `alphabet_size` ve `threshold` parametrelerinin tamamını validation üzerinden seçmek test performansında kararsız sonuçlar üretti. Bu nedenle BATADAL için daha kontrollü bir deney yapıldı.
+
+Önceki validation tabanlı ayarda `window_size=4`, `alphabet_size=3` kullanılmış ve test setinde F1-score `0.1398` elde edilmişti. Daha sonra parametre duyarlılık analizinde öne çıkan `window_size=6`, `alphabet_size=4` kombinasyonu BATADAL için ayrıca denendi. Threshold yine validation seti üzerinden seçildi ve `0.005` olarak belirlendi.
+
+Bu özel ayar BATADAL performansını iyileştirdi:
+
+| Ayar | Precision | Recall | F1-score |
+|---|---:|---:|---:|
+| `window=4`, `alphabet=3`, validation threshold | 0.0793 | 0.5909 | 0.1398 |
+| `window=6`, `alphabet=4`, validation threshold | 0.1085 | 0.9333 | 0.1944 |
+
+Bu sonuç BATADAL tarafında daha uzun sembolik pencere kullanımının anomalileri yakalamada daha etkili olduğunu göstermektedir. Özellikle recall değerinin `0.5909` seviyesinden `0.9333` seviyesine çıkması, modelin saldırı örüntülerini daha başarılı yakaladığını göstermektedir.

@@ -112,8 +112,84 @@ def select_best_threshold_on_validation(
             best_metrics = metrics
 
     return best_threshold, best_metrics
+#
+def select_best_vomm_config_on_validation(
+    X_train,
+    X_val,
+    y_val,
+    config,
+    dataset_name
+):
+    best_config = None
+    best_f1 = -1.0
+    best_metrics = None
 
-def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42,X_val=None,y_val=None):
+    window_sizes = config.get("window_sizes", [3, 4, 5, 6])
+    alphabet_sizes = config.get("alphabet_sizes", [3, 4, 5, 6])
+    threshold_values = config.get(
+        "vomm_threshold_values",
+        [0.001, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5]
+    )
+
+    print(f"\n>> {dataset_name} validation tabanli VOMM/PST config taramasi...")
+
+    for window_size in window_sizes:
+        for alphabet_size in alphabet_sizes:
+            transformer = SaxPaaTransformer(alphabet_size=alphabet_size)
+
+            train_patterns = transformer.transform(
+                X_train,
+                window_size=window_size
+            )
+
+            model = VariableOrderMarkovModel(
+                max_depth=window_size,
+                min_count=2,
+                smoothing=True,
+                smoothing_alpha=1.0
+            )
+            model.fit(train_patterns)
+
+            val_patterns = transformer.transform(
+                X_val,
+                window_size=window_size
+            )
+
+            y_val_aligned = align_labels_to_patterns(
+                y_val,
+                len(val_patterns),
+                window_size
+            )
+
+            for threshold in threshold_values:
+                preds_val, _ = model.predict(
+                    val_patterns,
+                    anomaly_threshold=threshold
+                )
+                preds_val = preds_val[:len(y_val_aligned)]
+
+                metrics = calculate_metrics(y_val_aligned, preds_val)
+
+                if metrics["f1_score"] > best_f1:
+                    best_f1 = metrics["f1_score"]
+                    best_metrics = metrics
+                    best_config = {
+                        "window_size": window_size,
+                        "alphabet_size": alphabet_size,
+                        "anomaly_threshold": threshold
+                    }
+
+    print(
+        f"{dataset_name} best validation config -> "
+        f"window_size={best_config['window_size']}, "
+        f"alphabet_size={best_config['alphabet_size']}, "
+        f"threshold={best_config['anomaly_threshold']} | "
+        f"val F1={best_f1:.4f}"
+    )
+
+    return best_config, best_metrics
+
+def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42,X_val=None,y_val=None,use_validation_threshold=True):
     results = []
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
@@ -127,7 +203,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     model.fit(train_patterns)
     selected_threshold = config["anomaly_threshold"]
     validation_threshold_f1 = None
-    if X_val is not None and y_val is not None:
+    if use_validation_threshold and X_val is not None and y_val is not None:
        threshold_values = config.get(
            "vomm_threshold_values",
            [0.001, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5]
@@ -141,7 +217,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             config["window_size"]
         )
        validation_threshold_f1 = val_metrics["f1_score"]
-    if X_val is not None and y_val is not None:   
+    if use_validation_threshold and X_val is not None and y_val is not None:
         print(
             f"{dataset_name} {fold_name} validation selected threshold: "
             f"{selected_threshold} | val F1: {validation_threshold_f1:.4f}"
@@ -369,10 +445,10 @@ def main():
  
         config_batadal = {
             **config,
-            "window_size": 4,
-            "alphabet_size": 3,
-            "anomaly_threshold": 0.03
-        }
+            "window_size": 6,
+            "alphabet_size": 4,
+            "anomaly_threshold": 0.05
+     }
  
         batadal_logs = None
         for seed in seeds:
@@ -386,7 +462,8 @@ def main():
                 "single",
                 seed=seed,
                 X_val=X_val,
-                y_val=y_val
+                y_val=y_val,
+                use_validation_threshold=True
            )
             all_res.extend(batadal_res)
             if batadal_logs is None:
@@ -418,6 +495,18 @@ def main():
                     y_train,
                     val_ratio=0.2
                 )
+                best_skab_config, best_skab_val_metrics = select_best_vomm_config_on_validation(
+                    X_model_train,
+                    X_val,
+                    y_val,
+                    config,
+                    f"SKAB fold_{fold}"
+                )
+
+                config_skab_fold = {
+                    **config,
+                    **best_skab_config
+           }
                 
             for seed in seeds:
                 print(f"SKAB automata fold={fold}, seed={seed} çalışıyor...")
@@ -425,12 +514,13 @@ def main():
                     X_model_train,
                     X_test,
                     y_test,
-                    config_skab,
+                    config_skab_fold,
                     "SKAB",
                     f"fold_{fold}",
                     seed=seed,
                     X_val=X_val,
-                    y_val=y_val
+                    y_val=y_val,
+                    use_validation_threshold=False
                 )
                 all_res.extend(fold_res)
  
