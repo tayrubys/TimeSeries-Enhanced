@@ -188,7 +188,7 @@ def main():
 
     balancing_methods = ["adasyn"]
 
-    for model_type in ["LSTM", "GRU"]:
+    for model_type in ["LSTM"]:
         for balancing_method in balancing_methods:
             for seed in cfg["seeds"]:
                 result = train_one_batadal_experiment(
