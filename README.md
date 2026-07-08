@@ -104,6 +104,7 @@ Yapılan taramada en iyi sonuç `min_count=3`, `smoothing_alpha=0.1` ve validati
 
 Bu sonuç, bağlam güvenilirliğini kontrol eden `min_count` parametresinin artırılmasının BATADAL üzerinde false positive davranışını kısmen azaltabildiğini ve modelin F1-score değerini iyileştirdiğini göstermektedir.
 
+SKAB için min_count ve smoothing_alpha değerleri de validation tabanlı hiperparametre seçimine dahil edilmiştir. Bu tarama sonucunda fold bazlı farklı parametreler seçilmesine rağmen, test F1-score değerinde önceki ayara göre belirgin bir artış gözlenmemiştir. Bu nedenle bu adım, modelin regularization hassasiyetini inceleyen ek bir deney olarak değerlendirilmiştir.
 
 Ek olarak BATADAL için daha ince threshold aralıkları (`0.00001` - `0.01`) denenmiştir. Ancak F1-score değerinde ek bir artış gözlenmemiştir. Bu sonuç, mevcut aşamada performans artışının yalnızca threshold seçimiyle sınırlı kalmadığını; sembolik temsil, bağlam seçimi ve regularization parametrelerinin daha belirleyici olduğunu göstermektedir.
 ### Ardışık Anomali Filtresi Denemesi

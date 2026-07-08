@@ -133,6 +133,11 @@ def select_best_vomm_config_on_validation(
 
     window_sizes = config.get("window_sizes", [3, 4, 5, 6])
     alphabet_sizes = config.get("alphabet_sizes", [3, 4, 5, 6])
+
+    #skab için min_count ve smoothing değerlerini de validation üzerinde tarıyoruz
+    min_count_values = config.get("min_count_values", [1, 2, 3, 5])
+    smoothing_alpha_values = config.get("smoothing_alpha_values", [0.1, 0.5, 1.0])
+
     threshold_values = config.get(
         "vomm_threshold_values",
         [0.001, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5]
@@ -142,55 +147,68 @@ def select_best_vomm_config_on_validation(
 
     for window_size in window_sizes:
         for alphabet_size in alphabet_sizes:
-            #ilk veriyi sembolik hale getir
+            # Her window/alphabet kombinasyonu için veriyi sembolik patternlere çeviriyoruz.
             transformer = SaxPaaTransformer(alphabet_size=alphabet_size)
 
             train_patterns = transformer.transform(
                 X_train,
                 window_size=window_size
             )
-            #ikinci vomm modeli tanıtma ve eğitme
-            model = VariableOrderMarkovModel(
-                max_depth=window_size,
-                min_count=2,
-                smoothing=True,
-                smoothing_alpha=1.0
-            )
-            model.fit(train_patterns)
-            #ucuncu validation setini dönüştür ve hizala
+
             val_patterns = transformer.transform(
                 X_val,
                 window_size=window_size
             )
-            #dorduncu bu parametre seti için en iyi anomali eşik değerini tara
+
+            # Validation etiketlerini pattern seviyesine hizalıyoruz.
+            # Böylece model tahminleri ile gerçek etiketler aynı seviyede karşılaştırılır.
             y_val_aligned = align_labels_to_patterns(
                 y_val,
                 len(val_patterns),
                 window_size
             )
 
-            for threshold in threshold_values:
-                preds_val, _ = model.predict(
-                    val_patterns,
-                    anomaly_threshold=threshold
-                )
-                preds_val = preds_val[:len(y_val_aligned)]
+            for min_count in min_count_values:
+                for smoothing_alpha in smoothing_alpha_values:
+                    # Bu kombinasyon için VOMM/PST modelini kurup eğitiyoruz.
+                    model = VariableOrderMarkovModel(
+                        max_depth=window_size,
+                        min_count=min_count,
+                        smoothing=True,
+                        smoothing_alpha=smoothing_alpha
+                    )
 
-                metrics = calculate_metrics(y_val_aligned, preds_val)
+                    model.fit(train_patterns)
 
-                if metrics["f1_score"] > best_f1:
-                    best_f1 = metrics["f1_score"]
-                    best_metrics = metrics
-                    best_config = {
-                        "window_size": window_size,
-                        "alphabet_size": alphabet_size,
-                        "anomaly_threshold": threshold
-                    }
+                    for threshold in threshold_values:
+                        preds_val, _ = model.predict(
+                            val_patterns,
+                            anomaly_threshold=threshold
+                        )
+
+                        preds_val = preds_val[:len(y_val_aligned)]
+
+                        metrics = calculate_metrics(y_val_aligned, preds_val)
+
+                        # En iyi validation F1 veren tüm parametreleri saklıyoruz.
+                        if metrics["f1_score"] > best_f1:
+                            best_f1 = metrics["f1_score"]
+                            best_metrics = metrics
+                            best_config = {
+                                "window_size": window_size,
+                                "alphabet_size": alphabet_size,
+                                "min_count": min_count,
+                                "smoothing_alpha": smoothing_alpha,
+                                "anomaly_threshold": threshold
+                            }
+
 
     print(
         f"{dataset_name} best validation config -> "
         f"window_size={best_config['window_size']}, "
         f"alphabet_size={best_config['alphabet_size']}, "
+        f"min_count={best_config['min_count']}, "
+        f"smoothing_alpha={best_config['smoothing_alpha']}, "
         f"threshold={best_config['anomaly_threshold']} | "
         f"val F1={best_f1:.4f}"
     )
@@ -545,7 +563,7 @@ def main():
             **config,
             "window_size": 6,
             "alphabet_size": 4,
-            "anomaly_threshold": 0.001,
+            "anomaly_threshold": 0.005,
             "min_count": 3,
             "smoothing_alpha": 0.1
         }
