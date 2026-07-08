@@ -7,6 +7,9 @@
         "target": "acccbc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -18,6 +21,9 @@
         "target": "cccbcd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -30,6 +36,9 @@
         "target": "ccbcdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -43,6 +52,9 @@
         "target": "cbcdca",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -57,6 +69,9 @@
         "target": "bcdcab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -72,6 +87,9 @@
         "target": "cdcabb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -87,6 +105,9 @@
         "target": "dcabbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -102,6 +123,9 @@
         "target": "cabbdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -117,6 +141,9 @@
         "target": "abbdcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -132,6 +159,9 @@
         "target": "bbdccb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -147,6 +177,9 @@
         "target": "bdccbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -162,6 +195,9 @@
         "target": "dccbdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -177,6 +213,9 @@
         "target": "ccbdcb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -192,6 +231,9 @@
         "target": "cbdcba",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -207,6 +249,9 @@
         "target": "bdcbac",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -222,6 +267,9 @@
         "target": "dcbacc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -237,6 +285,9 @@
         "target": "cbaccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -252,6 +303,9 @@
         "target": "bacccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -267,6 +321,9 @@
         "target": "accccd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -282,6 +339,9 @@
         "target": "ccccdb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -297,6 +357,9 @@
         "target": "cccdbc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -312,6 +375,9 @@
         "target": "ccdbcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -327,6 +393,9 @@
         "target": "cdbccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -342,6 +411,9 @@
         "target": "dbccca",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -357,6 +429,9 @@
         "target": "bcccaa",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -372,6 +447,9 @@
         "target": "cccaac",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -387,6 +465,9 @@
         "target": "ccaacd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -402,6 +483,9 @@
         "target": "caacdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -417,6 +501,9 @@
         "target": "aacdca",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -432,6 +519,9 @@
         "target": "acdcab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -447,6 +537,9 @@
         "target": "cdcabd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -462,6 +555,9 @@
         "target": "dcabdb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -477,6 +573,9 @@
         "target": "cabdba",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -492,6 +591,9 @@
         "target": "abdbaa",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -507,6 +609,9 @@
         "target": "bdbaac",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -522,6 +627,9 @@
         "target": "dbaacc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -537,6 +645,9 @@
         "target": "baaccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -552,6 +663,9 @@
         "target": "aacccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -567,6 +681,9 @@
         "target": "accccd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -582,6 +699,9 @@
         "target": "ccccda",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -597,6 +717,9 @@
         "target": "cccdab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -612,6 +735,9 @@
         "target": "ccdabb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -627,6 +753,9 @@
         "target": "cdabbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -642,6 +771,9 @@
         "target": "dabbdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -657,6 +789,9 @@
         "target": "abbdcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -672,6 +807,9 @@
         "target": "bbdccb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -687,6 +825,9 @@
         "target": "bdccbc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -702,6 +843,9 @@
         "target": "dccbcb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -717,6 +861,9 @@
         "target": "ccbcbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -732,6 +879,9 @@
         "target": "cbcbdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -747,6 +897,9 @@
         "target": "bcbdcd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -762,6 +915,9 @@
         "target": "cbdcda",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -777,6 +933,9 @@
         "target": "bdcdaa",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -792,6 +951,9 @@
         "target": "dcdaab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -807,6 +969,9 @@
         "target": "cdaabd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -822,6 +987,9 @@
         "target": "daabdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -837,6 +1005,9 @@
         "target": "aabdcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -852,6 +1023,9 @@
         "target": "abdccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -867,6 +1041,9 @@
         "target": "bdcccd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -882,6 +1059,9 @@
         "target": "dcccdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -897,6 +1077,9 @@
         "target": "cccdcb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -912,6 +1095,9 @@
         "target": "ccdcba",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -927,6 +1113,9 @@
         "target": "cdcbab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -942,6 +1131,9 @@
         "target": "dcbabb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -957,6 +1149,9 @@
         "target": "cbabbb",
         "probability": 0.0031413612565445027,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -972,6 +1167,9 @@
         "target": "babbbc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -987,6 +1185,9 @@
         "target": "abbbcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1002,6 +1203,9 @@
         "target": "bbbcca",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1017,6 +1221,9 @@
         "target": "bbccaa",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1032,6 +1239,9 @@
         "target": "bccaac",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1047,6 +1257,9 @@
         "target": "ccaacc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1062,6 +1275,9 @@
         "target": "caaccb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1077,6 +1293,9 @@
         "target": "aaccbb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1092,6 +1311,9 @@
         "target": "accbbb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1107,6 +1329,9 @@
         "target": "ccbbbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1122,6 +1347,9 @@
         "target": "cbbbda",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1137,6 +1365,9 @@
         "target": "bbbdab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1152,6 +1383,9 @@
         "target": "bbdabc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1167,6 +1401,9 @@
         "target": "bdabcd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1182,6 +1419,9 @@
         "target": "dabcda",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1197,6 +1437,9 @@
         "target": "abcdab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1212,6 +1455,9 @@
         "target": "bcdabc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1227,6 +1473,9 @@
         "target": "cdabcd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1242,6 +1491,9 @@
         "target": "dabcda",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1257,6 +1509,9 @@
         "target": "abcdab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1272,6 +1527,9 @@
         "target": "bcdabb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1287,6 +1545,9 @@
         "target": "cdabbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1302,6 +1563,9 @@
         "target": "dabbdc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1317,6 +1581,9 @@
         "target": "abbdcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1332,6 +1599,9 @@
         "target": "bbdccb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1347,6 +1617,9 @@
         "target": "bdccbd",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1362,6 +1635,9 @@
         "target": "dccbda",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1377,6 +1653,9 @@
         "target": "ccbdab",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1392,6 +1671,9 @@
         "target": "cbdabb",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1407,6 +1689,9 @@
         "target": "bdabbc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1422,6 +1707,9 @@
         "target": "dabbcc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1437,6 +1725,9 @@
         "target": "abbccc",
         "probability": 0.0010471204188481676,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 1
     },
     {
@@ -1452,6 +1743,9 @@
         "target": "bbcccc",
         "probability": 0.007329842931937173,
         "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 797,
+        "min_context_depth": 0,
         "prediction": 0
     },
     {
@@ -1467,6 +1761,9 @@
         "target": "bccccc",
         "probability": 0.030303030303030304,
         "threshold": 0.005,
+        "context_length": 1,
+        "context_count": 7,
+        "min_context_depth": 0,
         "prediction": 0
     },
     {
@@ -1482,6 +1779,9 @@
         "target": "ccccca",
         "probability": 0.006172839506172839,
         "threshold": 0.005,
+        "context_length": 2,
+        "context_count": 4,
+        "min_context_depth": 0,
         "prediction": 0
     }
 ]

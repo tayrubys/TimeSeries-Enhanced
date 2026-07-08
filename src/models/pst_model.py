@@ -101,6 +101,31 @@ class ProbabilisticSuffixTree:
 
         return node.counts.get(next_symbol, 0) / total
     
+    #olasılıkla birlikte kullanılan context bilgisini de döndürür.
+    #böylece vomm tarafında kararın ne kadar güvenilir bir geçmişe dayandığını görmek içim
+    def predict_probability_with_context_info(self, history, next_symbol):
+        context, node = self.find_best_context(history)
+
+        total = node.total_count()
+        vocab_size = max(1, len(self.vocabulary))
+
+        if self.smoothing:
+            count = node.counts.get(next_symbol, 0)
+            probability = (count + self.smoothing_alpha) / (
+                total + self.smoothing_alpha * vocab_size
+            )
+        else:
+            if total == 0:
+                probability = 0.0
+            else:
+                probability = node.counts.get(next_symbol, 0) / total
+
+        return probability, {
+            "context_length": len(context),
+            "context_count": total,
+            "context": list(context)
+        }
+
     #pst ağacındaki toplam context/node ve geçiş sayılarını hesaplama
     def count_nodes_and_transitions(self):
         def traverse(node):
