@@ -100,6 +100,7 @@ Yapılan son taramada en iyi sonuç `min_count=3`, `smoothing_alpha=1.0` ve vali
 |---|---:|---:|---:|
 | `window=6`, `alphabet=4`, önceki ayar `min_count=3`, `alpha=0.1` | 0.1163 | 1.0000 | 0.2083 |
 | `window=6`, `alphabet=4`, güncel ayar `min_count=3`, `alpha=1.0` | 0.1923 | 1.0000 | 0.3226 |
+
 Bu güncelleme sonrasında ana BATADAL çalışmasında da validation seçilen threshold `0.005` olmuş ve final test sonucunda F1-score `0.3226` seviyesine yükselmiştir. Gaussian noise senaryosunda da F1-score `0.3281` olarak ölçülmüştür.
 
 Bu sonuç, bağlam güvenilirliğini kontrol eden `min_count` parametresinin artırılmasının BATADAL üzerinde false positive davranışını kısmen azaltabildiğini ve modelin F1-score değerini iyileştirdiğini göstermektedir.
