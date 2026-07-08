@@ -77,6 +77,15 @@ def load_json_config(config_path="src/config/settings.json"):
         "skab_final_dirichlet_smoothing_enabled": True,
         "skab_final_dirichlet_alpha": 0.5,
         "skab_final_dirichlet_prior_mode": "unigram",
+
+        # İkinci tur kontrollü Dirichlet deneyi
+        "run_dirichlet_refined_sweep": False,
+        "dirichlet_refined_alphas": [5.0, 7.5, 10.0, 15.0, 20.0, 30.0],
+        "dirichlet_refined_prior_modes": ["uniform"],
+        "batadal_dirichlet_score_thresholds": [3.9120, 4.2, 4.5, 4.8, 5.0, 5.3, 5.6],
+        "skab_dirichlet_score_thresholds": [0.2231, 0.3, 0.4, 0.5, 0.7, 0.9],
+        "batadal_dirichlet_enabled_options": [True],
+        "skab_dirichlet_enabled_options": [False, True],
     }
 
     if os.path.exists(config_path):
@@ -1040,6 +1049,225 @@ def run_dirichlet_smoothing_sweep(config):
     return df_sweep
 
 
+def run_dirichlet_refined_sweep(config):
+    """
+    Dirichlet smoothing için ikinci tur kontrollü deney çalıştırır.
+
+    İlk sweep'te BATADAL tarafında uniform prior ve yüksek alpha değerleri daha iyiye gitmişti.
+    Bu fonksiyon bu bölgeyi daha ayrıntılı tarar ve Dirichlet sonrası değişen score dağılımı için
+    score_threshold değerlerini yeniden dener. SKAB için ayrıca Dirichlet açık/kapalı kontrolü yapar.
+    """
+    print("\n--- DIRICHLET REFINED SWEEP BAŞLATILIYOR ---")
+
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    refined_alphas = config.get("dirichlet_refined_alphas", [5.0, 7.5, 10.0, 15.0, 20.0, 30.0])
+    refined_prior_modes = config.get("dirichlet_refined_prior_modes", ["uniform"])
+    batadal_score_thresholds = config.get("batadal_dirichlet_score_thresholds", [3.9120, 4.2, 4.5, 4.8, 5.0, 5.3, 5.6])
+    skab_score_thresholds = config.get("skab_dirichlet_score_thresholds", [0.2231, 0.3, 0.4, 0.5, 0.7, 0.9])
+    batadal_enabled_options = config.get("batadal_dirichlet_enabled_options", [True])
+    skab_enabled_options = config.get("skab_dirichlet_enabled_options", [False, True])
+
+    sweep_results = []
+
+    def run_dataset_config(X_train, X_test, y_test, dataset_name, fold_name, seed, cc):
+        res, _ = run_experiment_pipeline(
+            X_train,
+            X_test,
+            y_test,
+            cc,
+            dataset_name,
+            fold_name,
+            seed=seed,
+        )
+        sweep_results.extend(res)
+
+    # BATADAL: yüksek alpha + score_threshold taraması
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Refined Dirichlet Taraması...")
+        print(f"   enabled seçenekleri: {batadal_enabled_options}")
+        print(f"   prior mode aralığı: {refined_prior_modes}")
+        print(f"   alpha aralığı: {refined_alphas}")
+        print(f"   score_threshold aralığı: {batadal_score_thresholds}")
+
+        for enabled in batadal_enabled_options:
+            prior_modes_to_try = refined_prior_modes if enabled else [config.get("batadal_final_dirichlet_prior_mode", "uniform")]
+            alphas_to_try = refined_alphas if enabled else [config.get("batadal_final_dirichlet_alpha", 5.0)]
+
+            for prior_mode in prior_modes_to_try:
+                for alpha in alphas_to_try:
+                    for score_threshold in batadal_score_thresholds:
+                        for seed in seeds:
+                            cc = {
+                                **config,
+                                "order": config.get("batadal_final_order", 3),
+                                "smoothing_alpha": config.get("batadal_final_smoothing_alpha", 0.1),
+                                "decision_mode": config.get("batadal_final_decision_mode", "avg_negative_log"),
+                                "score_window": config.get("batadal_final_score_window", 5),
+                                "score_threshold": score_threshold,
+                                "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+                                "auto_score_percentile": None,
+                                "anomaly_threshold": float(np.exp(-score_threshold)),
+                                "dirichlet_smoothing_enabled": enabled,
+                                "dirichlet_alpha": alpha,
+                                "dirichlet_prior_mode": prior_mode,
+                            }
+                            run_dataset_config(
+                                X_train_b,
+                                X_test_b,
+                                y_test_b,
+                                "BATADAL",
+                                "dirichlet_refined_sweep",
+                                seed,
+                                cc,
+                            )
+
+                        temp_df = pd.DataFrame([
+                            r for r in sweep_results
+                            if r["dataset"] == "BATADAL"
+                            and r["scenario"] == "original"
+                            and r["dirichlet_smoothing_enabled"] == enabled
+                            and r["dirichlet_alpha"] == alpha
+                            and r["dirichlet_prior_mode"] == prior_mode
+                            and r["score_threshold"] == score_threshold
+                        ])
+                        if not temp_df.empty:
+                            print(
+                                f"BATADAL -> enabled={enabled}, prior={prior_mode}, alpha={alpha}, "
+                                f"score_threshold={score_threshold} | "
+                                f"Precision={temp_df['precision'].mean():.4f}, "
+                                f"Recall={temp_df['recall'].mean():.4f}, "
+                                f"F1={temp_df['f1_score'].mean():.4f}"
+                            )
+
+    # SKAB: Dirichlet açık/kapalı + score_threshold kontrolü
+    print("\n>> SKAB Refined Dirichlet Taraması...")
+    print(f"   enabled seçenekleri: {skab_enabled_options}")
+    print(f"   prior mode aralığı: {refined_prior_modes}")
+    print(f"   alpha aralığı: {refined_alphas}")
+    print(f"   score_threshold aralığı: {skab_score_thresholds}")
+
+    for enabled in skab_enabled_options:
+        prior_modes_to_try = refined_prior_modes if enabled else [config.get("skab_final_dirichlet_prior_mode", "uniform")]
+        alphas_to_try = refined_alphas if enabled else [config.get("skab_final_dirichlet_alpha", 5.0)]
+
+        for prior_mode in prior_modes_to_try:
+            for alpha in alphas_to_try:
+                for score_threshold in skab_score_thresholds:
+                    for fold in range(1, 6):
+                        train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                        test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                        y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                        if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                            continue
+
+                        X_train_s = pd.read_csv(train_file).values.flatten()
+                        X_test_s = pd.read_csv(test_file).values.flatten()
+                        y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                        for seed in seeds:
+                            cc = {
+                                **config,
+                                "order": config.get("skab_final_order", 3),
+                                "smoothing_alpha": config.get("skab_final_smoothing_alpha", 0.5),
+                                "decision_mode": config.get("skab_final_decision_mode", "avg_negative_log"),
+                                "score_window": config.get("skab_final_score_window", 10),
+                                "score_threshold": score_threshold,
+                                "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+                                "auto_score_percentile": None,
+                                "anomaly_threshold": float(np.exp(-score_threshold)),
+                                "dirichlet_smoothing_enabled": enabled,
+                                "dirichlet_alpha": alpha,
+                                "dirichlet_prior_mode": prior_mode,
+                            }
+                            run_dataset_config(
+                                X_train_s,
+                                X_test_s,
+                                y_test_s,
+                                "SKAB",
+                                f"dirichlet_refined_fold_{fold}",
+                                seed,
+                                cc,
+                            )
+
+                    temp_df = pd.DataFrame([
+                        r for r in sweep_results
+                        if r["dataset"] == "SKAB"
+                        and r["scenario"] == "original"
+                        and r["dirichlet_smoothing_enabled"] == enabled
+                        and r["dirichlet_alpha"] == alpha
+                        and r["dirichlet_prior_mode"] == prior_mode
+                        and r["score_threshold"] == score_threshold
+                    ])
+                    if not temp_df.empty:
+                        print(
+                            f"SKAB -> enabled={enabled}, prior={prior_mode}, alpha={alpha}, "
+                            f"score_threshold={score_threshold} | "
+                            f"Precision={temp_df['precision'].mean():.4f}, "
+                            f"Recall={temp_df['recall'].mean():.4f}, "
+                            f"F1={temp_df['f1_score'].mean():.4f}"
+                        )
+
+    if not sweep_results:
+        print("[UYARI] Dirichlet refined sweep için uygun veri bulunamadı.")
+        return pd.DataFrame()
+
+    df_sweep = pd.DataFrame(sweep_results)
+    os.makedirs("results/outputs", exist_ok=True)
+
+    metrics_path = "results/outputs/automata_dirichlet_refined_sweep_metrics.csv"
+    summary_path = "results/outputs/automata_dirichlet_refined_sweep_summary.csv"
+    best_path = "results/outputs/automata_dirichlet_refined_best_candidates.csv"
+
+    df_sweep.to_csv(metrics_path, index=False)
+
+    summary_cols = [
+        "dataset",
+        "scenario",
+        "order",
+        "smoothing_alpha",
+        "decision_mode",
+        "score_window",
+        "score_threshold",
+        "max_mapping_distance",
+        "dirichlet_smoothing_enabled",
+        "dirichlet_alpha",
+        "dirichlet_prior_mode",
+    ]
+
+    summary = df_sweep.groupby(summary_cols, dropna=False).agg(
+        accuracy_mean=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        precision_mean=("precision", "mean"),
+        precision_std=("precision", "std"),
+        recall_mean=("recall", "mean"),
+        recall_std=("recall", "std"),
+        f1_score_mean=("f1_score", "mean"),
+        f1_score_std=("f1_score", "std"),
+        transition_density_mean=("transition_density", "mean"),
+        num_states_mean=("num_states", "mean"),
+        num_transitions_mean=("num_transitions", "mean"),
+    ).reset_index()
+    summary.to_csv(summary_path, index=False)
+
+    best_candidates = summary[summary["scenario"] == "original"].sort_values(
+        ["dataset", "f1_score_mean", "recall_mean", "precision_mean"],
+        ascending=[True, False, False, False],
+    )
+    best_candidates.to_csv(best_path, index=False)
+
+    print(f"\n[OK] Dirichlet refined sweep sonuçları kaydedildi: {metrics_path}")
+    print(f"[OK] Dirichlet refined sweep özeti kaydedildi: {summary_path}")
+    print(f"[OK] Dirichlet refined en iyi adaylar kaydedildi: {best_path}")
+
+    return df_sweep
+
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -1215,6 +1443,11 @@ def main():
         run_dirichlet_smoothing_sweep(config)
     else:
         print("[INFO] Dirichlet smoothing sweep kapalı. Açmak için settings.json -> automata.run_dirichlet_smoothing_sweep=true")
+
+    if config.get("run_dirichlet_refined_sweep", False):
+        run_dirichlet_refined_sweep(config)
+    else:
+        print("[INFO] Dirichlet refined sweep kapalı. Açmak için settings.json -> automata.run_dirichlet_refined_sweep=true")
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
