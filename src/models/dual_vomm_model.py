@@ -42,7 +42,8 @@ class DualVariableOrderMarkovModel:
 
         self._trained_patterns = set(train_patterns)
 
-        #iki pst nin de aynı vocabulary bilgisini kullanması gerekiyor cunkunormal ve anomaly olasılıkları daha adil karşılaştırmak için
+        #iki pst nin de aynı vocabulary bilgisini kullanması gerekir
+        #böylece normal ve anomaly olasılıkları daha adil karşılaştırılır
         shared_vocabulary = set(train_patterns)
         self.normal_pst.vocabulary = shared_vocabulary.copy()
         self.anomaly_pst.vocabulary = shared_vocabulary.copy()
@@ -67,7 +68,7 @@ class DualVariableOrderMarkovModel:
                 self.anomaly_pst.add_observation(history, target)
                 self.anomaly_transition_count += 1
 
-    def predict(self, test_patterns, score_threshold=0.0):
+    def predict(self, test_patterns, score_threshold=0.0,prior_normal=0.5,prior_anomaly=0.5):
         predictions = []
         explainability_logs = []
 
@@ -84,7 +85,7 @@ class DualVariableOrderMarkovModel:
 
             #pozitifse geçiş anomaly modele daha yakın,
             #negatifse normal modele daha yakın kabul et
-            score = np.log(p_anomaly + eps) - np.log(p_normal + eps)
+            score = (np.log(p_anomaly + eps)+ np.log(prior_anomaly + eps)- np.log(p_normal + eps)- np.log(prior_normal + eps))
 
             decision = 1 if score > score_threshold else 0
             predictions.append(decision)
@@ -95,6 +96,8 @@ class DualVariableOrderMarkovModel:
                 "target": target,
                 "p_normal": float(p_normal),
                 "p_anomaly": float(p_anomaly),
+                "prior_normal": float(prior_normal),
+                "prior_anomaly": float(prior_anomaly),
                 "score": float(score),
                 "score_threshold": float(score_threshold),
                 "prediction": decision

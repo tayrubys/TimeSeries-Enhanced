@@ -120,13 +120,28 @@ def select_best_threshold_on_validation(
             best_metrics = metrics
 
     return best_threshold, best_metrics
+#Pattern-level etiketlerden normal/anomaly sınıf oranlarını hesapla
+#Dual-PST skoruna bu prior değerleri eklenerek ADASYN kaynaklı yapay sınıf dengesi etkisi azaltılmaya çalışılır.
+def calculate_pattern_priors(pattern_labels):
+    eps = 1e-12
 
-# Dual VOMM/PST modelinde skor threshold'u validation seti üzerinden seçilir.
-# Burada kullanılan skor:
-# log(P_anomaly) - log(P_normal)
-#
-# Skor yüksekse pattern anomalili modele daha yakın kabul edilir.
-# Bu yüzden threshold klasik probability threshold'dan farklıdır.
+    normal_count = np.sum(pattern_labels == 0)
+    anomaly_count = np.sum(pattern_labels == 1)
+    total_count = normal_count + anomaly_count
+
+    if total_count == 0:
+        return 0.5, 0.5
+
+    prior_normal = normal_count / total_count
+    prior_anomaly = anomaly_count / total_count
+
+    #0 olasılık oluşmasını engelle
+    prior_normal = max(prior_normal, eps)
+    prior_anomaly = max(prior_anomaly, eps)
+
+    return prior_normal, prior_anomaly
+
+#skor yüksekse pattern anomalili modele daha yakın kabul edilir.
 def select_best_dual_score_threshold_on_validation(
     model,
     val_patterns,
@@ -144,11 +159,15 @@ def select_best_dual_score_threshold_on_validation(
         len(val_patterns),
         window_size
     )
+    #validation setindeki gerçek pattern-level sınıf dağılımını hesaplayıp dual-pst karar skoruna eklenecek.
+    prior_normal, prior_anomaly = calculate_pattern_priors(y_val_aligned)
 
     for score_threshold in score_threshold_values:
         preds_val, _ = model.predict(
             val_patterns,
-            score_threshold=score_threshold
+            score_threshold=score_threshold,
+            prior_normal=prior_normal,
+            prior_anomaly=prior_anomaly          
         )
 
         preds_val = preds_val[:len(y_val_aligned)]
@@ -160,7 +179,7 @@ def select_best_dual_score_threshold_on_validation(
             best_threshold = score_threshold
             best_metrics = metrics
 
-    return best_threshold, best_metrics
+    return best_threshold, best_metrics, prior_normal, prior_anomaly
 #hiperparametre optimizasyonu
 def select_best_vomm_config_on_validation(
     X_train,
@@ -659,9 +678,9 @@ def run_batadal_dual_vomm_experiment(config):
         f"anomaly={model.anomaly_transition_count}"
     )
 
-    score_threshold_values = [-5, -3, -2, -1, -0.5, 0, 0.5, 1, 2, 3, 5]
+    score_threshold_values = [-20, -15, -10, -7, -5, -3, -2, -1, -0.5,0, 0.5, 1, 2, 3, 5, 7, 10, 15, 20]
 
-    selected_score_threshold, val_metrics = select_best_dual_score_threshold_on_validation(
+    selected_score_threshold, val_metrics, prior_normal, prior_anomaly = select_best_dual_score_threshold_on_validation(
         model,
         val_patterns,
         y_val,
@@ -671,15 +690,18 @@ def run_batadal_dual_vomm_experiment(config):
 
     print(
         f"BATADAL Dual VOMM/PST validation selected score_threshold: "
-        f"{selected_score_threshold} | val F1: {val_metrics['f1_score']:.4f}"
+        f"{selected_score_threshold} | val F1: {val_metrics['f1_score']:.4f} | "
+        f"prior_normal={prior_normal:.4f}, prior_anomaly={prior_anomaly:.4f}"
+
     )
 
     # --- Orijinal test verisi ---
     preds_test, logs_test = model.predict(
         test_patterns,
-        score_threshold=selected_score_threshold
+        score_threshold=selected_score_threshold,
+        prior_normal=prior_normal,
+        prior_anomaly=prior_anomaly
     )
-
     y_test_aligned = align_labels_to_patterns(
         y_test,
         len(test_patterns),
@@ -726,7 +748,9 @@ def run_batadal_dual_vomm_experiment(config):
 
         preds_noisy, _ = model.predict(
             noisy_patterns,
-            score_threshold=selected_score_threshold
+            score_threshold=selected_score_threshold,
+            prior_normal=prior_normal,
+            prior_anomaly=prior_anomaly
         )
 
         y_noisy_aligned = align_labels_to_patterns(
@@ -793,7 +817,7 @@ def main():
             "alphabet_size": 4,
             "anomaly_threshold": 0.005,
             "min_count": 3,
-            "smoothing_alpha": 0.1
+            "smoothing_alpha": 1.0
         }
  
         batadal_logs = None

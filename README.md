@@ -95,12 +95,12 @@ BATADAL tarafında `window_size=6`, `alphabet_size=4` ayarı ile elde edilen per
 
 `min_count`, bir bağlamın güvenilir kabul edilmesi için eğitim verisinde en az kaç kez görülmesi gerektiğini belirler. `smoothing_alpha` ise görülmeyen veya nadir geçişlere verilen olasılığı kontrol eder.
 
-Yapılan taramada en iyi sonuç `min_count=3`, `smoothing_alpha=0.1` ve validation üzerinden seçilen `threshold=0.001` ile elde edilmiştir.
-
+Yapılan son taramada en iyi sonuç `min_count=3`, `smoothing_alpha=1.0` ve validation üzerinden seçilen `threshold=0.005` ile elde edilmiştir.
 | Ayar | Precision | Recall | F1-score |
 |---|---:|---:|---:|
-| `window=6`, `alphabet=4`, varsayılan `min_count=2`, `alpha=1.0` | 0.1085 | 0.9333 | 0.1944 |
-| `window=6`, `alphabet=4`, `min_count=3`, `alpha=0.1` | 0.1163 | 1.0000 | 0.2083 |
+| `window=6`, `alphabet=4`, önceki ayar `min_count=3`, `alpha=0.1` | 0.1163 | 1.0000 | 0.2083 |
+| `window=6`, `alphabet=4`, güncel ayar `min_count=3`, `alpha=1.0` | 0.1923 | 1.0000 | 0.3226 |
+Bu güncelleme sonrasında ana BATADAL çalışmasında da validation seçilen threshold `0.005` olmuş ve final test sonucunda F1-score `0.3226` seviyesine yükselmiştir. Gaussian noise senaryosunda da F1-score `0.3281` olarak ölçülmüştür.
 
 Bu sonuç, bağlam güvenilirliğini kontrol eden `min_count` parametresinin artırılmasının BATADAL üzerinde false positive davranışını kısmen azaltabildiğini ve modelin F1-score değerini iyileştirdiğini göstermektedir.
 
@@ -138,11 +138,12 @@ Ayrıca BATADAL min_count ve smoothing taramasında en iyi sonuç `min_count=3`,
 
 BATADAL tarafında precision değerinin düşük kalması nedeniyle normal ve anomalili geçişleri ayrı ayrı öğrenen Dual vomm-pst yaklaşımı denenmiştir. Bu yöntemde normal pattern geçişleri bir pst ağacında, anomalili pattern geçişleri ise ayrı bir pst ağacında tutulmuştur. Test aşamasında bir geçişin anomalili modele mi yoksa normal modele mi daha yakın olduğuna bakılmıştır.
 
-Bu deneyde eğitim sırasında `382` normal geçiş ve `415` anomalili geçiş öğrenilmiştir. Validation seti üzerinden seçilen en iyi skor eşiği `-5` olmuştur.
+Bu deneyde eğitim sırasında `382` normal geçiş ve `415` anomalili geçiş öğrenilmiştir.Daha sonra Dual VOMM/PST skoruna validation setindeki gerçek sınıf dağılımını dikkate alan prior correction eklenmiştir. Validation setinde pattern-level sınıf oranları `prior_normal=0.9098` ve `prior_anomaly=0.0902` olarak hesaplanmıştır. Prior correction sonrasında validation üzerinden seçilen en iyi skor eşiği `-20` olmuştur. 
 
 | Model | Precision | Recall | F1-score |
 |---|---:|---:|---:|
 | VOMM/PST + regularization | 0.1923 | 1.0000 | 0.3226 |
-| Dual VOMM/PST | 0.1880 | 1.0000 | 0.3165 |
+| Dual VOMM/PST + prior correction | 0.1880 | 1.0000 | 0.3165 |
 
 Dual VOMM/PST yaklaşımı BATADAL üzerinde çalışmış olsa da, mevcut en iyi vomm-pst regularization sonucunu geçememiştir. Bunun nedeni, eğitim verisinin ADASYN ile dengelenmiş olması sebebiyle normal ve anomalili geçiş sayılarının birbirine yakın hale gelmesi olabilir. Bu durumda model anomalili sınıfı gerçek test dağılımına göre daha güçlü temsil etmiş ve precision tarafında beklenen artış sağlanamamıştır.
+Prior correction, ADASYN ile dengelenmiş eğitim verisinin normal/anomaly oranını gerçek validation dağılımına yaklaştırmak amacıyla denenmiştir. Ancak bu düzeltme BATADAL test F1-score değerinde ek bir artış sağlamamıştır. Seçilen skor eşiğinin aralığın en düşük değeri olan `-20` olması, modelin hâlâ çok fazla pattern’i anomali olarak işaretleme eğiliminde olduğunu göstermektedir. Bu nedenle final BATADAL sonucu için Dual VOMM/PST yerine regularization uygulanmış VOMM/PST modeli daha iyi seçenek olarak değerlendirilmiştir.
