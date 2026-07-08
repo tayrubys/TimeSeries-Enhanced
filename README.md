@@ -115,3 +115,20 @@ Bu yöntemde tekil anomali tahminleri doğrudan kabul edilmemiş, yalnızca art 
 Deneyde `min_consecutive` değeri validation seti üzerinde `[1, 2, 3, 4]` aralığında denenmiştir. Ancak validation sonucunda en iyi F1-score değeri `min_consecutive=1` iken elde edilmiştir. Bu değer filtrenin uygulanmadığı temel duruma karşılık gelmektedir. Dolayısıyla ardışık anomali filtresi BATADAL performansında ek bir iyileştirme sağlamamıştır.
 
 Bu sonuç, BATADAL tarafındaki false positive tahminlerin çoğunun tekil ve izole noktalardan oluşmadığını; daha çok ardışık bloklar halinde ortaya çıktığını göstermektedir. Bu nedenle ardışık filtre final modele dahil edilmemiştir.
+
+### Pattern-Level Label Alignment Düzeltmesi
+
+VOMM/PST modeli ham zaman noktaları yerine SAX/PAA ile oluşturulan sembolik pattern’ler üzerinde çalıştığı için, tahminler doğrudan nokta bazlı etiketlerle aynı uzunlukta değildir. Bu nedenle pattern-level label hizalama mantığı güncellendi.
+Önceki yöntemde her pattern yalnızca tek bir `window_size` aralığıyla eşleştiriliyordu. Ancak bir pattern birden fazla SAX sembolünden oluştuğu için daha geniş bir zaman aralığını temsil etmektedir. Yeni düzenlemede pattern’in kapsadığı tüm zaman aralığı dikkate alındı ve bu aralıkta en az bir anomalili nokta varsa ilgili pattern anomalili kabul edildi.
+Bu değişiklik modelin eğitim yapısını değiştirmemiş, yalnızca validation ve test aşamasındaki değerlendirmeyi daha doğru hale getirmiştir. Düzeltilmiş hizalama sonrasında BATADAL tarafında F1-score yaklaşık `0.20` seviyesinden `0.31` seviyesine yükselmiştir.
+
+| Dataset | Scenario       | Precision | Recall | F1-score |
+| ------- | -------------- | --------: | -----: | -------: |
+| BATADAL | Original       |    0.1860 | 0.9600 |   0.3117 |
+| BATADAL | Gaussian Noise |    0.1899 | 0.9600 |   0.3171 |
+
+Ayrıca BATADAL min_count ve smoothing taramasında en iyi sonuç `min_count=3`, `smoothing_alpha=1.0` ve `threshold=0.005` ile elde edilmiştir:
+
+| Precision | Recall | F1-score |
+| --------: | -----: | -------: |
+|    0.1923 | 1.0000 |   0.3226 |

@@ -63,24 +63,28 @@ def split_train_validation(X_train, y_train, val_ratio=0.2):
 
     return X_model_train, X_val, y_model_train, y_val
 
-#sembolik örüntülerin sayısı orijinal etiket sayısından az olacağı için
-#anomali etiketlerini (0 veya 1) örüntülerle hizala
-#window içindeki herhangi bir noktada anomali varsa, o örüntünün etiketini de 1 kabul et
-def align_labels_to_patterns(y, num_patterns, window_size):
+#etiketlerı pattern hizalama
+def align_labels_to_patterns(y, num_patterns, paa_window_size, pattern_length=None):
     aligned_labels = []
 
-    for i in range(1, num_patterns):
-        start_idx = i * window_size
-        end_idx = min(start_idx + window_size, len(y))
+    #eğer pattern_length ayrıca verilmezse window_size hem paa penceresi hem de pattern uzunluğu olarak kabul et
+    if pattern_length is None:
+        pattern_length = paa_window_size
+
+    for pattern_idx in range(1, num_patterns):
+        start_idx = pattern_idx * paa_window_size
+        end_idx = min(
+            (pattern_idx + pattern_length) * paa_window_size,
+            len(y)
+        )
 
         if end_idx <= start_idx:
             break
-        #herhangi bir hucre anomali içeriyr mu
+
         label = 1 if np.any(y[start_idx:end_idx] == 1) else 0
         aligned_labels.append(label)
 
     return np.array(aligned_labels)
-
 #threshold secme
 def select_best_threshold_on_validation(
     model,
