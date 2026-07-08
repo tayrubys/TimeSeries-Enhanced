@@ -6,48 +6,209 @@ from src.models.explainability import AutomataExplainer
 class ProbabilisticAutomata:
 
     # yüksek dereceli olasılıksal otomata modelini başlatır
-    def __init__(self, smoothing=True, order=2, learning_rate=0.0, smoothing_alpha=1.0):
+    def __init__(
+        self,
+        smoothing=True,
+        order=2,
+        learning_rate=0.0,
+        smoothing_alpha=1.0,
+        dirichlet_smoothing_enabled=False,
+        dirichlet_alpha=None,
+        dirichlet_prior_mode="uniform",
+    ):
         self.smoothing = smoothing
         self.order = order
         self.learning_rate = learning_rate
         self.smoothing_alpha = smoothing_alpha
+
+        # Dirichlet smoothing ayarları.
+        self.dirichlet_smoothing_enabled = dirichlet_smoothing_enabled #varsayılan kapalı
+        self.dirichlet_alpha = smoothing_alpha if dirichlet_alpha is None else dirichlet_alpha
+        self.dirichlet_prior_mode = dirichlet_prior_mode
+
+        if self.order < 1:
+            raise ValueError("order en az 1 olmalıdır.")
+
+        if self.smoothing_alpha < 0:
+            raise ValueError("smoothing_alpha negatif olamaz.")
+
+        if self.dirichlet_alpha < 0:
+            raise ValueError("dirichlet_alpha negatif olamaz.")
+
+        if self.dirichlet_prior_mode not in {"uniform", "unigram", "backoff"}:
+            raise ValueError("dirichlet_prior_mode 'uniform', 'unigram' veya 'backoff' olmalıdır.")
+
         self.transitions = defaultdict(lambda: defaultdict(float))
         self.total_exits = defaultdict(float)
         self.trained_patterns = set()
+
+        # Unigram prior için eğitim pattern frekansları.
+        self.pattern_counts = defaultdict(float)
+        self.total_pattern_count = 0.0
 
     # modeli verilen eğitim örüntüleriyle eğitir ve geçiş frekanslarını kaydeder
     def fit(self, train_patterns):
         if len(train_patterns) < self.order + 1:
             raise ValueError(f"Otomata eğitimi için en az {self.order + 1} pattern gereklidir.")
 
+        # Aynı model nesnesi tekrar fit edilirse eski geçişlerin karışmasını engeller.
+        self.transitions = defaultdict(lambda: defaultdict(float))
+        self.total_exits = defaultdict(float)
+        self.pattern_counts = defaultdict(float)
+        self.total_pattern_count = 0.0
+
         self.trained_patterns = set(train_patterns)
+
+        for pattern in train_patterns:
+            self.pattern_counts[pattern] += 1.0
+            self.total_pattern_count += 1.0
 
         for ord_idx in range(1, self.order + 1):
             for i in range(len(train_patterns) - ord_idx):
                 state = tuple(train_patterns[i : i + ord_idx])
                 next_pattern = train_patterns[i + ord_idx]
-                self.transitions[state][next_pattern] += 1
-                self.total_exits[state] += 1
+                self.transitions[state][next_pattern] += 1.0
+                self.total_exits[state] += 1.0
+
+    def _get_transition_count(self, state, next_pattern):
+        if state in self.transitions:
+            return float(self.transitions[state].get(next_pattern, 0.0))
+        return 0.0
+
+    def _resolve_backoff_state(self, current_state):
+        state_to_check = current_state
+        while len(state_to_check) > 0:
+            total_output = float(self.total_exits.get(state_to_check, 0.0))
+            if total_output > 0:
+                return state_to_check, total_output
+            state_to_check = state_to_check[1:]
+        return tuple(), 0.0
+
+    def _uniform_prior_probability(self, next_pattern):
+        vocab_size = len(self.trained_patterns)
+        if vocab_size <= 0:
+            return 0.0
+        if next_pattern not in self.trained_patterns:
+            return 0.0
+        return 1.0 / vocab_size
+
+    def _unigram_prior_probability(self, next_pattern):
+        if self.total_pattern_count <= 0:
+            return self._uniform_prior_probability(next_pattern)
+        return float(self.pattern_counts.get(next_pattern, 0.0)) / float(self.total_pattern_count)
+
+    def _dirichlet_probability_for_state(self, state, next_pattern):
+        total_output = float(self.total_exits.get(state, 0.0))
+        transition_count = self._get_transition_count(state, next_pattern)
+        prior_probability = self._get_dirichlet_prior_probability(next_pattern, state)
+        alpha = float(self.dirichlet_alpha)
+
+        denominator = total_output + alpha
+        if denominator <= 0:
+            return float(prior_probability)
+
+        return float((transition_count + alpha * prior_probability) / denominator)
+
+    def _get_dirichlet_prior_probability(self, next_pattern, state=None):
+        """
+        Dirichlet prior dağılımını hesaplar.
+
+        uniform:
+            Tüm eğitim pattern'lerine eşit prior verir.
+
+        unigram:
+            Eğitim setindeki global pattern frekanslarını prior olarak kullanır.
+
+        backoff:
+            Mümkünse bir alt dereceli Markov dağılımını prior olarak kullanır.
+            Alt dereceli state yoksa unigram prior'a düşer.
+        """
+        if self.dirichlet_prior_mode == "uniform":
+            return self._uniform_prior_probability(next_pattern)
+
+        if self.dirichlet_prior_mode == "unigram":
+            return self._unigram_prior_probability(next_pattern)
+
+        # backoff prior
+        if state is not None and len(state) > 1:
+            lower_state = state[1:]
+            if float(self.total_exits.get(lower_state, 0.0)) > 0:
+                return self._dirichlet_probability_for_state(lower_state, next_pattern)
+
+        # En düşük derecede veya alt state yoksa global unigram prior kullanılır.
+        return self._unigram_prior_probability(next_pattern)
+
+    def _get_probability_details(self, current_state, next_pattern):
+        resolved_state, total_output = self._resolve_backoff_state(current_state)
+        transition_count = self._get_transition_count(resolved_state, next_pattern) if total_output > 0 else 0.0
+
+        details = {
+            "resolved_state": resolved_state,
+            "resolved_order": len(resolved_state),
+            "resolved_total_exits": float(total_output),
+            "resolved_transition_count": float(transition_count),
+            "smoothing_strategy": "none",
+            "dirichlet_smoothing_enabled": bool(self.dirichlet_smoothing_enabled),
+            "dirichlet_alpha": float(self.dirichlet_alpha),
+            "dirichlet_prior_mode": self.dirichlet_prior_mode,
+            "dirichlet_prior_probability": None,
+        }
+
+        if total_output > 0:
+            if self.dirichlet_smoothing_enabled:
+                prior_probability = self._get_dirichlet_prior_probability(next_pattern, resolved_state)
+                probability = self._dirichlet_probability_for_state(resolved_state, next_pattern)
+                details.update({
+                    "probability": float(probability),
+                    "smoothing_strategy": "dirichlet",
+                    "dirichlet_prior_probability": float(prior_probability),
+                })
+                return details
+
+            if self.smoothing:
+                alpha = self.smoothing_alpha
+                vocab_size = len(self.trained_patterns)
+                probability = (transition_count + alpha) / (total_output + alpha * vocab_size)
+                details.update({
+                    "probability": float(probability),
+                    "smoothing_strategy": "additive",
+                })
+                return details
+
+            probability = transition_count / total_output
+            details.update({
+                "probability": float(probability),
+                "smoothing_strategy": "mle",
+            })
+            return details
+
+        # Hiçbir backoff state bulunamadığında fallback dağılımı.
+        if self.dirichlet_smoothing_enabled:
+            prior_probability = self._get_dirichlet_prior_probability(next_pattern, tuple())
+            details.update({
+                "probability": float(prior_probability),
+                "smoothing_strategy": "dirichlet_fallback",
+                "dirichlet_prior_probability": float(prior_probability),
+            })
+            return details
+
+        if self.smoothing and len(self.trained_patterns) > 0:
+            probability = 1.0 / len(self.trained_patterns)
+            details.update({
+                "probability": float(probability),
+                "smoothing_strategy": "uniform_fallback",
+            })
+            return details
+
+        details.update({
+            "probability": 0.0,
+            "smoothing_strategy": "zero_fallback",
+        })
+        return details
 
     # katz back-off algoritması ile bir sonraki durumun geçiş olasılığını hesaplar
     def get_transition_probability(self, current_state, next_pattern):
-        state_to_check = current_state
-
-        while len(state_to_check) > 0:
-            total_output = self.total_exits[state_to_check]
-            if total_output > 0:
-                transition_count = self.transitions[state_to_check][next_pattern]
-                if self.smoothing:
-                    alpha = self.smoothing_alpha
-                    vocab_size = len(self.trained_patterns)
-                    return (transition_count + alpha) / (total_output + alpha * vocab_size)
-                return transition_count / total_output
-
-            state_to_check = state_to_check[1:]
-
-        if self.smoothing and len(self.trained_patterns) > 0:
-            return 1.0 / len(self.trained_patterns)
-        return 0.0
+        return self._get_probability_details(current_state, next_pattern)["probability"]
 
     # karar normal çıktığında geçiş ağırlıklarını güncelleyerek adaptif öğrenmeyi sağlar
     def _update_transition(self, current_state, next_state):
@@ -63,6 +224,9 @@ class ProbabilisticAutomata:
 
         if next_state not in self.trained_patterns:
             self.trained_patterns.add(next_state)
+
+        self.pattern_counts[next_state] += 1.0
+        self.total_pattern_count += 1.0
 
     # iki dizi arasındaki Levenshtein mesafesini hesaplar
     def _calculate_levenshtein(self, s1, s2):
@@ -91,7 +255,6 @@ class ProbabilisticAutomata:
                 best_distance = dist
                 nearest_pattern = trained_pattern
         return nearest_pattern, best_distance
-
 
     # verilen pattern dizisi için karar vermeden olasılık/anomali skorlarını hesaplar
     def calculate_scores(
@@ -224,7 +387,8 @@ class ProbabilisticAutomata:
                 distances.sort(key=lambda x: x[1])
                 similarity_report = [{"pattern": p, "distance": d} for p, d in distances[:3]]
 
-            prob = self.get_transition_probability(current_state, mapped_to)
+            probability_details = self._get_probability_details(current_state, mapped_to)
+            prob = probability_details["probability"]
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
             negative_log_score = float(-np.log(prob + eps))
@@ -252,8 +416,8 @@ class ProbabilisticAutomata:
                 self._update_transition(current_state, mapped_to)
 
             counterfactuals = []
-            total_exits_for_state = self.total_exits[current_state]
-            if total_exits_for_state > 0 or self.smoothing:
+            total_exits_for_state = self.total_exits.get(current_state, 0.0)
+            if total_exits_for_state > 0 or self.smoothing or self.dirichlet_smoothing_enabled:
                 possible_transitions = [
                     (p_next, self.get_transition_probability(current_state, p_next))
                     for p_next in self.trained_patterns
@@ -283,6 +447,20 @@ class ProbabilisticAutomata:
                 transition_history.copy(), total_exits_for_state,
                 counterfactuals, similarity_report
             )
+
+            if isinstance(log_entry, dict):
+                log_entry.update({
+                    "smoothing_strategy": probability_details.get("smoothing_strategy"),
+                    "dirichlet_smoothing_enabled": probability_details.get("dirichlet_smoothing_enabled"),
+                    "dirichlet_alpha": probability_details.get("dirichlet_alpha"),
+                    "dirichlet_prior_mode": probability_details.get("dirichlet_prior_mode"),
+                    "dirichlet_prior_probability": probability_details.get("dirichlet_prior_probability"),
+                    "resolved_state": "->".join(probability_details.get("resolved_state", tuple())),
+                    "resolved_order": probability_details.get("resolved_order"),
+                    "resolved_total_exits": probability_details.get("resolved_total_exits"),
+                    "resolved_transition_count": probability_details.get("resolved_transition_count"),
+                })
+
             explainability_logs.append(log_entry)
             predictions.append(1 if decision == "anomaly" else 0)
 
