@@ -82,3 +82,22 @@ class ProbabilisticSuffixTree:
             return 0.0
 
         return node.counts.get(next_symbol, 0) / total
+    
+    #pst ağacındaki toplam context/node ve geçiş sayılarını hesaplama
+    def count_nodes_and_transitions(self):
+        def traverse(node):
+            # Bulunduğumuz node'u da sayıyoruz.
+            node_count = 1
+
+            #node altında kaç farklı hedef sembol gözlenmişse,o kadar gecis var kabul et
+            transition_count = len(node.counts)
+
+            #child nodeları da gezerek tüm ağacı say
+            for child in node.children.values():
+                child_nodes, child_transitions = traverse(child)
+                node_count += child_nodes
+                transition_count += child_transitions
+
+            return node_count, transition_count
+
+        return traverse(self.root)    

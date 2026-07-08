@@ -232,10 +232,20 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             f"{dataset_name} {fold_name} validation selected threshold: "
             f"{selected_threshold} | val F1: {validation_threshold_f1:.4f}"
          )
-    #modelin yapısal karmaşıklığını ve durum/geçiş yoğunluğunu hesaplama
-    num_states = len(model.trained_patterns)
-    num_transitions = sum(len(targets) for targets in model.transitions.values())
-    transition_density = num_transitions / (num_states * num_states) if num_states > 0 else 0.0
+    #modelin yapısal karmaşıklığını hesaplama(gerçek durum/geçiş sayılarını pst ağacının içinden hesaplar)
+    model_stats = model.model_stats
+
+    num_states = model_stats["num_nodes"]#pstiçindeki toplam context/node sayısı
+
+    num_transitions = model_stats["num_transitions"]#pst nodelarında gözlenen toplam farklı hedef sembol/geçiş sayısı.
+
+    #geçiş yoğunluğu: teorik olarak mümkün durum çiftlerine göre
+    #öğrenilen geçişlerin ne kadar yoğun olduğunu gösterir
+    transition_density = (
+        num_transitions / (num_states * num_states)
+        if num_states > 0
+        else 0.0
+    )
  
     common_fields = {
         "dataset": dataset_name, "fold": fold_name, "seed": seed,

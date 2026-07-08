@@ -58,6 +58,16 @@ class VariableOrderMarkovModel:
     @property
     def trained_patterns(self):
         return self._trained_patterns
+    
+    @property
+    def model_stats(self):
+        #pst içindeki gerçek node ve geçiş sayılarını döndürür
+        num_nodes, num_transitions = self.pst.count_nodes_and_transitions()
+
+        return {
+            "num_nodes": num_nodes,
+            "num_transitions": num_transitions
+        }
 
     @property
     def transitions(self):
