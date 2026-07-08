@@ -9,6 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')
 from src.data_pipeline.sax_paa import SaxPaaTransformer
 #from src.models.automata_model import ProbabilisticAutomata
 from src.models.vomm_model import VariableOrderMarkovModel
+from src.models.dual_vomm_model import DualVariableOrderMarkovModel
 from src.experiments.evaluator import calculate_metrics
  
 def load_json_config(config_path="src/config/settings.json"):
@@ -116,6 +117,47 @@ def select_best_threshold_on_validation(
         if metrics["f1_score"] > best_f1:
             best_f1 = metrics["f1_score"]
             best_threshold = threshold
+            best_metrics = metrics
+
+    return best_threshold, best_metrics
+
+# Dual VOMM/PST modelinde skor threshold'u validation seti üzerinden seçilir.
+# Burada kullanılan skor:
+# log(P_anomaly) - log(P_normal)
+#
+# Skor yüksekse pattern anomalili modele daha yakın kabul edilir.
+# Bu yüzden threshold klasik probability threshold'dan farklıdır.
+def select_best_dual_score_threshold_on_validation(
+    model,
+    val_patterns,
+    y_val,
+    score_threshold_values,
+    window_size
+):
+    best_threshold = score_threshold_values[0]
+    best_f1 = -1.0
+    best_metrics = None
+
+    # Validation etiketlerini pattern seviyesine hizalıyoruz.
+    y_val_aligned = align_labels_to_patterns(
+        y_val,
+        len(val_patterns),
+        window_size
+    )
+
+    for score_threshold in score_threshold_values:
+        preds_val, _ = model.predict(
+            val_patterns,
+            score_threshold=score_threshold
+        )
+
+        preds_val = preds_val[:len(y_val_aligned)]
+        metrics = calculate_metrics(y_val_aligned, preds_val)
+
+        # En iyi F1 veren skor threshold'unu seçiyoruz.
+        if metrics["f1_score"] > best_f1:
+            best_f1 = metrics["f1_score"]
+            best_threshold = score_threshold
             best_metrics = metrics
 
     return best_threshold, best_metrics
@@ -535,7 +577,193 @@ def run_batadal_vomm_regularization_analysis(config):
             f"smoothing_alpha={best_row['smoothing_alpha']}, "
             f"threshold={best_row['selected_threshold']} | "
             f"F1={best_row['f1_score']:.4f}"
-        )        
+        )    
+
+
+#batadal için dual vomm-pst deneyi
+def run_batadal_dual_vomm_experiment(config):
+    print("\n--- BATADAL DUAL VOMM/PST ANALİZİ BAŞLATILIYOR ---")
+
+    results = []
+
+    required_files = [
+        "data/processed/batadal_X_train_adasyn_pc1.csv",
+        "data/processed/batadal_y_train_adasyn.csv",
+        "data/processed/batadal_X_val_pc1.csv",
+        "data/processed/batadal_y_val.csv",
+        "data/processed/batadal_X_test_pc1.csv",
+        "data/processed/batadal_y_test.csv"
+    ]
+
+    for file_path in required_files:
+        if not os.path.exists(file_path):
+            print(f"Eksik dosya bulundu, Dual VOMM/PST deneyi atlandı: {file_path}")
+            return
+
+    X_train = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+    y_train = pd.read_csv("data/processed/batadal_y_train_adasyn.csv").values.flatten()
+
+    X_val = pd.read_csv("data/processed/batadal_X_val_pc1.csv").values.flatten()
+    y_val = pd.read_csv("data/processed/batadal_y_val.csv").values.flatten()
+
+    X_test = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+    y_test = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+
+    #batadalda -999 normal sınıfı temsil ettiği için 0 a çeviriyoruz.
+    y_train = np.where(y_train == -999, 0, y_train)
+    y_val = np.where(y_val == -999, 0, y_val)
+    y_test = np.where(y_test == -999, 0, y_test)
+
+    #onceki batadal analizlerinde en iyi çalışan sembolik temsil.
+    window_size = 6
+    alphabet_size = 4
+    min_count = 3
+    smoothing_alpha = 1.0
+
+    transformer = SaxPaaTransformer(alphabet_size=alphabet_size)
+
+    train_patterns = transformer.transform(
+        X_train,
+        window_size=window_size
+    )
+
+    val_patterns = transformer.transform(
+        X_val,
+        window_size=window_size
+    )
+
+    test_patterns = transformer.transform(
+        X_test,
+        window_size=window_size
+    )
+
+    #train labellarini pattern seviyesine hizalama
+    y_train_aligned = align_labels_to_patterns(
+        y_train,
+        len(train_patterns),
+        window_size
+    )
+
+    model = DualVariableOrderMarkovModel(
+        max_depth=window_size,
+        min_count=min_count,
+        smoothing=True,
+        smoothing_alpha=smoothing_alpha
+    )
+
+    model.fit(train_patterns, y_train_aligned)
+
+    print(
+        f"Dual-PST eğitim geçişleri -> "
+        f"normal={model.normal_transition_count}, "
+        f"anomaly={model.anomaly_transition_count}"
+    )
+
+    score_threshold_values = [-5, -3, -2, -1, -0.5, 0, 0.5, 1, 2, 3, 5]
+
+    selected_score_threshold, val_metrics = select_best_dual_score_threshold_on_validation(
+        model,
+        val_patterns,
+        y_val,
+        score_threshold_values,
+        window_size
+    )
+
+    print(
+        f"BATADAL Dual VOMM/PST validation selected score_threshold: "
+        f"{selected_score_threshold} | val F1: {val_metrics['f1_score']:.4f}"
+    )
+
+    # --- Orijinal test verisi ---
+    preds_test, logs_test = model.predict(
+        test_patterns,
+        score_threshold=selected_score_threshold
+    )
+
+    y_test_aligned = align_labels_to_patterns(
+        y_test,
+        len(test_patterns),
+        window_size
+    )
+
+    preds_test = preds_test[:len(y_test_aligned)]
+    metrics_original = calculate_metrics(y_test_aligned, preds_test)
+
+    metrics_original.update({
+        "dataset": "BATADAL",
+        "scenario": "dual_original",
+        "window_size": window_size,
+        "alphabet_size": alphabet_size,
+        "min_count": min_count,
+        "smoothing_alpha": smoothing_alpha,
+        "selected_score_threshold": selected_score_threshold,
+        "validation_f1": val_metrics["f1_score"],
+        "normal_transition_count": model.normal_transition_count,
+        "anomaly_transition_count": model.anomaly_transition_count
+    })
+
+    results.append(metrics_original)
+
+    print(
+        f"BATADAL Dual-PST Original -> "
+        f"Precision={metrics_original['precision']:.4f} | "
+        f"Recall={metrics_original['recall']:.4f} | "
+        f"F1={metrics_original['f1_score']:.4f}"
+    )
+
+    # --- Gaussian noise testi ---
+    for seed in config["seeds"]:
+        X_test_noisy = inject_gaussian_noise(
+            X_test,
+            noise_level=config["noise_level"],
+            seed=seed
+        )
+
+        noisy_patterns = transformer.transform(
+            X_test_noisy,
+            window_size=window_size
+        )
+
+        preds_noisy, _ = model.predict(
+            noisy_patterns,
+            score_threshold=selected_score_threshold
+        )
+
+        y_noisy_aligned = align_labels_to_patterns(
+            y_test,
+            len(noisy_patterns),
+            window_size
+        )
+
+        preds_noisy = preds_noisy[:len(y_noisy_aligned)]
+        metrics_noisy = calculate_metrics(y_noisy_aligned, preds_noisy)
+
+        metrics_noisy.update({
+            "dataset": "BATADAL",
+            "scenario": "dual_gaussian_noise",
+            "seed": seed,
+            "window_size": window_size,
+            "alphabet_size": alphabet_size,
+            "min_count": min_count,
+            "smoothing_alpha": smoothing_alpha,
+            "selected_score_threshold": selected_score_threshold,
+            "validation_f1": val_metrics["f1_score"],
+            "normal_transition_count": model.normal_transition_count,
+            "anomaly_transition_count": model.anomaly_transition_count
+        })
+
+        results.append(metrics_noisy)
+
+    if results:
+        pd.DataFrame(results).to_csv(
+            "results/outputs/batadal_dual_vomm_pst_metrics.csv",
+            index=False
+        )
+
+    with open("results/outputs/batadal_dual_vomm_pst_explainability.json", "w") as f:
+        json.dump(logs_test[:100], f, indent=4)
+
+    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.")            
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -682,6 +910,7 @@ def main():
     run_parameter_sensitivity_analysis(config)
     run_vomm_threshold_sensitivity_analysis(config)
     run_batadal_vomm_regularization_analysis(config)
+    run_batadal_dual_vomm_experiment(config)
  
     try:
         from src.experiments.statistical_tests import main as run_statistical_main

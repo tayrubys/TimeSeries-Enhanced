@@ -33,6 +33,24 @@ class ProbabilisticSuffixTree:
             for depth in range(1, max_context + 1):
                 context = sequence[i - depth:i]
                 self._add_context(context, next_symbol)
+    
+    #istediğimiz geçişleri seçip ayrı ayrı normal PST’ye veya anomaly PST’ye ekleyebilmemizi sağlar
+    def add_observation(self, history, next_symbol):
+        # Bu geçişte görülen sembolleri vocabulary içine ekler ve vocabulary smoothing hesaplamasında kullanılır
+        self.vocabulary.add(next_symbol)
+
+        for symbol in history:
+            self.vocabulary.add(symbol)
+
+        #root node geçmişe bakmadan genel geçiş dağılımını tutar
+        self.root.counts[next_symbol] = self.root.counts.get(next_symbol, 0) + 1
+
+        max_context = min(self.max_depth, len(history))
+
+        #farklı uzunluktaki suffix/context bilgilerini ağaca ekle
+        for depth in range(1, max_context + 1):
+            context = history[-depth:]
+            self._add_context(context, next_symbol)   
 
     def _add_context(self, context, next_symbol):
         node = self.root#Verilen context'i ağaçta oluşturup sayacını artır

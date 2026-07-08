@@ -133,3 +133,16 @@ Ayrıca BATADAL min_count ve smoothing taramasında en iyi sonuç `min_count=3`,
 | Precision | Recall | F1-score |
 | --------: | -----: | -------: |
 |    0.1923 | 1.0000 |   0.3226 |
+
+### Dual VOMM/PST Denemesi
+
+BATADAL tarafında precision değerinin düşük kalması nedeniyle normal ve anomalili geçişleri ayrı ayrı öğrenen Dual vomm-pst yaklaşımı denenmiştir. Bu yöntemde normal pattern geçişleri bir pst ağacında, anomalili pattern geçişleri ise ayrı bir pst ağacında tutulmuştur. Test aşamasında bir geçişin anomalili modele mi yoksa normal modele mi daha yakın olduğuna bakılmıştır.
+
+Bu deneyde eğitim sırasında `382` normal geçiş ve `415` anomalili geçiş öğrenilmiştir. Validation seti üzerinden seçilen en iyi skor eşiği `-5` olmuştur.
+
+| Model | Precision | Recall | F1-score |
+|---|---:|---:|---:|
+| VOMM/PST + regularization | 0.1923 | 1.0000 | 0.3226 |
+| Dual VOMM/PST | 0.1880 | 1.0000 | 0.3165 |
+
+Dual VOMM/PST yaklaşımı BATADAL üzerinde çalışmış olsa da, mevcut en iyi vomm-pst regularization sonucunu geçememiştir. Bunun nedeni, eğitim verisinin ADASYN ile dengelenmiş olması sebebiyle normal ve anomalili geçiş sayılarının birbirine yakın hale gelmesi olabilir. Bu durumda model anomalili sınıfı gerçek test dağılımına göre daha güçlü temsil etmiş ve precision tarafında beklenen artış sağlanamamıştır.

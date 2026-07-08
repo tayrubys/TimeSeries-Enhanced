@@ -1,0 +1,1687 @@
+[
+    {
+        "index": 1,
+        "context": [
+            "dacccb"
+        ],
+        "target": "acccbc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 2,
+        "context": [
+            "dacccb",
+            "acccbc"
+        ],
+        "target": "cccbcd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 3,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd"
+        ],
+        "target": "ccbcdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 4,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc"
+        ],
+        "target": "cbcdca",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 5,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca"
+        ],
+        "target": "bcdcab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 6,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab"
+        ],
+        "target": "cdcabb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 7,
+        "context": [
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb"
+        ],
+        "target": "dcabbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 8,
+        "context": [
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd"
+        ],
+        "target": "cabbdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 9,
+        "context": [
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc"
+        ],
+        "target": "abbdcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 10,
+        "context": [
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc"
+        ],
+        "target": "bbdccb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 11,
+        "context": [
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb"
+        ],
+        "target": "bdccbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 12,
+        "context": [
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd"
+        ],
+        "target": "dccbdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 13,
+        "context": [
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc"
+        ],
+        "target": "ccbdcb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 14,
+        "context": [
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb"
+        ],
+        "target": "cbdcba",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 15,
+        "context": [
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba"
+        ],
+        "target": "bdcbac",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 16,
+        "context": [
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac"
+        ],
+        "target": "dcbacc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 17,
+        "context": [
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc"
+        ],
+        "target": "cbaccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 18,
+        "context": [
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc"
+        ],
+        "target": "bacccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 19,
+        "context": [
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc"
+        ],
+        "target": "accccd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 20,
+        "context": [
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd"
+        ],
+        "target": "ccccdb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 21,
+        "context": [
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb"
+        ],
+        "target": "cccdbc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 22,
+        "context": [
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc"
+        ],
+        "target": "ccdbcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 23,
+        "context": [
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc"
+        ],
+        "target": "cdbccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 24,
+        "context": [
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc"
+        ],
+        "target": "dbccca",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 25,
+        "context": [
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca"
+        ],
+        "target": "bcccaa",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 26,
+        "context": [
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa"
+        ],
+        "target": "cccaac",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 27,
+        "context": [
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac"
+        ],
+        "target": "ccaacd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 28,
+        "context": [
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd"
+        ],
+        "target": "caacdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 29,
+        "context": [
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc"
+        ],
+        "target": "aacdca",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 30,
+        "context": [
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca"
+        ],
+        "target": "acdcab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 31,
+        "context": [
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab"
+        ],
+        "target": "cdcabd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 32,
+        "context": [
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd"
+        ],
+        "target": "dcabdb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 33,
+        "context": [
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb"
+        ],
+        "target": "cabdba",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 34,
+        "context": [
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba"
+        ],
+        "target": "abdbaa",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 35,
+        "context": [
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa"
+        ],
+        "target": "bdbaac",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 36,
+        "context": [
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac"
+        ],
+        "target": "dbaacc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 37,
+        "context": [
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc"
+        ],
+        "target": "baaccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 38,
+        "context": [
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc"
+        ],
+        "target": "aacccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 39,
+        "context": [
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc"
+        ],
+        "target": "accccd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 40,
+        "context": [
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd"
+        ],
+        "target": "ccccda",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 41,
+        "context": [
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda"
+        ],
+        "target": "cccdab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 42,
+        "context": [
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab"
+        ],
+        "target": "ccdabb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 43,
+        "context": [
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb"
+        ],
+        "target": "cdabbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 44,
+        "context": [
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd"
+        ],
+        "target": "dabbdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 45,
+        "context": [
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc"
+        ],
+        "target": "abbdcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 46,
+        "context": [
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc"
+        ],
+        "target": "bbdccb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 47,
+        "context": [
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb"
+        ],
+        "target": "bdccbc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 48,
+        "context": [
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc"
+        ],
+        "target": "dccbcb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 49,
+        "context": [
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb"
+        ],
+        "target": "ccbcbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 50,
+        "context": [
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd"
+        ],
+        "target": "cbcbdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 51,
+        "context": [
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc"
+        ],
+        "target": "bcbdcd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 52,
+        "context": [
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd"
+        ],
+        "target": "cbdcda",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 53,
+        "context": [
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda"
+        ],
+        "target": "bdcdaa",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 54,
+        "context": [
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa"
+        ],
+        "target": "dcdaab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 55,
+        "context": [
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab"
+        ],
+        "target": "cdaabd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 56,
+        "context": [
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd"
+        ],
+        "target": "daabdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 57,
+        "context": [
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc"
+        ],
+        "target": "aabdcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 58,
+        "context": [
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc"
+        ],
+        "target": "abdccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 59,
+        "context": [
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc"
+        ],
+        "target": "bdcccd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 60,
+        "context": [
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd"
+        ],
+        "target": "dcccdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 61,
+        "context": [
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc"
+        ],
+        "target": "cccdcb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 62,
+        "context": [
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb"
+        ],
+        "target": "ccdcba",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 63,
+        "context": [
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba"
+        ],
+        "target": "cdcbab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 64,
+        "context": [
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab"
+        ],
+        "target": "dcbabb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 65,
+        "context": [
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb"
+        ],
+        "target": "cbabbb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.005235602094240838,
+        "score": 1.0392957111626906,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 66,
+        "context": [
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb"
+        ],
+        "target": "babbbc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 67,
+        "context": [
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc"
+        ],
+        "target": "abbbcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 68,
+        "context": [
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc"
+        ],
+        "target": "bbbcca",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 69,
+        "context": [
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca"
+        ],
+        "target": "bbccaa",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 70,
+        "context": [
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa"
+        ],
+        "target": "bccaac",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 71,
+        "context": [
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac"
+        ],
+        "target": "ccaacc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 72,
+        "context": [
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc"
+        ],
+        "target": "caaccb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 73,
+        "context": [
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb"
+        ],
+        "target": "aaccbb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 74,
+        "context": [
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb"
+        ],
+        "target": "accbbb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 75,
+        "context": [
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb"
+        ],
+        "target": "ccbbbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 76,
+        "context": [
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd"
+        ],
+        "target": "cbbbda",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 77,
+        "context": [
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda"
+        ],
+        "target": "bbbdab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 78,
+        "context": [
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab"
+        ],
+        "target": "bbdabc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 79,
+        "context": [
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc"
+        ],
+        "target": "bdabcd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 80,
+        "context": [
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd"
+        ],
+        "target": "dabcda",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 81,
+        "context": [
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda"
+        ],
+        "target": "abcdab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 82,
+        "context": [
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab"
+        ],
+        "target": "bcdabc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 83,
+        "context": [
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc"
+        ],
+        "target": "cdabcd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 84,
+        "context": [
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd"
+        ],
+        "target": "dabcda",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 85,
+        "context": [
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda"
+        ],
+        "target": "abcdab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 86,
+        "context": [
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab"
+        ],
+        "target": "bcdabb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 87,
+        "context": [
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb"
+        ],
+        "target": "cdabbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 88,
+        "context": [
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd"
+        ],
+        "target": "dabbdc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 89,
+        "context": [
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc"
+        ],
+        "target": "abbdcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 90,
+        "context": [
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc"
+        ],
+        "target": "bbdccb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 91,
+        "context": [
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb"
+        ],
+        "target": "bdccbd",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 92,
+        "context": [
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd"
+        ],
+        "target": "dccbda",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 93,
+        "context": [
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda"
+        ],
+        "target": "ccbdab",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 94,
+        "context": [
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab"
+        ],
+        "target": "cbdabb",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 95,
+        "context": [
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb"
+        ],
+        "target": "bdabbc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 96,
+        "context": [
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc"
+        ],
+        "target": "dabbcc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 97,
+        "context": [
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc"
+        ],
+        "target": "abbccc",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.0017452006980802793,
+        "score": -0.0593165771234192,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 98,
+        "context": [
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc"
+        ],
+        "target": "bbcccc",
+        "p_normal": 0.007407407407407408,
+        "p_anomaly": 0.006980802792321117,
+        "score": -0.05931657714817007,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 99,
+        "context": [
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc",
+            "bbcccc"
+        ],
+        "target": "bccccc",
+        "p_normal": 0.012345679012345678,
+        "p_anomaly": 0.024844720496894408,
+        "score": 0.6993391507671167,
+        "score_threshold": -5.0,
+        "prediction": 1
+    },
+    {
+        "index": 100,
+        "context": [
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc",
+            "bbcccc",
+            "bccccc"
+        ],
+        "target": "ccccca",
+        "p_normal": 0.001851851851851852,
+        "p_anomaly": 0.006211180124223602,
+        "score": 1.2101647741948574,
+        "score_threshold": -5.0,
+        "prediction": 1
+    }
+]
