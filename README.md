@@ -345,6 +345,36 @@ Bu deneysel senaryoda, modellerin başlangıç ağırlıklarına (seed) olan duy
 
 >Genel olarak değerlendirildiğinde, kapasite azaltımı bazı seed’lerde daha kararlı sonuçlar üretilmesine katkı sağlamış olsa da, seed duyarlılığı problemi tamamen giderilememiştir. Bu nedenle yalnızca ortalama performans değerlerinin değil, seed bazlı kararlılık analizlerinin de dikkate alınması gerektiği sonucuna ulaşılmıştır.
 
+## Deney 2.7: İnce Taneli Threshold Optimizasyonu
+
+Bu deneyde, önceki çalışmalarda kullanılan sınırlı threshold aralığının (`0.1, 0.2, 0.3, 0.4, 0.5`) bazı seed senaryolarında optimum karar sınırını temsil edemediği gözlemlenmiştir. Bu nedenle, validation kümesinde en uygun eşik değerini daha hassas belirleyebilmek amacıyla threshold aralığı **0.01–0.50** arasında **0.01** adım büyüklüğü ile genişletilmiştir. Her seed için en yüksek F1-score'u sağlayan threshold validation kümesinde belirlenmiş ve aynı değer test kümesine uygulanmıştır.
+
+### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
+
+| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
+|---|---|---|---|---|---|---|
+| **LSTM** | 42 | 0.15 | 0.9376 | 0.6107 | 1.0000 | 0.7583 |
+| **LSTM** | 123 | 0.03 | 0.9180 | 0.5481 | 0.9250 | 0.6884 |
+| **LSTM** | 2026 | 0.16 | 0.9474 | 0.6555 | 0.9750 | 0.7839 |
+| **LSTM** | 7 | 0.12 | 0.9351 | 0.6134 | 0.9125 | 0.7337 |
+| **LSTM** | 999 | 0.35 | 0.8923 | 0.0000 | 0.0000 | 0.0000 |
+| **GRU** | 42 | 0.15 | 0.8827 | 0.3455 | 0.2375 | 0.2815 |
+| **GRU** | 123 | 0.17 | 0.9335 | 0.6000 | 0.9375 | 0.7317 |
+| **GRU** | 2026 | 0.44 | 0.9274 | 0.6250 | 0.6250 | 0.6250 |
+| **GRU** | 7 | 0.43 | 0.8875 | 0.1905 | 0.0500 | 0.0792 |
+| **GRU** | 999 | 0.49 | 0.8996 | 0.4681 | 0.2750 | 0.3465 |
+
+### Model Performans Özetleri (Ortalama ± Standart Sapma)
+
+| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
+|---|---|---|---|---|
+| **GRU (İnce Threshold)** | **0.9062 ± 0.0231** | **0.4458 ± 0.1814** | **0.4250 ± 0.3539** | **0.4128 ± 0.2644** |
+| **LSTM (İnce Threshold)** | **0.9261 ± 0.0216** | **0.4855 ± 0.2741** | **0.7625 ± 0.4277** | **0.5929 ± 0.3333** |
+
+> **Sonuçların Değerlendirilmesi:** İnce taneli threshold optimizasyonu, özellikle LSTM modeli üzerinde belirgin bir iyileşme sağlamıştır. Önceki deneylerde düşük recall nedeniyle başarısız olan bazı seed senaryolarında daha uygun threshold değerlerinin seçilmesiyle anomali tespit başarısı artmış ve ortalama F1-score **0.4951'den 0.5929'a** yükselmiştir. GRU modelinde de ortalama F1-score **0.3704'ten 0.4128'e** yükselmiş, ancak iyileşme LSTM kadar belirgin olmamıştır.
+
+> Bununla birlikte, bazı seed değerlerinde (özellikle **LSTM-999**) modelin anomalileri tamamen kaçırdığı görülmüştür. Bu durum, threshold optimizasyonunun tek başına yeterli olmadığını; eğitim süreci, başlangıç ağırlıkları (seed) ve model kararlılığının da performans üzerinde önemli etkileri olduğunu göstermektedir. Sonuç olarak ince taneli threshold optimizasyonu genel performansı artırmış, ancak seed duyarlılığı problemini tamamen ortadan kaldıramamıştır.
+
 
 ---
 ## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
@@ -361,6 +391,7 @@ Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin 
 |Genişletilmiş Kapasite (window=10, Units=128, Dropout=0.3/0.2) | 0.315 | 0.448|
 |Genişletilmiş Kapasite + Window=20 (Units=128, Dropout=0.3/0.2)| **0.674** (outlier hariç: **0.830**) | 0.289 |
 |Dengelenmiş Eğitim Parametreleri Deneyi (Epoch=75, Patience=12, Dinamik window) |0.6479 | 0.5899 |
+|Threshold Optimizasyonu|0.5929|0.4128|
 
 
 > **Sonuç — Mimariye Özel Optimal Konfigürasyonlar:** Tek bir "genel en iyi konfigürasyon" yerine, her mimarinin kendi optimal ayarına sahip olduğu görülmektedir:

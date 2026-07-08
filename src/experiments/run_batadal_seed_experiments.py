@@ -58,16 +58,22 @@ def build_model(model_type, input_shape):
     raise ValueError(f"Desteklenmeyen model tipi: {model_type}")
 
 
-def find_best_threshold(y_true, y_pred_prob, thresholds):
-    best_threshold, best_metrics, best_f1 = None, None, -1
+def find_best_threshold(y_true, y_pred_prob):
+    thresholds = np.arange(0.01, 0.51, 0.01)
+
+    best_threshold = None
+    best_metrics = None
+    best_f1 = -1
+
     for threshold in thresholds:
         y_pred = (y_pred_prob >= threshold).astype(int).ravel()
         metrics = evaluate_binary_classification(y_true=y_true, y_pred=y_pred)
+
         if metrics["f1"] > best_f1:
             best_f1 = metrics["f1"]
             best_threshold = threshold
             best_metrics = metrics
-            
+
     return best_threshold, best_metrics
 
 
@@ -120,11 +126,22 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
     y_val_pred_prob = model.predict(X_val)
     best_threshold, val_metrics = find_best_threshold(
         y_val,
-        y_val_pred_prob,
-        thresholds=cfg["thresholds"]
+        y_val_pred_prob
     )
 
     y_test_pred_prob = model.predict(X_test)
+
+    print("\nProbability Analysis")
+    print("Validation")
+    print(" Min :", y_val_pred_prob.min())
+    print(" Max :", y_val_pred_prob.max())
+    print(" Mean:", y_val_pred_prob.mean())
+
+    print("\nTest")
+    print(" Min :", y_test_pred_prob.min())
+    print(" Max :", y_test_pred_prob.max())
+    print(" Mean:", y_test_pred_prob.mean())
+
     y_test_pred = (y_test_pred_prob >= best_threshold).astype(int).ravel()
 
     best_metrics = evaluate_binary_classification(
