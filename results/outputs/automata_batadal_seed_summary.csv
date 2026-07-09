@@ -1,4 +1,4 @@
-scenario,order,smoothing_alpha,anomaly_threshold,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_score_mean,f1_score_std
-gaussian_noise,3,0.1,0.05,0.9463414634146341,0.01144003843859369,0.31212121212121213,0.12090871117127275,0.48571428571428565,0.19166296949998196,0.37963536291709665,0.14750094975600908
-original,3,0.1,0.05,0.9512195121951219,0.0,0.36363636363636365,0.0,0.5714285714285714,0.0,0.4444444444444445,0.0
-unseen_data,3,0.1,0.05,0.8125,0.0,0.25,0.0,1.0,0.0,0.4,0.0
+scenario,order,smoothing_alpha,anomaly_threshold,ensemble_enabled,ensemble_orders,ensemble_aggregation,ensemble_name,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_score_mean,f1_score_std
+gaussian_noise,4,0.1,0.05,True,"[2,3,4]",mean,batadal_final_ensemble,0.9434146341463414,0.01317976203522561,0.2809324009324009,0.1607809090148689,0.45714285714285713,0.25555062599997597,0.3472170622635019,0.19587689266465091
+original,4,0.1,0.05,True,"[2,3,4]",mean,batadal_final_ensemble,0.9463414634146341,0.0,0.3333333333333333,0.0,0.5714285714285714,0.0,0.42105263157894735,0.0
+unseen_data,4,0.1,0.05,True,"[2,3,4]",mean,batadal_final_ensemble,0.625,0.0,0.14285714285714285,0.0,1.0,0.0,0.25,0.0
