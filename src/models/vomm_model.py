@@ -30,7 +30,7 @@ class VariableOrderMarkovModel:
         self._trained_patterns = set(train_patterns)
         self.pst.fit(train_patterns)
 
-    def predict(self, test_patterns, anomaly_threshold=0.05,min_context_depth=0):
+    def predict(self, test_patterns, anomaly_threshold=0.05, min_context_depth=0, min_context_count=0):
         predictions = []
         explainability_logs = []
 
@@ -48,10 +48,8 @@ class VariableOrderMarkovModel:
             context_count = context_info["context_count"]
 
             #context reliability filter cunku sadece dusuk olasılık yeterlı değil 
-            decision = 1 if (
-                prob < anomaly_threshold and
-                context_length >= min_context_depth
-            ) else 0
+            #context eğitimde yeterince görülmüşse anomaly kabul et
+            decision=1 if (prob < anomaly_threshold and context_length >= min_context_depth and context_count >= min_context_count) else 0
 
             predictions.append(decision)
 
@@ -64,6 +62,7 @@ class VariableOrderMarkovModel:
                 "context_length": context_length,
                 "context_count": context_count,
                 "min_context_depth": min_context_depth,
+                "min_context_count": min_context_count,
                 "prediction": decision
             })
 

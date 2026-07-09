@@ -32,7 +32,9 @@ def load_json_config(config_path="src/config/settings.json"):
         "smoothing_alpha_values": [0.1, 0.5, 1.0],
         "vomm_threshold_values": [0.001, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5],
         "min_context_depth": 0,
-        "min_context_depth_values": [0, 1, 2, 3]
+        "min_context_depth_values": [0, 1, 2, 3],
+        "min_context_count": 0,
+        "min_context_count_values": [0, 1, 2, 3, 5, 10, 20, 30],
     }
     if os.path.exists(config_path):
         try:
@@ -57,7 +59,9 @@ def load_json_config(config_path="src/config/settings.json"):
                 "smoothing_alpha_values": automata_config.get("smoothing_alpha_values", default_config["smoothing_alpha_values"]),
                 "vomm_threshold_values": automata_config.get("vomm_threshold_values", default_config["vomm_threshold_values"]),
                 "min_context_depth": automata_config.get("min_context_depth",default_config["min_context_depth"]),
-                "min_context_depth_values": automata_config.get("min_context_depth_values",default_config["min_context_depth_values"])
+                "min_context_depth_values": automata_config.get("min_context_depth_values",default_config["min_context_depth_values"]),
+                "min_context_count": automata_config.get("min_context_count", default_config["min_context_count"]),
+                "min_context_count_values": automata_config.get("min_context_count_values",default_config["min_context_count_values"])
             }
         except Exception:
             return default_config
@@ -109,15 +113,20 @@ def select_best_threshold_on_validation(
     y_val,
     threshold_values,
     window_size,
-    min_context_depth_values=None
+    min_context_depth_values=None,
+    min_context_count_values=None
 ):
     best_threshold = threshold_values[0]
     best_context_depth = 0
+    best_context_count = 0
     best_f1 = -1.0
     best_metrics = None
 
     if min_context_depth_values is None:
         min_context_depth_values = [0]
+
+    if min_context_count_values is None:
+        min_context_count_values = [0]
 
     val_patterns = transformer.transform(X_val, window_size=window_size)
 
@@ -129,23 +138,27 @@ def select_best_threshold_on_validation(
 
     for threshold in threshold_values:
         for min_context_depth in min_context_depth_values:
-            preds_val, _ = model.predict(
-                val_patterns,
-                anomaly_threshold=threshold,
-                min_context_depth=min_context_depth
-            )
+            for min_context_count in min_context_count_values:
+                preds_val, _ = model.predict(
+                    val_patterns,
+                    anomaly_threshold=threshold,
+                    min_context_depth=min_context_depth,
+                    min_context_count=min_context_count
+                )
 
-            preds_val = preds_val[:len(y_val_aligned)]
-            metrics = calculate_metrics(y_val_aligned, preds_val)
+                preds_val = preds_val[:len(y_val_aligned)]
+                metrics = calculate_metrics(y_val_aligned, preds_val)
 
-            # En iyi F1 veren threshold + context_depth ikilisini seçiyoruz.
-            if metrics["f1_score"] > best_f1:
-                best_f1 = metrics["f1_score"]
-                best_threshold = threshold
-                best_context_depth = min_context_depth
-                best_metrics = metrics
+                # En iyi F1 veren threshold + context_depth + context_count üçlüsünü seçiyoruz.
+                if metrics["f1_score"] > best_f1:
+                    best_f1 = metrics["f1_score"]
+                    best_threshold = threshold
+                    best_context_depth = min_context_depth
+                    best_context_count = min_context_count
+                    best_metrics = metrics
+              
 
-    return best_threshold, best_context_depth, best_metrics
+    return best_threshold, best_context_depth, best_context_count, best_metrics
 #Pattern-level etiketlerden normal/anomaly sınıf oranlarını hesapla
 #Dual-PST skoruna bu prior değerleri eklenerek ADASYN kaynaklı yapay sınıf dengesi etkisi azaltılmaya çalışılır.
 def calculate_pattern_priors(pattern_labels):
@@ -318,9 +331,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     validation_threshold_f1 = None
     selected_threshold = config["anomaly_threshold"]
 
-    # Context Reliability Filter için seçilen minimum context derinliği.
-    # 0 olursa eski davranış korunur.
+    #context reliability filter için seçilen minimum context derinliği 0 olursa eski davranış koru
     selected_min_context_depth = config.get("min_context_depth", 0)
+    selected_min_context_count = config.get("min_context_count", 0)
 
     validation_threshold_f1 = None
     #eğer aktifse dinamik eşik bulma mekanizmasını çalıştırır
@@ -333,20 +346,26 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
             "min_context_depth_values",
             [0, 1, 2, 3]
         )
-       selected_threshold, selected_min_context_depth, val_metrics = select_best_threshold_on_validation(
+       min_context_count_values = config.get(
+            "min_context_count_values",
+            [0, 1, 2, 3, 5, 10, 20, 30]
+        )
+       selected_threshold, selected_min_context_depth, selected_min_context_count, val_metrics = select_best_threshold_on_validation(
             model,
             transformer,
             X_val,
             y_val,
             threshold_values,
             config["window_size"],
-            min_context_depth_values
+            min_context_depth_values,
+            min_context_count_values
         )
        validation_threshold_f1 = val_metrics["f1_score"]
     if use_validation_threshold and X_val is not None and y_val is not None:
         print(
             f"{dataset_name} {fold_name} validation selected threshold: "
             f"{selected_threshold} | min_context_depth: {selected_min_context_depth} | "
+            f"min_context_count: {selected_min_context_count} | "
             f"val F1: {validation_threshold_f1:.4f}"
         )
     #modelin yapısal karmaşıklığını hesaplama(gerçek durum/geçiş sayılarını pst ağacının içinden hesaplar)
@@ -374,12 +393,13 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "transition_density": transition_density,
         "selected_threshold": selected_threshold,
         "selected_min_context_depth": selected_min_context_depth,
+        "selected_min_context_count": selected_min_context_count,
         "validation_threshold_f1": validation_threshold_f1
     }
  
     # --- SENARYO 1: Orijinal Veri ---
     test_patterns_orig = transformer.transform(X_test, window_size=config["window_size"])
-    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=selected_threshold,min_context_depth=selected_min_context_depth)
+    preds_orig, logs_orig = model.predict(test_patterns_orig, anomaly_threshold=selected_threshold,min_context_depth=selected_min_context_depth,min_context_count=selected_min_context_count)
     label_start = config["window_size"]
     y_test_aligned_orig = align_labels_to_patterns(
         y_test,
@@ -394,7 +414,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     # --- SENARYO 2: Gaussian Noise ---
     X_test_noisy = inject_gaussian_noise(X_test, noise_level=config["noise_level"], seed=seed)
     test_patterns_noisy = transformer.transform(X_test_noisy, window_size=config["window_size"])
-    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=selected_threshold,min_context_depth=selected_min_context_depth)
+    preds_noisy, _ = model.predict(test_patterns_noisy, anomaly_threshold=selected_threshold,min_context_depth=selected_min_context_depth,min_context_count=selected_min_context_count)
     y_test_aligned_noisy = align_labels_to_patterns(
         y_test,
         len(test_patterns_noisy),
@@ -434,7 +454,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
 
     metrics_unseen.update({"scenario": "unseen_data", **common_fields})
     results.append(metrics_unseen)
-    
+
     return results, logs_orig
  
 #parametre duyarlık analizi
@@ -868,7 +888,8 @@ def main():
             "anomaly_threshold": 0.005,
             "min_count": 3,
             "smoothing_alpha": 1.0,
-            "min_context_depth_values": [0, 1, 2, 3]
+            "min_context_depth_values": [0, 1, 2, 3],
+            "min_context_count_values": [0, 1, 2, 3, 5, 10, 20, 30]
         }
  
         batadal_logs = None
