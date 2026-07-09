@@ -50,7 +50,7 @@ def load_json_config(config_path="src/config/settings.json"):
         # Geriye uyumluluk: eski ortak liste config'te varsa sadece fallback olarak kullanılır.
         "thresholds": [0.05, 0.01, 0.005, 0.001],
 
-        # Geriye uyumluluk için tutuluyor; artık grid search bunları taramıyor.
+        # Geriye uyumluluk için tutuluyor
         "window_sizes": [3, 4, 5, 6],
         "alphabet_sizes": [3, 4, 5, 6],
 
@@ -61,6 +61,37 @@ def load_json_config(config_path="src/config/settings.json"):
         "seeds": [42, 123, 2026, 7, 999],
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20,
+
+        # Ensemble Markov feature parametreleri
+        "ensemble_enabled": True,
+        "ensemble_orders": [2, 3, 4],
+        "ensemble_weights": None,
+        "ensemble_aggregation": "mean",
+        "run_ensemble_markov_sweep": False,
+
+        # Dataset bazlı final ensemble ayarları
+        "batadal_final_ensemble_enabled": True,
+        "batadal_final_ensemble_orders": [2, 3, 4],
+        "batadal_final_ensemble_weights": None,
+        "batadal_final_ensemble_aggregation": "mean",
+
+        "skab_final_ensemble_enabled": True,
+        "skab_final_ensemble_orders": [2, 3, 4],
+        "skab_final_ensemble_weights": None,
+        "skab_final_ensemble_aggregation": "mean",
+
+        # Ensemble sweep ayarları
+        "batadal_ensemble_score_thresholds": [3.5066, 3.9120, 4.2, 4.5],
+        "skab_ensemble_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108],
+        "ensemble_candidates": [
+            {"name": "base_disabled", "enabled": False, "orders": [3], "aggregation": "mean", "weights": None},
+            {"name": "orders_2_3_mean", "enabled": True, "orders": [2, 3], "aggregation": "mean", "weights": None},
+            {"name": "orders_2_3_4_mean", "enabled": True, "orders": [2, 3, 4], "aggregation": "mean", "weights": None},
+            {"name": "orders_3_4_mean", "enabled": True, "orders": [3, 4], "aggregation": "mean", "weights": None},
+            {"name": "orders_2_3_4_weighted_center", "enabled": True, "orders": [2, 3, 4], "aggregation": "weighted_mean", "weights": [0.25, 0.50, 0.25]},
+            {"name": "orders_2_3_4_weighted_high", "enabled": True, "orders": [2, 3, 4], "aggregation": "weighted_mean", "weights": [0.20, 0.30, 0.50]},
+            {"name": "orders_2_3_4_max", "enabled": True, "orders": [2, 3, 4], "aggregation": "max", "weights": None}
+        ],
     }
 
     if os.path.exists(config_path):
@@ -85,6 +116,42 @@ def inject_gaussian_noise(series, noise_level=0.1, seed=42):
     return series + noise
 
 
+def _format_config_list(value):
+    """List/dict gibi groupby için uygun olmayan config değerlerini okunabilir string'e çevirir."""
+    if value is None:
+        return None
+    if isinstance(value, (list, tuple)):
+        return "[" + ",".join(str(v) for v in value) + "]"
+    return str(value)
+
+
+def _get_effective_order(config):
+    """Ensemble aktifse modelin sayım yapacağı order, ensemble içindeki maksimum order olmalıdır."""
+    base_order = int(config.get("order", 2))
+    if not config.get("ensemble_enabled", False):
+        return base_order
+
+    ensemble_orders = config.get("ensemble_orders") or [base_order]
+    if isinstance(ensemble_orders, str):
+        ensemble_orders = [int(part.strip()) for part in ensemble_orders.strip("[]").split(",") if part.strip()]
+    if not ensemble_orders:
+        return base_order
+    return max(int(order) for order in ensemble_orders)
+
+
+def _get_ensemble_candidates(config):
+    """Config içinde özel aday yoksa kontrollü ve kısa bir ensemble aday listesi döndürür."""
+    return config.get("ensemble_candidates", [
+        {"name": "base_disabled", "enabled": False, "orders": [3], "aggregation": "mean", "weights": None},
+        {"name": "orders_2_3_mean", "enabled": True, "orders": [2, 3], "aggregation": "mean", "weights": None},
+        {"name": "orders_2_3_4_mean", "enabled": True, "orders": [2, 3, 4], "aggregation": "mean", "weights": None},
+        {"name": "orders_3_4_mean", "enabled": True, "orders": [3, 4], "aggregation": "mean", "weights": None},
+        {"name": "orders_2_3_4_weighted_center", "enabled": True, "orders": [2, 3, 4], "aggregation": "weighted_mean", "weights": [0.25, 0.50, 0.25]},
+        {"name": "orders_2_3_4_weighted_high", "enabled": True, "orders": [2, 3, 4], "aggregation": "weighted_mean", "weights": [0.20, 0.30, 0.50]},
+        {"name": "orders_2_3_4_max", "enabled": True, "orders": [2, 3, 4], "aggregation": "max", "weights": None},
+    ])
+
+
 def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_name="", seed=42):
     """Tek bir dataset/fold/seed/parametre kombinasyonu için otomata deneyini çalıştırır."""
     results = []
@@ -92,11 +159,17 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
 
+    effective_order = _get_effective_order(config)
+
     model = ProbabilisticAutomata(
         smoothing=True,
-        order=config.get("order", 2),
+        order=effective_order,
         learning_rate=config.get("learning_rate", 0.0),
         smoothing_alpha=config.get("smoothing_alpha", 1.0),
+        ensemble_enabled=config.get("ensemble_enabled", False),
+        ensemble_orders=config.get("ensemble_orders"),
+        ensemble_weights=config.get("ensemble_weights"),
+        ensemble_aggregation=config.get("ensemble_aggregation", "mean"),
     )
     model.fit(train_patterns)
 
@@ -117,8 +190,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         if reference_scores:
             computed_score_threshold = float(np.percentile(reference_scores, auto_score_percentile))
 
-    # High-order Markov için gerçek state sayısı context sayısıdır.
-    # trained_patterns ise vocab/sembol kümesidir.
+
     num_states = len(model.total_exits)
     vocab_size = len(model.trained_patterns)
     num_transitions = sum(len(targets) for targets in model.transitions.values())
@@ -130,9 +202,15 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "seed": seed,
         "window_size": config["window_size"],
         "alphabet_size": config["alphabet_size"],
-        "order": config.get("order", 2),
+        "order": effective_order,
+        "base_order": config.get("order", 2),
         "anomaly_threshold": config["anomaly_threshold"],
         "smoothing_alpha": config.get("smoothing_alpha", 1.0),
+        "ensemble_enabled": config.get("ensemble_enabled", False),
+        "ensemble_orders": _format_config_list(config.get("ensemble_orders")),
+        "ensemble_weights": _format_config_list(config.get("ensemble_weights")),
+        "ensemble_aggregation": config.get("ensemble_aggregation", "mean"),
+        "ensemble_name": config.get("ensemble_name"),
         "decision_mode": config.get("decision_mode", "probability"),
         "score_threshold": computed_score_threshold,
         "auto_score_percentile": auto_score_percentile,
@@ -845,6 +923,204 @@ def run_validation_threshold_sweep(config):
     print(f"[OK] Validation threshold en iyi adaylar kaydedildi: {best_path}")
 
 
+def run_ensemble_markov_sweep(config):
+    """Farklı Markov order kombinasyonlarını ensemble olarak test eder."""
+    print("\n--- ENSEMBLE MARKOV SWEEP BAŞLATILIYOR ---")
+
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    candidates = _get_ensemble_candidates(config)
+    batadal_score_thresholds = config.get("batadal_ensemble_score_thresholds", [3.5066, 3.9120, 4.2, 4.5])
+    skab_score_thresholds = config.get("skab_ensemble_score_thresholds", [0.1054, 0.2231, 0.3567, 0.5108])
+    sweep_results = []
+
+    # BATADAL: final Markov ayarları sabit, ensemble adayları ve score threshold taranır.
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Ensemble Markov Taraması...")
+        print(f"   candidate sayısı: {len(candidates)}")
+        print(f"   score_threshold aralığı: {batadal_score_thresholds}")
+
+        for candidate in candidates:
+            candidate_name = candidate.get("name", "ensemble_candidate")
+            enabled = candidate.get("enabled", True)
+            orders = candidate.get("orders", [2, 3, 4])
+            weights = candidate.get("weights")
+            aggregation = candidate.get("aggregation", "mean")
+
+            for score_threshold in batadal_score_thresholds:
+                for seed in seeds:
+                    cc = {
+                        **config,
+                        "order": max(orders) if enabled and orders else config.get("batadal_final_order", 3),
+                        "smoothing_alpha": config.get("batadal_final_smoothing_alpha", 0.1),
+                        "decision_mode": config.get("batadal_final_decision_mode", "avg_negative_log"),
+                        "score_window": config.get("batadal_final_score_window", 5),
+                        "score_threshold": score_threshold,
+                        "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+                        "auto_score_percentile": None,
+                        "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+                        "ensemble_enabled": enabled,
+                        "ensemble_orders": orders,
+                        "ensemble_weights": weights,
+                        "ensemble_aggregation": aggregation,
+                        "ensemble_name": candidate_name,
+                    }
+                    res, _ = run_experiment_pipeline(
+                        X_train_b,
+                        X_test_b,
+                        y_test_b,
+                        cc,
+                        "BATADAL",
+                        "ensemble_markov_sweep",
+                        seed=seed,
+                    )
+                    sweep_results.extend(res)
+
+                temp_df = pd.DataFrame([
+                    r for r in sweep_results
+                    if r["dataset"] == "BATADAL"
+                    and r["scenario"] == "original"
+                    and r.get("ensemble_name") == candidate_name
+                    and r["score_threshold"] == score_threshold
+                ])
+                if not temp_df.empty:
+                    print(
+                        f"BATADAL -> candidate={candidate_name}, enabled={enabled}, "
+                        f"orders={orders}, aggregation={aggregation}, score_threshold={score_threshold} | "
+                        f"Precision={temp_df['precision'].mean():.4f}, "
+                        f"Recall={temp_df['recall'].mean():.4f}, F1={temp_df['f1_score'].mean():.4f}"
+                    )
+
+    # SKAB: final Markov ayarları sabit, bütün fold/seed kombinasyonları taranır.
+    print("\n>> SKAB Ensemble Markov Taraması...")
+    print(f"   candidate sayısı: {len(candidates)}")
+    print(f"   score_threshold aralığı: {skab_score_thresholds}")
+
+    for candidate in candidates:
+        candidate_name = candidate.get("name", "ensemble_candidate")
+        enabled = candidate.get("enabled", True)
+        orders = candidate.get("orders", [2, 3, 4])
+        weights = candidate.get("weights")
+        aggregation = candidate.get("aggregation", "mean")
+
+        for score_threshold in skab_score_thresholds:
+            for fold in range(1, 6):
+                train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                    continue
+
+                X_train_s = pd.read_csv(train_file).values.flatten()
+                X_test_s = pd.read_csv(test_file).values.flatten()
+                y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                for seed in seeds:
+                    cc = {
+                        **config,
+                        "order": max(orders) if enabled and orders else config.get("skab_final_order", 3),
+                        "smoothing_alpha": config.get("skab_final_smoothing_alpha", 0.5),
+                        "decision_mode": config.get("skab_final_decision_mode", "avg_negative_log"),
+                        "score_window": config.get("skab_final_score_window", 10),
+                        "score_threshold": score_threshold,
+                        "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+                        "auto_score_percentile": None,
+                        "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+                        "ensemble_enabled": enabled,
+                        "ensemble_orders": orders,
+                        "ensemble_weights": weights,
+                        "ensemble_aggregation": aggregation,
+                        "ensemble_name": candidate_name,
+                    }
+                    res, _ = run_experiment_pipeline(
+                        X_train_s,
+                        X_test_s,
+                        y_test_s,
+                        cc,
+                        "SKAB",
+                        f"ensemble_markov_fold_{fold}",
+                        seed=seed,
+                    )
+                    sweep_results.extend(res)
+
+            temp_df = pd.DataFrame([
+                r for r in sweep_results
+                if r["dataset"] == "SKAB"
+                and r["scenario"] == "original"
+                and r.get("ensemble_name") == candidate_name
+                and r["score_threshold"] == score_threshold
+            ])
+            if not temp_df.empty:
+                print(
+                    f"SKAB -> candidate={candidate_name}, enabled={enabled}, "
+                    f"orders={orders}, aggregation={aggregation}, score_threshold={score_threshold} | "
+                    f"Precision={temp_df['precision'].mean():.4f}, "
+                    f"Recall={temp_df['recall'].mean():.4f}, F1={temp_df['f1_score'].mean():.4f}"
+                )
+
+    if not sweep_results:
+        print("[UYARI] Ensemble Markov sweep için uygun veri bulunamadı.")
+        return pd.DataFrame()
+
+    df_sweep = pd.DataFrame(sweep_results)
+    os.makedirs("results/outputs", exist_ok=True)
+
+    metrics_path = "results/outputs/automata_ensemble_markov_sweep_metrics.csv"
+    summary_path = "results/outputs/automata_ensemble_markov_sweep_summary.csv"
+    best_path = "results/outputs/automata_ensemble_markov_best_candidates.csv"
+
+    df_sweep.to_csv(metrics_path, index=False)
+
+    summary_cols = [
+        "dataset",
+        "scenario",
+        "order",
+        "base_order",
+        "smoothing_alpha",
+        "decision_mode",
+        "score_window",
+        "score_threshold",
+        "max_mapping_distance",
+        "ensemble_name",
+        "ensemble_enabled",
+        "ensemble_orders",
+        "ensemble_weights",
+        "ensemble_aggregation",
+    ]
+
+    summary = df_sweep.groupby(summary_cols, dropna=False).agg(
+        accuracy_mean=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        precision_mean=("precision", "mean"),
+        precision_std=("precision", "std"),
+        recall_mean=("recall", "mean"),
+        recall_std=("recall", "std"),
+        f1_score_mean=("f1_score", "mean"),
+        f1_score_std=("f1_score", "std"),
+        transition_density_mean=("transition_density", "mean"),
+        num_states_mean=("num_states", "mean"),
+        num_transitions_mean=("num_transitions", "mean"),
+    ).reset_index()
+    summary.to_csv(summary_path, index=False)
+
+    best_candidates = summary[summary["scenario"] == "original"].sort_values(
+        ["dataset", "f1_score_mean", "recall_mean", "precision_mean"],
+        ascending=[True, False, False, False],
+    )
+    best_candidates.to_csv(best_path, index=False)
+
+    print(f"\n[OK] Ensemble Markov sweep sonuçları kaydedildi: {metrics_path}")
+    print(f"[OK] Ensemble Markov sweep özeti kaydedildi: {summary_path}")
+    print(f"[OK] Ensemble Markov en iyi adaylar kaydedildi: {best_path}")
+
+    return df_sweep
+
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -852,7 +1128,7 @@ def write_summary_files(df_all):
 
     df_skab = df_all[df_all["dataset"] == "SKAB"]
     if not df_skab.empty:
-        summary_df = df_skab.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
+        summary_df = df_skab.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold", "ensemble_enabled", "ensemble_orders", "ensemble_aggregation", "ensemble_name"], dropna=False).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -868,7 +1144,7 @@ def write_summary_files(df_all):
 
     df_batadal = df_all[df_all["dataset"] == "BATADAL"]
     if not df_batadal.empty:
-        batadal_summary = df_batadal.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
+        batadal_summary = df_batadal.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold", "ensemble_enabled", "ensemble_orders", "ensemble_aggregation", "ensemble_name"], dropna=False).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -913,6 +1189,23 @@ def main():
             "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
             "auto_score_percentile": None,
             "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+            "ensemble_enabled": config.get(
+                "batadal_final_ensemble_enabled",
+                config.get("ensemble_enabled", True),
+            ),
+            "ensemble_orders": config.get(
+                "batadal_final_ensemble_orders",
+                config.get("ensemble_orders", [2, 3, 4]),
+            ),
+            "ensemble_weights": config.get(
+                "batadal_final_ensemble_weights",
+                config.get("ensemble_weights"),
+            ),
+            "ensemble_aggregation": config.get(
+                "batadal_final_ensemble_aggregation",
+                config.get("ensemble_aggregation", "mean"),
+            ),
+            "ensemble_name": "batadal_final_ensemble",
         }
 
         batadal_logs = None
@@ -923,7 +1216,10 @@ def main():
                 f"alpha={config_batadal['smoothing_alpha']}, "
                 f"mode={config_batadal['decision_mode']}, "
                 f"window={config_batadal['score_window']}, "
-                f"score_threshold={config_batadal['score_threshold']} çalışıyor..."
+                f"score_threshold={config_batadal['score_threshold']}, "
+                f"ensemble_enabled={config_batadal['ensemble_enabled']}, "
+                f"ensemble_orders={config_batadal['ensemble_orders']}, "
+                f"ensemble_aggregation={config_batadal['ensemble_aggregation']} çalışıyor..."
             )
             batadal_res, logs = run_experiment_pipeline(
                 X_train,
@@ -952,6 +1248,23 @@ def main():
         "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
         "auto_score_percentile": None,
         "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+        "ensemble_enabled": config.get(
+            "skab_final_ensemble_enabled",
+            config.get("ensemble_enabled", True),
+        ),
+        "ensemble_orders": config.get(
+            "skab_final_ensemble_orders",
+            config.get("ensemble_orders", [2, 3, 4]),
+        ),
+        "ensemble_weights": config.get(
+            "skab_final_ensemble_weights",
+            config.get("ensemble_weights"),
+        ),
+        "ensemble_aggregation": config.get(
+            "skab_final_ensemble_aggregation",
+            config.get("ensemble_aggregation", "mean"),
+        ),
+        "ensemble_name": "skab_final_ensemble",
     }
 
     for fold in range(1, 6):
@@ -969,7 +1282,10 @@ def main():
                     f"alpha={config_skab['smoothing_alpha']}, "
                     f"mode={config_skab['decision_mode']}, "
                     f"window={config_skab['score_window']}, "
-                    f"score_threshold={config_skab['score_threshold']} çalışıyor..."
+                    f"score_threshold={config_skab['score_threshold']}, "
+                    f"ensemble_enabled={config_skab['ensemble_enabled']}, "
+                    f"ensemble_orders={config_skab['ensemble_orders']}, "
+                    f"ensemble_aggregation={config_skab['ensemble_aggregation']} çalışıyor..."
                 )
                 fold_res, _ = run_experiment_pipeline(
                     X_train,
@@ -986,7 +1302,10 @@ def main():
     df_all.to_csv("results/outputs/automata_advanced_all_scenarios_metrics.csv", index=False)
     write_summary_files(df_all)
 
-    # Final koşuda sweep çalıştırılmaz; ana metrikler sabit final parametrelerle üretilir.
+    if config.get("run_ensemble_markov_sweep", False):
+        run_ensemble_markov_sweep(config)
+    else:
+        print("[INFO] Ensemble Markov sweep kapalı. Açmak için settings.json -> automata.run_ensemble_markov_sweep=true")
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
