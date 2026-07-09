@@ -175,3 +175,12 @@ BATADAL tarafında false positive tahminleri azaltmak için VOMM/PST modeline mu
 `smooth_window` değerleri `[1, 2, 3, 5, 7]` aralığında validation seti üzerinde denenmiştir. Deney sonucunda en iyi değer `smooth_window=1` olarak seçilmiştir. Bu değer yumuşatma uygulanmayan temel duruma karşılık geldiği için yöntem final modele dahil edilmemiştir.
 
 Bu sonuç, BATADAL tarafındaki false positive tahminlerin yalnızca ani ve tekil skor sıçramalarından kaynaklanmadığını göstermektedir
+
+### Quantile-based Thresholding Denemesi
+
+BATADAL tarafında false positive tahminleri azaltmak amacıyla quantile-based thresholding yaklaşımı denenmiştir. Bu yöntemde sabit olasılık eşiği kullanmak yerine, VOMM/PST tarafından üretilen anomaly skorlarına göre en şüpheli belirli orandaki pattern’ler anomaly olarak seçilmiştir.
+
+Validation seti üzerinde farklı anomaly oranları ve skor yönleri denenmiştir. Ancak normal ve anomalili pattern’lerin skor ortalamalarının birbirine çok yakın olduğu görülmüş, bu nedenle yöntem sınıflar arasında yeterli ayrım sağlayamamıştır.
+
+Deney sonucunda F1-score mevcut VOMM/PST sonucunun altında kaldığı için quantile-based thresholding final modele dahil edilmemiştir.
+

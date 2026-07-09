@@ -162,6 +162,7 @@ def select_best_threshold_on_validation(
                         best_metrics = metrics
 
     return best_threshold, best_context_depth, best_context_count, best_smooth_window, best_metrics
+
 #Pattern-level etiketlerden normal/anomaly sınıf oranlarını hesapla
 #Dual-PST skoruna bu prior değerleri eklenerek ADASYN kaynaklı yapay sınıf dengesi etkisi azaltılmaya çalışılır.
 def calculate_pattern_priors(pattern_labels):
@@ -402,8 +403,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "selected_min_context_depth": selected_min_context_depth,
         "selected_min_context_count": selected_min_context_count,
         "validation_threshold_f1": validation_threshold_f1,
-        "selected_min_context_count": selected_min_context_count,
-        "validation_threshold_f1": validation_threshold_f1
+        "selected_smooth_window": selected_smooth_window,
     }
  
     # --- SENARYO 1: Orijinal Veri ---
@@ -865,7 +865,7 @@ def run_batadal_dual_vomm_experiment(config):
     with open("results/outputs/batadal_dual_vomm_pst_explainability.json", "w") as f:
         json.dump(logs_test[:100], f, indent=4)
 
-    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.")            
+    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.")       
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -1011,11 +1011,12 @@ def main():
         print("\nBATADAL VOMM/PST (5 seed):")
         print(batadal_summary)
  
-    run_parameter_sensitivity_analysis(config)
-    run_vomm_threshold_sensitivity_analysis(config)
-    run_batadal_vomm_regularization_analysis(config)
-    run_batadal_dual_vomm_experiment(config)
- 
+    #run_parameter_sensitivity_analysis(config)
+    #run_vomm_threshold_sensitivity_analysis(config)
+    #run_batadal_vomm_regularization_analysis(config)
+    #run_batadal_dual_vomm_experiment(config)
+
+
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
         run_statistical_main()
