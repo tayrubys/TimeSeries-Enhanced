@@ -326,7 +326,6 @@ def run_markov_order_threshold_sweep(config):
                         )
                         sweep_results.extend(res)
 
-                    # Konsolda sadece original senaryo ortalamasını hızlıca gösterelim.
                     temp_df = pd.DataFrame([r for r in sweep_results if r["dataset"] == "BATADAL"
                                             and r["order"] == order
                                             and r["smoothing_alpha"] == alpha
@@ -405,7 +404,6 @@ def run_markov_order_threshold_sweep(config):
     print(f"[OK] Dataset bazlı threshold sweep sonuçları kaydedildi: {dataset_threshold_sweep_path}")
     print(f"[OK] Alpha sweep sonuçları kaydedildi: {alpha_sweep_path}")
 
-    # Optimizasyon için original senaryonun özetini ayrıca yazıyoruz.
     df_original = df_sweep[df_sweep["scenario"] == "original"].copy()
     if not df_original.empty:
         summary_df = df_original.groupby(["dataset", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
@@ -432,7 +430,6 @@ def run_markov_order_threshold_sweep(config):
         print(f"[OK] Dataset bazlı threshold sweep özeti kaydedildi: {dataset_threshold_summary_path}")
         print(f"[OK] Alpha sweep özeti kaydedildi: {alpha_summary_path}")
 
-        # Recall düşmeden en yüksek precision/F1 adaylarını görmeyi kolaylaştırır.
         best_df = summary_df.sort_values(
             by=["dataset", "recall_mean", "precision_mean", "f1_score_mean"],
             ascending=[True, False, False, False],
@@ -612,8 +609,6 @@ def run_mapping_distance_sweep(config):
     max_mapping_distances = config.get("max_mapping_distances", [None, 1, 2, 3])
     sweep_results = []
 
-    # Önceki avg negative log sweep'te iyi sonuç veren adaylar üzerinden mesafe eşiğini tarıyoruz.
-    # Böylece gereksiz tüm kombinasyonları tekrar çalıştırmadan 18-20. adımları izole test ediyoruz.
     batadal_candidates = config.get("batadal_mapping_candidates", [
         {"order": 3, "smoothing_alpha": 0.1, "score_window": 5, "score_threshold": 3.9120},
         {"order": 2, "smoothing_alpha": 0.1, "score_window": 5, "score_threshold": 3.9120},
@@ -769,7 +764,6 @@ def run_validation_threshold_sweep(config):
     percentiles = config.get("auto_score_percentiles", [90, 95, 97, 99])
     sweep_results = []
 
-    # Önceki adımlarda iyi sonuç veren avg_negative_log adayları üzerinden threshold'u otomatik seçiyoruz.
     batadal_candidates = config.get("batadal_validation_threshold_candidates", [
         {"order": 3, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},
         {"order": 2, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},

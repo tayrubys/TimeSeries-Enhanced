@@ -93,6 +93,26 @@
             2026,
             7,
             999
-        ]
+        ],
+        
+        "run_ensemble_markov_sweep": true,
+
+        "ensemble_enabled": true,
+        "ensemble_orders": [2, 3, 4],
+        "ensemble_weights": null,
+        "ensemble_aggregation": "mean",
+
+        "batadal_final_ensemble_enabled": true,
+        "batadal_final_ensemble_orders": [2, 3, 4],
+        "batadal_final_ensemble_weights": null,
+        "batadal_final_ensemble_aggregation": "mean",
+
+        "skab_final_ensemble_enabled": true,
+        "skab_final_ensemble_orders": [2, 3, 4],
+        "skab_final_ensemble_weights": null,
+        "skab_final_ensemble_aggregation": "mean",
+
+        "batadal_ensemble_score_thresholds": [3.5066, 3.9120, 4.2, 4.5],
+        "skab_ensemble_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108]
     }
 }
