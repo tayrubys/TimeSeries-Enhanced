@@ -167,3 +167,11 @@ Context reliability filter sonrasında, kararın dayandığı bağlamın eğitim
 Bu amaçla `min_context_count` değerleri `[0, 1, 2, 3, 5, 10, 20, 30]` aralığında validation seti üzerinde taranmıştır. Ancak en iyi sonuç yine `min_context_count=0` ile elde edilmiştir. Bu nedenle context count reliability filter da final modele dahil edilmemiş, deneysel analiz olarak bırakılmıştır.
 
 Bu sonuç, BATADAL tarafındaki false positive probleminin yalnızca az görülen context’lerden kaynaklanmadığını; sembolik temsil, threshold seçimi ve genel karar yapısının precision üzerinde daha belirleyici olduğunu göstermektedir.
+
+### Multi-step Score Smoothing Denemesi
+
+BATADAL tarafında false positive tahminleri azaltmak için VOMM/PST modeline multi-step score smoothing eklenmiştir. Bu yöntemde tek bir geçişe göre karar vermek yerine, son birkaç geçişin ortalama anomali skoru dikkate alınmıştır.
+
+`smooth_window` değerleri `[1, 2, 3, 5, 7]` aralığında validation seti üzerinde denenmiştir. Deney sonucunda en iyi değer `smooth_window=1` olarak seçilmiştir. Bu değer yumuşatma uygulanmayan temel duruma karşılık geldiği için yöntem final modele dahil edilmemiştir.
+
+Bu sonuç, BATADAL tarafındaki false positive tahminlerin yalnızca ani ve tekil skor sıçramalarından kaynaklanmadığını göstermektedir

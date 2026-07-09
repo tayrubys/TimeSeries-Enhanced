@@ -1,3 +1,4 @@
+import numpy as np
 from src.models.pst_model import ProbabilisticSuffixTree
 
 
@@ -67,7 +68,64 @@ class VariableOrderMarkovModel:
             })
 
         return predictions, explainability_logs
+    def predict_smoothed(self,test_patterns,anomaly_threshold=0.05,smooth_window=1, min_context_depth=0,min_context_count=0):
 
+        eps = 1e-12
+        raw_scores = []
+        context_infos = []
+        targets = []
+ 
+        for i in range(1, len(test_patterns)):
+            start_idx = max(0, i - self.max_depth)
+            context = test_patterns[start_idx:i]
+            target = test_patterns[i]
+
+            prob, context_info = self.pst.predict_probability_with_context_info(
+                context, target
+            )
+
+            #dusuk olasilik -> yuksek skor (anomali sinyali)
+            score = -np.log(prob + eps)
+
+            raw_scores.append(score)
+            context_infos.append(context_info)
+            targets.append(target)
+
+        #olasilik threshold'unu ayni skor uzayina tasiyoruz
+        #boylece mevcut anomaly_threshold degerlerin (orn. 0.005) calismaya devam eder
+        score_threshold = -np.log(anomaly_threshold + eps)
+
+        predictions = []
+        explainability_logs = []
+
+        for i in range(len(raw_scores)):
+            start = max(0, i - smooth_window + 1)
+            smoothed_score = float(np.mean(raw_scores[start:i + 1]))
+
+            context_length = context_infos[i]["context_length"]
+            context_count = context_infos[i]["context_count"]
+
+            decision = 1 if (
+                smoothed_score > score_threshold
+                and context_length >= min_context_depth
+                and context_count >= min_context_count
+            ) else 0
+
+            predictions.append(decision)
+
+            explainability_logs.append({
+                "index": i + 1,
+                "target": targets[i],
+                "raw_score": float(raw_scores[i]),
+                "smoothed_score": smoothed_score,
+                "score_threshold": float(score_threshold),
+                "smooth_window": smooth_window,
+                "context_length": context_length,
+                "context_count": context_count,
+                "prediction": decision
+            })
+
+        return predictions, explainability_logs     
     @property
     def trained_patterns(self):
         return self._trained_patterns
