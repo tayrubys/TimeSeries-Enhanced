@@ -6,14 +6,60 @@ from src.models.explainability import AutomataExplainer
 class ProbabilisticAutomata:
 
     # yüksek dereceli olasılıksal otomata modelini başlatır
-    def __init__(self, smoothing=True, order=2, learning_rate=0.0, smoothing_alpha=1.0):
+    def __init__(
+        self,
+        smoothing=True,
+        order=2,
+        learning_rate=0.0,
+        smoothing_alpha=1.0,
+        ensemble_enabled=False,
+        ensemble_orders=None,
+        ensemble_weights=None,
+        ensemble_aggregation="mean",
+    ):
         self.smoothing = smoothing
-        self.order = order
+        self.base_order = order
         self.learning_rate = learning_rate
         self.smoothing_alpha = smoothing_alpha
+        self.ensemble_enabled = ensemble_enabled
+        self.ensemble_orders = self._prepare_ensemble_orders(order, ensemble_orders)
+        self.ensemble_weights = self._prepare_ensemble_weights(ensemble_weights)
+        self.ensemble_aggregation = ensemble_aggregation
+
+        if self.ensemble_aggregation not in {"mean", "weighted_mean", "max", "min"}:
+            raise ValueError("ensemble_aggregation 'mean', 'weighted_mean', 'max' veya 'min' olmalıdır.")
+
+        # Ensemble açıkken başlangıç state uzunluğu en büyük order olur.
+        # Feature kapalıyken eski davranış korunur.
+        self.order = max(self.ensemble_orders) if self.ensemble_enabled else order
+
         self.transitions = defaultdict(lambda: defaultdict(float))
         self.total_exits = defaultdict(float)
         self.trained_patterns = set()
+
+    def _prepare_ensemble_orders(self, order, ensemble_orders):
+        if ensemble_orders is None:
+            return [int(order)]
+
+        prepared_orders = sorted({int(o) for o in ensemble_orders})
+        if not prepared_orders:
+            raise ValueError("ensemble_orders boş olamaz.")
+        if any(o < 1 for o in prepared_orders):
+            raise ValueError("ensemble_orders içindeki değerler en az 1 olmalıdır.")
+        return prepared_orders
+
+    def _prepare_ensemble_weights(self, ensemble_weights):
+        if ensemble_weights is None:
+            return None
+
+        weights = [float(w) for w in ensemble_weights]
+        if len(weights) != len(self.ensemble_orders):
+            raise ValueError("ensemble_weights uzunluğu ensemble_orders uzunluğu ile aynı olmalıdır.")
+        if any(w < 0 for w in weights):
+            raise ValueError("ensemble_weights negatif değer içeremez.")
+        if sum(weights) <= 0:
+            raise ValueError("ensemble_weights toplamı sıfırdan büyük olmalıdır.")
+        return weights
 
     # modeli verilen eğitim örüntüleriyle eğitir ve geçiş frekanslarını kaydeder
     def fit(self, train_patterns):
@@ -31,7 +77,10 @@ class ProbabilisticAutomata:
 
     # katz back-off algoritması ile bir sonraki durumun geçiş olasılığını hesaplar
     def get_transition_probability(self, current_state, next_pattern):
-        state_to_check = current_state
+        return self._get_transition_probability_for_state(tuple(current_state), next_pattern)
+
+    def _get_transition_probability_for_state(self, state, next_pattern):
+        state_to_check = tuple(state)
 
         while len(state_to_check) > 0:
             total_output = self.total_exits[state_to_check]
@@ -48,6 +97,45 @@ class ProbabilisticAutomata:
         if self.smoothing and len(self.trained_patterns) > 0:
             return 1.0 / len(self.trained_patterns)
         return 0.0
+
+    def _get_order_state(self, current_state, order):
+        current_state = tuple(current_state)
+        if len(current_state) < order:
+            return current_state
+        return current_state[-order:]
+
+    def _get_ensemble_probabilities(self, current_state, next_pattern):
+        return {
+            order: self._get_transition_probability_for_state(
+                self._get_order_state(current_state, order),
+                next_pattern,
+            )
+            for order in self.ensemble_orders
+        }
+
+    def _aggregate_values(self, values_by_order):
+        values = [float(values_by_order[order]) for order in self.ensemble_orders]
+
+        if self.ensemble_aggregation == "max":
+            return float(np.max(values))
+        if self.ensemble_aggregation == "min":
+            return float(np.min(values))
+        if self.ensemble_aggregation == "weighted_mean":
+            weights = self.ensemble_weights
+            if weights is None:
+                weights = [1.0] * len(values)
+            return float(np.average(values, weights=weights))
+
+        return float(np.mean(values))
+
+    def _get_effective_probability(self, current_state, next_pattern):
+        if not self.ensemble_enabled:
+            prob = self.get_transition_probability(current_state, next_pattern)
+            return prob, {self.base_order: prob}
+
+        probabilities = self._get_ensemble_probabilities(current_state, next_pattern)
+        aggregated_probability = self._aggregate_values(probabilities)
+        return aggregated_probability, probabilities
 
     # karar normal çıktığında geçiş ağırlıklarını güncelleyerek adaptif öğrenmeyi sağlar
     def _update_transition(self, current_state, next_state):
@@ -92,7 +180,6 @@ class ProbabilisticAutomata:
                 nearest_pattern = trained_pattern
         return nearest_pattern, best_distance
 
-
     # verilen pattern dizisi için karar vermeden olasılık/anomali skorlarını hesaplar
     def calculate_scores(
         self,
@@ -122,6 +209,7 @@ class ProbabilisticAutomata:
 
         current_state = tuple(mapped_initial)
         recent_negative_log_scores = []
+        recent_negative_log_scores_by_order = {order: [] for order in self.ensemble_orders}
         scores = []
 
         for t in range(self.order, len(patterns)):
@@ -138,18 +226,38 @@ class ProbabilisticAutomata:
                 if max_mapping_distance is not None and distance > max_mapping_distance:
                     forced_distance_anomaly = True
 
-            prob = self.get_transition_probability(current_state, mapped_to)
-            negative_log_score = float(-np.log(prob + eps))
-            recent_negative_log_scores.append(negative_log_score)
-            if len(recent_negative_log_scores) > score_window:
-                recent_negative_log_scores.pop(0)
+            prob, probabilities_by_order = self._get_effective_probability(current_state, mapped_to)
 
-            if decision_mode == "probability":
-                score = float(prob)
-            elif decision_mode == "negative_log":
-                score = negative_log_score
+            if self.ensemble_enabled and decision_mode in {"negative_log", "avg_negative_log"}:
+                negative_log_by_order = {
+                    order: float(-np.log(probabilities_by_order[order] + eps))
+                    for order in self.ensemble_orders
+                }
+                for order, order_score in negative_log_by_order.items():
+                    recent_negative_log_scores_by_order[order].append(order_score)
+                    if len(recent_negative_log_scores_by_order[order]) > score_window:
+                        recent_negative_log_scores_by_order[order].pop(0)
+
+                if decision_mode == "negative_log":
+                    score = self._aggregate_values(negative_log_by_order)
+                else:
+                    avg_negative_log_by_order = {
+                        order: float(np.mean(recent_negative_log_scores_by_order[order]))
+                        for order in self.ensemble_orders
+                    }
+                    score = self._aggregate_values(avg_negative_log_by_order)
             else:
-                score = float(np.mean(recent_negative_log_scores))
+                negative_log_score = float(-np.log(prob + eps))
+                recent_negative_log_scores.append(negative_log_score)
+                if len(recent_negative_log_scores) > score_window:
+                    recent_negative_log_scores.pop(0)
+
+                if decision_mode == "probability":
+                    score = float(prob)
+                elif decision_mode == "negative_log":
+                    score = negative_log_score
+                else:
+                    score = float(np.mean(recent_negative_log_scores))
 
             if forced_distance_anomaly and decision_mode in {"negative_log", "avg_negative_log"}:
                 score = max(float(score), float(distance))
@@ -201,6 +309,7 @@ class ProbabilisticAutomata:
         transition_history = list(current_state)
         cumulative_path_prob = 1.0
         recent_negative_log_scores = []
+        recent_negative_log_scores_by_order = {order: [] for order in self.ensemble_orders}
 
         for t in range(self.order, len(test_patterns)):
             incoming_pattern = test_patterns[t]
@@ -224,24 +333,46 @@ class ProbabilisticAutomata:
                 distances.sort(key=lambda x: x[1])
                 similarity_report = [{"pattern": p, "distance": d} for p, d in distances[:3]]
 
-            prob = self.get_transition_probability(current_state, mapped_to)
+            prob, probabilities_by_order = self._get_effective_probability(current_state, mapped_to)
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
-            negative_log_score = float(-np.log(prob + eps))
-            recent_negative_log_scores.append(negative_log_score)
-            if len(recent_negative_log_scores) > score_window:
-                recent_negative_log_scores.pop(0)
-            avg_negative_log_score = float(np.mean(recent_negative_log_scores))
 
-            if decision_mode == "negative_log":
-                decision = "anomaly" if negative_log_score > score_threshold else "normal"
-                confidence_score = negative_log_score
-            elif decision_mode == "avg_negative_log":
-                decision = "anomaly" if avg_negative_log_score > score_threshold else "normal"
-                confidence_score = avg_negative_log_score
+            if self.ensemble_enabled and decision_mode in {"negative_log", "avg_negative_log"}:
+                negative_log_by_order = {
+                    order: float(-np.log(probabilities_by_order[order] + eps))
+                    for order in self.ensemble_orders
+                }
+                for order, order_score in negative_log_by_order.items():
+                    recent_negative_log_scores_by_order[order].append(order_score)
+                    if len(recent_negative_log_scores_by_order[order]) > score_window:
+                        recent_negative_log_scores_by_order[order].pop(0)
+
+                if decision_mode == "negative_log":
+                    confidence_score = self._aggregate_values(negative_log_by_order)
+                    decision = "anomaly" if confidence_score > score_threshold else "normal"
+                else:
+                    avg_negative_log_by_order = {
+                        order: float(np.mean(recent_negative_log_scores_by_order[order]))
+                        for order in self.ensemble_orders
+                    }
+                    confidence_score = self._aggregate_values(avg_negative_log_by_order)
+                    decision = "anomaly" if confidence_score > score_threshold else "normal"
             else:
-                decision = "anomaly" if prob < anomaly_threshold else "normal"
-                confidence_score = float(prob)
+                negative_log_score = float(-np.log(prob + eps))
+                recent_negative_log_scores.append(negative_log_score)
+                if len(recent_negative_log_scores) > score_window:
+                    recent_negative_log_scores.pop(0)
+                avg_negative_log_score = float(np.mean(recent_negative_log_scores))
+
+                if decision_mode == "negative_log":
+                    decision = "anomaly" if negative_log_score > score_threshold else "normal"
+                    confidence_score = negative_log_score
+                elif decision_mode == "avg_negative_log":
+                    decision = "anomaly" if avg_negative_log_score > score_threshold else "normal"
+                    confidence_score = avg_negative_log_score
+                else:
+                    decision = "anomaly" if prob < anomaly_threshold else "normal"
+                    confidence_score = float(prob)
 
             if forced_distance_anomaly:
                 decision = "anomaly"
@@ -254,16 +385,24 @@ class ProbabilisticAutomata:
             counterfactuals = []
             total_exits_for_state = self.total_exits[current_state]
             if total_exits_for_state > 0 or self.smoothing:
-                possible_transitions = [
-                    (p_next, self.get_transition_probability(current_state, p_next))
-                    for p_next in self.trained_patterns
-                ]
+                possible_transitions = []
+                for p_next in self.trained_patterns:
+                    alt_prob, alt_probabilities_by_order = self._get_effective_probability(current_state, p_next)
+                    possible_transitions.append((p_next, alt_prob, alt_probabilities_by_order))
+
                 possible_transitions.sort(key=lambda x: x[1], reverse=True)
 
-                for alt_pattern, alt_prob in possible_transitions[:3]:
+                for alt_pattern, alt_prob, alt_probabilities_by_order in possible_transitions[:3]:
                     if alt_pattern != mapped_to:
                         if decision_mode in {"negative_log", "avg_negative_log"}:
-                            alt_score = float(-np.log(alt_prob + eps))
+                            if self.ensemble_enabled:
+                                alt_scores_by_order = {
+                                    order: float(-np.log(alt_probabilities_by_order[order] + eps))
+                                    for order in self.ensemble_orders
+                                }
+                                alt_score = self._aggregate_values(alt_scores_by_order)
+                            else:
+                                alt_score = float(-np.log(alt_prob + eps))
                             alt_decision = "anomaly" if alt_score > score_threshold else "normal"
                         else:
                             alt_decision = "normal" if alt_prob >= anomaly_threshold else "anomaly"
@@ -283,6 +422,19 @@ class ProbabilisticAutomata:
                 transition_history.copy(), total_exits_for_state,
                 counterfactuals, similarity_report
             )
+
+            if isinstance(log_entry, dict) and self.ensemble_enabled:
+                log_entry.update({
+                    "ensemble_enabled": self.ensemble_enabled,
+                    "ensemble_orders": self.ensemble_orders,
+                    "ensemble_aggregation": self.ensemble_aggregation,
+                    "ensemble_probabilities": {
+                        str(order): float(probabilities_by_order[order])
+                        for order in probabilities_by_order
+                    },
+                    "ensemble_aggregated_probability": float(prob),
+                })
+
             explainability_logs.append(log_entry)
             predictions.append(1 if decision == "anomaly" else 0)
 
