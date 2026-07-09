@@ -24,7 +24,15 @@ def load_json_config(config_path="src/config/settings.json"):
         "noise_level": 0.1,
         "seeds": [42, 123, 2026, 7, 999],
         "batadal_train_ratio": 0.60,
-        "batadal_val_ratio": 0.20
+        "batadal_val_ratio": 0.20,
+         #vomm-pst için ek parametreler
+        "min_count": 2,
+        "smoothing_alpha": 1.0,
+        "min_count_values": [1, 2, 3, 5],
+        "smoothing_alpha_values": [0.1, 0.5, 1.0],
+        "vomm_threshold_values": [0.001, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.3, 0.5],
+        "min_context_depth": 0,
+        "min_context_depth_values": [0, 1, 2, 3]
     }
     if os.path.exists(config_path):
         try:
@@ -42,7 +50,14 @@ def load_json_config(config_path="src/config/settings.json"):
                 "noise_level": automata_config.get("noise_level", default_config["noise_level"]),
                 "seeds": automata_config.get("seeds", default_config["seeds"]),
                 "batadal_train_ratio": automata_config.get("batadal_train_ratio", default_config["batadal_train_ratio"]),
-                "batadal_val_ratio": automata_config.get("batadal_val_ratio", default_config["batadal_val_ratio"])
+                "batadal_val_ratio": automata_config.get("batadal_val_ratio", default_config["batadal_val_ratio"]),
+                "min_count": automata_config.get("min_count", default_config["min_count"]),
+                "smoothing_alpha":  automata_config.get("smoothing_alpha", default_config["smoothing_alpha"]),
+                "min_count_values":  automata_config.get("min_count_values", default_config["min_count_values"]),
+                "smoothing_alpha_values": automata_config.get("smoothing_alpha_values", default_config["smoothing_alpha_values"]),
+                "vomm_threshold_values": automata_config.get("vomm_threshold_values", default_config["vomm_threshold_values"]),
+                "min_context_depth": automata_config.get("min_context_depth",default_config["min_context_depth"]),
+                "min_context_depth_values": automata_config.get("min_context_depth_values",default_config["min_context_depth_values"])
             }
         except Exception:
             return default_config
@@ -391,24 +406,35 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     results.append(metrics_noisy)
  
     # --- SENARYO 3: Unseen Veri ---
-    unseen_test_patterns = []
-    y_test_unseen = []
-    y_test_sliding = y_test[:len(test_patterns_orig)]
-    for idx, pat in enumerate(test_patterns_orig):
-        if pat not in model.trained_patterns:
-            unseen_test_patterns.append(pat)
-            y_test_unseen.append(y_test_sliding[idx])
- 
-    if len(unseen_test_patterns) > 1:
-        preds_unseen, _ = model.predict(unseen_test_patterns, anomaly_threshold=selected_threshold,min_context_depth=selected_min_context_depth)
-        y_test_aligned_unseen = y_test_unseen[-len(preds_unseen):]
-        metrics_unseen = calculate_metrics(y_test_aligned_unseen, preds_unseen)
+    unseen_preds = []
+    unseen_labels = []
+
+    for pred_idx, pred in enumerate(preds_orig):
+        pattern_idx = pred_idx + 1
+
+        if pattern_idx < len(test_patterns_orig):
+            current_pattern = test_patterns_orig[pattern_idx]
+
+            if current_pattern not in model.trained_patterns:
+                unseen_preds.append(pred)
+                unseen_labels.append(y_test_aligned_orig[pred_idx])
+
+    if len(unseen_preds) > 0:
+        metrics_unseen = calculate_metrics(
+            np.array(unseen_labels),
+            np.array(unseen_preds)
+        )
     else:
-        metrics_unseen = {"accuracy": 0.0, "precision": 0.0, "recall": 0.0, "f1_score": 0.0}
- 
+        metrics_unseen = {
+            "accuracy": 0.0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1_score": 0.0
+        }
+
     metrics_unseen.update({"scenario": "unseen_data", **common_fields})
     results.append(metrics_unseen)
- 
+    
     return results, logs_orig
  
 #parametre duyarlık analizi
@@ -883,25 +909,25 @@ def main():
             X_test = pd.read_csv(test_file).values.flatten()
             y_test = pd.read_csv(y_test_file).values.flatten()
             y_train_file = f"data/processed/skab_fold{fold}_y_train.csv"
-            if os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file) and os.path.exists(y_train_file):
-                y_train = pd.read_csv(y_train_file).values.flatten()
-                X_model_train, X_val, _, y_val = split_train_validation(
-                    X_train,
-                    y_train,
-                    val_ratio=0.2
-                )
-                best_skab_config, best_skab_val_metrics = select_best_vomm_config_on_validation(
-                    X_model_train,
-                    X_val,
-                    y_val,
-                    config,
-                    f"SKAB fold_{fold}"
-                )
+            if not os.path.exists(y_train_file):
+                print(f"SKAB fold={fold} için y_train dosyası bulunamadı, bu fold atlandı.")
+                continue
 
-                config_skab_fold = {
-                    **config,
-                    **best_skab_config
-           }
+            y_train = pd.read_csv(y_train_file).values.flatten()
+
+            X_model_train, X_val, _, y_val = split_train_validation(
+                X_train,
+                y_train,
+                val_ratio=0.2
+            )
+            best_skab_config, best_skab_val_metrics = select_best_vomm_config_on_validation(
+                X_model_train,
+                X_val,
+                y_val,
+                config,
+                f"SKAB fold_{fold}"
+            )
+            config_skab_fold = { **config,**best_skab_config}
                 
             for seed in seeds:
                 print(f"SKAB automata fold={fold}, seed={seed} çalışıyor...")

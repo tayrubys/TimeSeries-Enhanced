@@ -148,3 +148,17 @@ Bu deneyde eğitim sırasında `382` normal geçiş ve `415` anomalili geçiş �
 
 Dual VOMM/PST yaklaşımı BATADAL üzerinde çalışmış olsa da, mevcut en iyi vomm-pst regularization sonucunu geçememiştir. Bunun nedeni, eğitim verisinin ADASYN ile dengelenmiş olması sebebiyle normal ve anomalili geçiş sayılarının birbirine yakın hale gelmesi olabilir. Bu durumda model anomalili sınıfı gerçek test dağılımına göre daha güçlü temsil etmiş ve precision tarafında beklenen artış sağlanamamıştır.
 Prior correction, ADASYN ile dengelenmiş eğitim verisinin normal/anomaly oranını gerçek validation dağılımına yaklaştırmak amacıyla denenmiştir. Ancak bu düzeltme BATADAL test F1-score değerinde ek bir artış sağlamamıştır. Seçilen skor eşiğinin aralığın en düşük değeri olan `-20` olması, modelin hâlâ çok fazla pattern’i anomali olarak işaretleme eğiliminde olduğunu göstermektedir. Bu nedenle final BATADAL sonucu için Dual VOMM/PST yerine regularization uygulanmış VOMM/PST modeli daha iyi seçenek olarak değerlendirilmiştir.
+
+### Context Reliability Filter Denemesi
+
+BATADAL tarafında precision değerini artırmak amacıyla VOMM/PST tahminlerine context reliability filter eklenmiştir. Bu yöntemde modelin anomali kararı verebilmesi için yalnızca düşük geçiş olasılığı yeterli görülmemiş, aynı zamanda kararın belirli bir minimum context derinliğine dayanması istenmiştir.
+
+Validation seti üzerinde `min_context_depth` değerleri `[0, 1, 2, 3]` olarak denenmiştir. `min_context_depth=0` değeri filtrenin uygulanmadığı temel duruma karşılık gelmektedir.
+
+Yapılan deneyde validation seti en iyi sonucu yine `min_context_depth=0` ile vermiştir. Bu nedenle context reliability filter BATADAL test performansında ek bir iyileştirme sağlamamıştır.
+
+| Yöntem | Selected Threshold | Selected Min Context Depth | Precision | Recall | F1-score |
+|---|---:|---:|---:|---:|---:|
+| VOMM/PST + regularization | 0.005 | 0 | 0.1923 | 1.0000 | 0.3226 |
+
+Bu sonuç, false positive tahminlerin yalnızca düşük context derinliğinden kaynaklanmadığını göstermektedir. Bu nedenle final modele context reliability filter eklenmemiş, ancak deneysel analiz olarak raporlanmıştır.
