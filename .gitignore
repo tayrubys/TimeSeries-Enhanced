@@ -17,3 +17,5 @@ __pycache__/
 *.pyc
 .venv/
 .DS_Storevenv/
+venv/
+data/

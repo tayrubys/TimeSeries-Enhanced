@@ -1,0 +1,2 @@
+dataset,model,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_mean,f1_std
+BATADAL,LSTM_AutoEncoder,0.8572827417380662,0.008723882340859444,0.4073442623356538,0.014716474773395905,1.0,0.0,0.5787591883304943,0.01487338181399874
