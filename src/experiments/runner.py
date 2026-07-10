@@ -10,6 +10,7 @@ from src.data_pipeline.sax_paa import SaxPaaTransformer
 #from src.models.automata_model import ProbabilisticAutomata
 from src.models.vomm_model import VariableOrderMarkovModel
 from src.models.dual_vomm_model import DualVariableOrderMarkovModel
+from src.models.sax_state_aggregator import SAXStateAggregator
 from src.experiments.evaluator import calculate_metrics
  
 def load_json_config(config_path="src/config/settings.json"):
@@ -119,9 +120,7 @@ def select_best_threshold_on_validation(
     window_size,
     min_context_depth_values=None,
     min_context_count_values=None,
-    smooth_window_values=None,
-    use_interpolation=False,
-    interpolation_beta=1.0
+    smooth_window_values=None
 ):
     best_threshold = threshold_values[0]
     best_context_depth = 0
@@ -149,9 +148,7 @@ def select_best_threshold_on_validation(
                         anomaly_threshold=threshold,
                         smooth_window=smooth_window,
                         min_context_depth=min_context_depth,
-                        min_context_count=min_context_count,
-                        use_interpolation=use_interpolation,
-                        interpolation_beta=interpolation_beta
+                        min_context_count=min_context_count
                     )
 
                     preds_val = preds_val[:len(y_val_aligned)]
@@ -870,438 +867,6 @@ def run_batadal_vomm_regularization_analysis(config):
             f"threshold={best_row['selected_threshold']} | "
             f"F1={best_row['f1_score']:.4f}"
         )    
-# BATADAL için Interpolated VOMM/PST analizi
-def run_batadal_vomm_interpolation_analysis(config):
-    print(
-        "\n--- BATADAL INTERPOLATED VOMM/PST "
-        "ANALİZİ BAŞLATILIYOR ---"
-    )
-
-    os.makedirs("results/outputs", exist_ok=True)
-
-    required_files = [
-        "data/processed/batadal_X_train_adasyn_pc1.csv",
-        "data/processed/batadal_X_val_pc1.csv",
-        "data/processed/batadal_y_val.csv",
-        "data/processed/batadal_X_test_pc1.csv",
-        "data/processed/batadal_y_test.csv"
-    ]
-
-    for file_path in required_files:
-        if not os.path.exists(file_path):
-            print(
-                "Eksik dosya bulundu, interpolation deneyi atlandı: "
-                f"{file_path}"
-            )
-            return
-
-    # Ortak veri dosyaları yalnızca okunur.
-    X_train = pd.read_csv(
-        "data/processed/batadal_X_train_adasyn_pc1.csv"
-    ).values.flatten()
-
-    X_val = pd.read_csv(
-        "data/processed/batadal_X_val_pc1.csv"
-    ).values.flatten()
-
-    y_val = pd.read_csv(
-        "data/processed/batadal_y_val.csv"
-    ).values.flatten()
-
-    X_test = pd.read_csv(
-        "data/processed/batadal_X_test_pc1.csv"
-    ).values.flatten()
-
-    y_test = pd.read_csv(
-        "data/processed/batadal_y_test.csv"
-    ).values.flatten()
-
-    y_val = np.where(y_val == -999, 0, y_val)
-    y_test = np.where(y_test == -999, 0, y_test)
-
-    # Mevcut en iyi Single VOMM/PST ayarları
-    window_size = 6
-    alphabet_size = 4
-    min_count = 3
-    smoothing_alpha = 1.0
-
-    transformer = SaxPaaTransformer(
-        alphabet_size=alphabet_size
-    )
-
-    train_patterns = transformer.transform(
-        X_train,
-        window_size=window_size
-    )
-
-    val_patterns = transformer.transform(
-        X_val,
-        window_size=window_size
-    )
-
-    test_patterns = transformer.transform(
-        X_test,
-        window_size=window_size
-    )
-
-    y_val_aligned = align_labels_to_patterns(
-        y_val,
-        len(val_patterns),
-        window_size
-    )
-
-    y_test_aligned = align_labels_to_patterns(
-        y_test,
-        len(test_patterns),
-        window_size
-    )
-
-    model = VariableOrderMarkovModel(
-        max_depth=window_size,
-        min_count=min_count,
-        smoothing=True,
-        smoothing_alpha=smoothing_alpha
-    )
-
-    model.fit(train_patterns)
-
-    print("\n--- INTERPOLATION VERİ KONTROLÜ ---")
-    print(f"Train pattern sayısı      : {len(train_patterns)}")
-    print(f"Validation pattern sayısı : {len(val_patterns)}")
-    print(f"Test pattern sayısı       : {len(test_patterns)}")
-    print(f"Validation etiket sayısı  : {len(y_val_aligned)}")
-    print(f"Test etiket sayısı        : {len(y_test_aligned)}")
-
-    # Her şeyi anomali kabul eden validation baseline
-    all_anomaly_predictions = np.ones_like(
-        y_val_aligned,
-        dtype=int
-    )
-
-    all_anomaly_metrics = calculate_metrics(
-        y_val_aligned,
-        all_anomaly_predictions
-    )
-
-    print(
-        "\nAll-anomaly validation baseline -> "
-        f"Precision={all_anomaly_metrics['precision']:.4f} | "
-        f"Recall={all_anomaly_metrics['recall']:.4f} | "
-        f"F1={all_anomaly_metrics['f1_score']:.4f}"
-    )
-
-    threshold_values = config.get(
-        "vomm_threshold_values",
-        [
-            0.001,
-            0.005,
-            0.01,
-            0.02,
-            0.03,
-            0.05,
-            0.1,
-            0.2,
-            0.3,
-            0.5
-        ]
-    )
-
-    # Baseline ilk sırada tutulur.
-    # Eşit sonuçta daha basit olan baseline seçilir.
-    candidate_settings = [
-        {
-            "name": "baseline",
-            "use_interpolation": False,
-            "interpolation_beta": 1.0
-        },
-        {
-            "name": "interpolation_beta_0.5",
-            "use_interpolation": True,
-            "interpolation_beta": 0.5
-        },
-        {
-            "name": "interpolation_beta_1.0",
-            "use_interpolation": True,
-            "interpolation_beta": 1.0
-        },
-        {
-            "name": "interpolation_beta_2.0",
-            "use_interpolation": True,
-            "interpolation_beta": 2.0
-        },
-        {
-            "name": "interpolation_beta_5.0",
-            "use_interpolation": True,
-            "interpolation_beta": 5.0
-        },
-        {
-            "name": "interpolation_beta_10.0",
-            "use_interpolation": True,
-            "interpolation_beta": 10.0
-        }
-    ]
-
-    validation_results = []
-
-    best_setting = None
-    best_threshold = None
-    best_metrics = None
-    best_key = None
-
-    for setting in candidate_settings:
-        use_interpolation = setting["use_interpolation"]
-        interpolation_beta = setting["interpolation_beta"]
-
-        (
-            selected_threshold,
-            _,
-            _,
-            _,
-            val_metrics
-        ) = select_best_threshold_on_validation(
-            model=model,
-            transformer=transformer,
-            X_val=X_val,
-            y_val=y_val,
-            threshold_values=threshold_values,
-            window_size=window_size,
-
-            # Yalnızca interpolation etkisi ölçülür.
-            min_context_depth_values=[0],
-            min_context_count_values=[0],
-            smooth_window_values=[1],
-
-            use_interpolation=use_interpolation,
-            interpolation_beta=interpolation_beta
-        )
-
-        preds_val, logs_val = model.predict_smoothed(
-            val_patterns,
-            anomaly_threshold=selected_threshold,
-            smooth_window=1,
-            min_context_depth=0,
-            min_context_count=0,
-            use_interpolation=use_interpolation,
-            interpolation_beta=interpolation_beta
-        )
-
-        preds_val = np.asarray(
-            preds_val[:len(y_val_aligned)]
-        )
-
-        logs_val = logs_val[:len(y_val_aligned)]
-
-        predicted_anomaly_count = int(
-            np.sum(preds_val == 1)
-        )
-
-        raw_scores = np.asarray([
-            log_item["raw_score"]
-            for log_item in logs_val
-        ])
-
-        unique_score_count = len(
-            np.unique(
-                np.round(raw_scores, 12)
-            )
-        )
-
-        mean_score = (
-            float(np.mean(raw_scores))
-            if len(raw_scores) > 0
-            else 0.0
-        )
-
-        result_row = {
-            "stage": "validation",
-            "setting": setting["name"],
-            "use_interpolation": use_interpolation,
-            "interpolation_beta": (
-                interpolation_beta
-                if use_interpolation
-                else "disabled"
-            ),
-            "selected_threshold": selected_threshold,
-            "accuracy": val_metrics["accuracy"],
-            "precision": val_metrics["precision"],
-            "recall": val_metrics["recall"],
-            "f1_score": val_metrics["f1_score"],
-            "predicted_anomaly_count": predicted_anomaly_count,
-            "total_pattern_count": len(y_val_aligned),
-            "unique_score_count": unique_score_count,
-            "mean_anomaly_score": mean_score,
-            "all_anomaly_f1": all_anomaly_metrics["f1_score"]
-        }
-
-        validation_results.append(result_row)
-
-        print(
-            f"\n{setting['name']} -> "
-            f"beta="
-            f"{interpolation_beta if use_interpolation else 'disabled'} | "
-            f"threshold={selected_threshold} | "
-            f"Precision={val_metrics['precision']:.4f} | "
-            f"Recall={val_metrics['recall']:.4f} | "
-            f"F1={val_metrics['f1_score']:.4f}"
-        )
-
-        print(
-            f"Farklı skor sayısı: {unique_score_count} | "
-            f"Tahmin edilen anomaly: "
-            f"{predicted_anomaly_count}/{len(y_val_aligned)}"
-        )
-
-        # Öncelik:
-        # 1. Yüksek validation F1
-        # 2. Yüksek precision
-        # 3. Eşitlikte baseline gibi daha basit yöntem
-        complexity_penalty = (
-            1 if use_interpolation else 0
-        )
-
-        candidate_key = (
-            val_metrics["f1_score"],
-            val_metrics["precision"],
-            -complexity_penalty
-        )
-
-        if best_key is None or candidate_key > best_key:
-            best_key = candidate_key
-            best_setting = setting.copy()
-            best_threshold = selected_threshold
-            best_metrics = val_metrics.copy()
-
-    print("\n--- VALIDATION ÜZERİNDEN SEÇİLEN AYAR ---")
-    print(f"Seçilen yöntem   : {best_setting['name']}")
-    print(
-        "Interpolation     : "
-        f"{best_setting['use_interpolation']}"
-    )
-    print(
-        "Seçilen beta      : "
-        f"{best_setting['interpolation_beta']}"
-    )
-    print(f"Seçilen threshold : {best_threshold}")
-    print(
-        f"Validation precision: "
-        f"{best_metrics['precision']:.4f}"
-    )
-    print(
-        f"Validation recall   : "
-        f"{best_metrics['recall']:.4f}"
-    )
-    print(
-        f"Validation F1       : "
-        f"{best_metrics['f1_score']:.4f}"
-    )
-
-    # Validation ile seçilen tek ayarı testte ölç
-    preds_test, logs_test = model.predict_smoothed(
-        test_patterns,
-        anomaly_threshold=best_threshold,
-        smooth_window=1,
-        min_context_depth=0,
-        min_context_count=0,
-        use_interpolation=best_setting[
-            "use_interpolation"
-        ],
-        interpolation_beta=best_setting[
-            "interpolation_beta"
-        ]
-    )
-
-    preds_test = np.asarray(
-        preds_test[:len(y_test_aligned)]
-    )
-
-    logs_test = logs_test[:len(y_test_aligned)]
-
-    test_metrics = calculate_metrics(
-        y_test_aligned,
-        preds_test
-    )
-
-    test_predicted_anomaly_count = int(
-        np.sum(preds_test == 1)
-    )
-
-    test_raw_scores = np.asarray([
-        log_item["raw_score"]
-        for log_item in logs_test
-    ])
-
-    test_unique_score_count = len(
-        np.unique(
-            np.round(test_raw_scores, 12)
-        )
-    )
-
-    test_result = {
-        "stage": "test",
-        "setting": best_setting["name"],
-        "use_interpolation": best_setting[
-            "use_interpolation"
-        ],
-        "interpolation_beta": (
-            best_setting["interpolation_beta"]
-            if best_setting["use_interpolation"]
-            else "disabled"
-        ),
-        "selected_threshold": best_threshold,
-        "accuracy": test_metrics["accuracy"],
-        "precision": test_metrics["precision"],
-        "recall": test_metrics["recall"],
-        "f1_score": test_metrics["f1_score"],
-        "predicted_anomaly_count": test_predicted_anomaly_count,
-        "total_pattern_count": len(y_test_aligned),
-        "unique_score_count": test_unique_score_count,
-        "mean_anomaly_score": (
-            float(np.mean(test_raw_scores))
-            if len(test_raw_scores) > 0
-            else 0.0
-        ),
-        "all_anomaly_f1": np.nan
-    }
-
-    all_results = validation_results + [test_result]
-
-    pd.DataFrame(all_results).to_csv(
-        "results/outputs/"
-        "batadal_vomm_interpolation_analysis.csv",
-        index=False
-    )
-
-    with open(
-        "results/outputs/"
-        "batadal_vomm_interpolation_explainability.json",
-        "w"
-    ) as file:
-        json.dump(
-            logs_test[:100],
-            file,
-            indent=4
-        )
-
-    print("\n--- FINAL TEST SONUCU ---")
-    print(f"Yöntem   : {best_setting['name']}")
-    print(f"Threshold: {best_threshold}")
-    print(
-        f"Precision={test_metrics['precision']:.4f} | "
-        f"Recall={test_metrics['recall']:.4f} | "
-        f"F1={test_metrics['f1_score']:.4f}"
-    )
-    print(
-        f"Tahmin edilen anomaly: "
-        f"{test_predicted_anomaly_count}/"
-        f"{len(y_test_aligned)}"
-    )
-    print(
-        f"Farklı test skoru sayısı: "
-        f"{test_unique_score_count}"
-    )
-    print(
-        "BATADAL interpolated VOMM/PST sonuçları kaydedildi."
-    )
 
 #batadal için dual vomm-pst deneyi
 def run_batadal_dual_vomm_experiment(config):
@@ -1529,7 +1094,444 @@ def run_batadal_dual_vomm_experiment(config):
     with open("results/outputs/batadal_dual_vomm_pst_explainability.json", "w") as f:
         json.dump(logs_test[:100], f, indent=4)
 
-    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.")      
+    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.") 
+
+# BATADAL için SAX state aggregation + VOMM/PST deneyi
+def run_batadal_state_aggregation_analysis(config):
+    print(
+        "\n--- BATADAL STATE AGGREGATION + "
+        "VOMM/PST ANALİZİ BAŞLATILIYOR ---"
+    )
+
+    required_files = [
+        "data/processed/batadal_X_train_adasyn_pc1.csv",
+        "data/processed/batadal_X_val_pc1.csv",
+        "data/processed/batadal_y_val.csv",
+        "data/processed/batadal_X_test_pc1.csv",
+        "data/processed/batadal_y_test.csv"
+    ]
+
+    for file_path in required_files:
+        if not os.path.exists(file_path):
+            print(f"Eksik dosya bulundu: {file_path}")
+            return
+
+    # Ortak train, validation ve test dosyaları değiştirilmeden okunur.
+    X_train = pd.read_csv(
+        "data/processed/batadal_X_train_adasyn_pc1.csv"
+    ).values.flatten()
+
+    X_val = pd.read_csv(
+        "data/processed/batadal_X_val_pc1.csv"
+    ).values.flatten()
+
+    y_val = pd.read_csv(
+        "data/processed/batadal_y_val.csv"
+    ).values.flatten()
+
+    X_test = pd.read_csv(
+        "data/processed/batadal_X_test_pc1.csv"
+    ).values.flatten()
+
+    y_test = pd.read_csv(
+        "data/processed/batadal_y_test.csv"
+    ).values.flatten()
+
+    y_val = np.where(y_val == -999, 0, y_val)
+    y_test = np.where(y_test == -999, 0, y_test)
+
+    # Mevcut en iyi VOMM/PST ayarları korunur.
+    window_size = 6
+    alphabet_size = 4
+    min_count = 3
+    smoothing_alpha = 1.0
+
+    transformer = SaxPaaTransformer(
+        alphabet_size=alphabet_size
+    )
+
+    train_patterns = transformer.transform(
+        X_train,
+        window_size=window_size
+    )
+
+    val_patterns = transformer.transform(
+        X_val,
+        window_size=window_size
+    )
+
+    test_patterns = transformer.transform(
+        X_test,
+        window_size=window_size
+    )
+
+    y_val_aligned = align_labels_to_patterns(
+        y_val,
+        len(val_patterns),
+        window_size
+    )
+
+    y_test_aligned = align_labels_to_patterns(
+        y_test,
+        len(test_patterns),
+        window_size
+    )
+
+    threshold_values = config.get(
+        "vomm_threshold_values",
+        [
+            0.001,
+            0.005,
+            0.01,
+            0.02,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.5
+        ]
+    )
+
+    # 0 mevcut modeli, 1 ve 2 state birleştirmeyi temsil eder.
+    merge_distance_values = [0, 1, 2]
+
+    validation_results = []
+
+    best_setting = None
+    best_key = None
+
+    original_train_states = len(set(train_patterns))
+
+    print("\n--- VERİ KONTROLÜ ---")
+    print(f"Train pattern sayısı      : {len(train_patterns)}")
+    print(f"Validation pattern sayısı : {len(val_patterns)}")
+    print(f"Test pattern sayısı       : {len(test_patterns)}")
+    print(f"Orijinal train durum sayısı: {original_train_states}")
+
+    for merge_distance in merge_distance_values:
+        aggregator = SAXStateAggregator(
+            merge_distance=merge_distance
+        )
+
+        aggregated_train, _ = aggregator.fit_transform(
+            train_patterns
+        )
+
+        aggregated_val, val_mapping_logs = (
+            aggregator.transform(val_patterns)
+        )
+
+        model = VariableOrderMarkovModel(
+            max_depth=window_size,
+            min_count=min_count,
+            smoothing=True,
+            smoothing_alpha=smoothing_alpha
+        )
+
+        model.fit(aggregated_train)
+
+        best_distance_threshold = None
+        best_distance_metrics = None
+        best_distance_predictions = None
+        best_distance_logs = None
+        best_distance_key = None
+
+        for threshold in threshold_values:
+            predictions, prediction_logs = (
+                model.predict_smoothed(
+                    aggregated_val,
+                    anomaly_threshold=threshold,
+                    smooth_window=1,
+                    min_context_depth=0,
+                    min_context_count=0
+                )
+            )
+
+            predictions = np.asarray(
+                predictions[:len(y_val_aligned)]
+            )
+
+            metrics = calculate_metrics(
+                y_val_aligned,
+                predictions
+            )
+
+            # Önce F1, eşitlikte precision yüksek olan seçilir.
+            threshold_key = (
+                metrics["f1_score"],
+                metrics["precision"]
+            )
+
+            if (
+                best_distance_key is None
+                or threshold_key > best_distance_key
+            ):
+                best_distance_key = threshold_key
+                best_distance_threshold = threshold
+                best_distance_metrics = metrics.copy()
+                best_distance_predictions = predictions.copy()
+                best_distance_logs = prediction_logs[
+                    :len(y_val_aligned)
+                ]
+
+        mapped_validation_count = sum(
+            int(item["was_mapped"])
+            for item in val_mapping_logs
+        )
+
+        preserved_unseen_count = sum(
+            item["status"] == "unseen_preserved"
+            for item in val_mapping_logs
+        )
+
+        aggregated_train_set = set(aggregated_train)
+
+        unseen_after_aggregation = sum(
+            pattern not in aggregated_train_set
+            for pattern in aggregated_val
+        )
+
+        predicted_anomaly_count = int(
+            np.sum(best_distance_predictions == 1)
+        )
+
+        raw_scores = np.asarray([
+            item["raw_score"]
+            for item in best_distance_logs
+        ])
+
+        unique_score_count = len(
+            np.unique(
+                np.round(raw_scores, 12)
+            )
+        )
+
+        result = {
+            "stage": "validation",
+            "merge_distance": merge_distance,
+            "selected_threshold": best_distance_threshold,
+            "original_state_count":
+                aggregator.original_state_count,
+            "prototype_state_count":
+                aggregator.prototype_state_count,
+            "state_reduction_ratio":
+                aggregator.state_reduction_ratio,
+            "mapped_validation_count":
+                mapped_validation_count,
+            "preserved_unseen_count":
+                preserved_unseen_count,
+            "unseen_after_aggregation":
+                unseen_after_aggregation,
+            "unique_score_count":
+                unique_score_count,
+            "predicted_anomaly_count":
+                predicted_anomaly_count,
+            "total_prediction_count":
+                len(y_val_aligned),
+            "accuracy":
+                best_distance_metrics["accuracy"],
+            "precision":
+                best_distance_metrics["precision"],
+            "recall":
+                best_distance_metrics["recall"],
+            "f1_score":
+                best_distance_metrics["f1_score"]
+        }
+
+        validation_results.append(result)
+
+        print(
+            f"\nmerge_distance={merge_distance} | "
+            f"threshold={best_distance_threshold}"
+        )
+
+        print(
+            f"Durum sayısı: "
+            f"{aggregator.original_state_count} -> "
+            f"{aggregator.prototype_state_count}"
+        )
+
+        print(
+            f"Validation mapping: "
+            f"{mapped_validation_count}/{len(val_patterns)} | "
+            f"unseen preserved: {preserved_unseen_count}"
+        )
+
+        print(
+            f"Farklı skor sayısı: {unique_score_count} | "
+            f"anomaly tahmini: "
+            f"{predicted_anomaly_count}/{len(y_val_aligned)}"
+        )
+
+        print(
+            f"Precision={best_distance_metrics['precision']:.4f} | "
+            f"Recall={best_distance_metrics['recall']:.4f} | "
+            f"F1={best_distance_metrics['f1_score']:.4f}"
+        )
+
+        # Önce F1, sonra precision; eşitlikte daha az
+        # birleştirme yapan yöntem tercih edilir.
+        setting_key = (
+            best_distance_metrics["f1_score"],
+            best_distance_metrics["precision"],
+            -merge_distance
+        )
+
+        if best_key is None or setting_key > best_key:
+            best_key = setting_key
+            best_setting = {
+                "merge_distance": merge_distance,
+                "threshold": best_distance_threshold,
+                "validation_metrics":
+                    best_distance_metrics.copy()
+            }
+
+    print("\n--- VALIDATION ÜZERİNDEN SEÇİLEN AYAR ---")
+    print(
+        f"Merge distance : "
+        f"{best_setting['merge_distance']}"
+    )
+    print(
+        f"Threshold      : "
+        f"{best_setting['threshold']}"
+    )
+    print(
+        f"Validation F1  : "
+        f"{best_setting['validation_metrics']['f1_score']:.4f}"
+    )
+
+    # Seçilen ayar yalnızca şimdi test verisinde değerlendirilir.
+    final_aggregator = SAXStateAggregator(
+        merge_distance=best_setting["merge_distance"]
+    )
+
+    aggregated_train, _ = (
+        final_aggregator.fit_transform(train_patterns)
+    )
+
+    aggregated_test, test_mapping_logs = (
+        final_aggregator.transform(test_patterns)
+    )
+
+    final_model = VariableOrderMarkovModel(
+        max_depth=window_size,
+        min_count=min_count,
+        smoothing=True,
+        smoothing_alpha=smoothing_alpha
+    )
+
+    final_model.fit(aggregated_train)
+
+    test_predictions, test_logs = (
+        final_model.predict_smoothed(
+            aggregated_test,
+            anomaly_threshold=best_setting["threshold"],
+            smooth_window=1,
+            min_context_depth=0,
+            min_context_count=0
+        )
+    )
+
+    test_predictions = np.asarray(
+        test_predictions[:len(y_test_aligned)]
+    )
+
+    test_logs = test_logs[:len(y_test_aligned)]
+
+    test_metrics = calculate_metrics(
+        y_test_aligned,
+        test_predictions
+    )
+
+    test_mapped_count = sum(
+        int(item["was_mapped"])
+        for item in test_mapping_logs
+    )
+
+    test_preserved_unseen = sum(
+        item["status"] == "unseen_preserved"
+        for item in test_mapping_logs
+    )
+
+    test_raw_scores = np.asarray([
+        item["raw_score"]
+        for item in test_logs
+    ])
+
+    test_unique_score_count = len(
+        np.unique(
+            np.round(test_raw_scores, 12)
+        )
+    )
+
+    test_anomaly_count = int(
+        np.sum(test_predictions == 1)
+    )
+
+    test_result = {
+        "stage": "test",
+        "merge_distance":
+            best_setting["merge_distance"],
+        "selected_threshold":
+            best_setting["threshold"],
+        "original_state_count":
+            final_aggregator.original_state_count,
+        "prototype_state_count":
+            final_aggregator.prototype_state_count,
+        "state_reduction_ratio":
+            final_aggregator.state_reduction_ratio,
+        "mapped_validation_count":
+            test_mapped_count,
+        "preserved_unseen_count":
+            test_preserved_unseen,
+        "unseen_after_aggregation":
+            np.nan,
+        "unique_score_count":
+            test_unique_score_count,
+        "predicted_anomaly_count":
+            test_anomaly_count,
+        "total_prediction_count":
+            len(y_test_aligned),
+        "accuracy":
+            test_metrics["accuracy"],
+        "precision":
+            test_metrics["precision"],
+        "recall":
+            test_metrics["recall"],
+        "f1_score":
+            test_metrics["f1_score"]
+    }
+
+    all_results = validation_results + [test_result]
+
+    os.makedirs("results/outputs", exist_ok=True)
+
+    pd.DataFrame(all_results).to_csv(
+        "results/outputs/"
+        "batadal_vomm_state_aggregation_analysis.csv",
+        index=False
+    )
+
+    print("\n--- FINAL TEST SONUCU ---")
+    print(
+        f"Merge distance: "
+        f"{best_setting['merge_distance']}"
+    )
+    print(f"Threshold     : "
+        f"{best_setting['threshold']}")
+    print(
+        f"Durum sayısı  : "
+        f"{final_aggregator.original_state_count} -> "
+        f"{final_aggregator.prototype_state_count}"
+    )
+    print(f"Precision={test_metrics['precision']:.4f} | "
+        f"Recall={test_metrics['recall']:.4f} | "
+        f"F1={test_metrics['f1_score']:.4f}")
+    print(f"Tahmin edilen anomaly: "
+        f"{test_anomaly_count}/{len(y_test_aligned)}")
+    print(f"Farklı test skoru sayısı: "
+        f"{test_unique_score_count}")
 def main():
     config = load_json_config()
     seeds = config["seeds"]

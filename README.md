@@ -223,3 +223,11 @@ Bu nedenle yöntem final modele dahil edilmemiş, mevcut VOMM/PST + regularizati
 | Interpolated VOMM/PST – Validation | 0.0902 | 1.0000 | 0.1655 |
 | Mevcut VOMM/PST – Test | 0.1923 | 1.0000 | 0.3226 |
 
+### State Aggregation Denemesi
+
+SAX/PAA sonucunda oluşan benzer pattern’leri ortak durumlarda birleştirerek durum uzayındaki seyrekliği azaltmak amacıyla State Aggregation yaklaşımı denenmiştir.
+
+`merge_distance=[0, 1, 2]` değerleri validation setinde karşılaştırılmıştır. `merge_distance=2` ile durum sayısı `158` değerinden `21` değerine düşmüş ve farklı anomali skoru sayısı artmıştır. Ancak test F1-score `0.3117` olarak elde edilmiş ve mevcut VOMM/PST sonucu olan `0.3226` değerinin altında kalmıştır.
+
+Bu nedenle State Aggregation yaklaşımı final modele dahil edilmemiştir.
+
