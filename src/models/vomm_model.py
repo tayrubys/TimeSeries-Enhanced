@@ -30,8 +30,23 @@ class VariableOrderMarkovModel:
 
         self._trained_patterns = set(train_patterns)
         self.pst.fit(train_patterns)
+    def _get_probability_with_context_info(self,context,target,use_interpolation=False,interpolation_beta=1.0):
 
-    def predict(self, test_patterns, anomaly_threshold=0.05, min_context_depth=0, min_context_count=0):
+        if use_interpolation:
+            return (
+                self.pst
+                .predict_probability_interpolated_with_context_info(
+                    context,
+                    target,
+                    beta=interpolation_beta
+                )
+            )
+
+        return self.pst.predict_probability_with_context_info(
+            context,
+            target
+        )
+    def predict(self, test_patterns, anomaly_threshold=0.05, min_context_depth=0, min_context_count=0,use_interpolation=False,interpolation_beta=1.0):
         predictions = []
         explainability_logs = []
 
@@ -40,9 +55,11 @@ class VariableOrderMarkovModel:
             context = test_patterns[start_idx:i] #gecmis adimlar
             target = test_patterns[i] #gerceklesen
             # Olasılıkla birlikte context güvenilirlik bilgisini de alıyoruz.
-            prob, context_info = self.pst.predict_probability_with_context_info(
+            prob, context_info = self._get_probability_with_context_info(
                 context,
-                target
+                target,
+                use_interpolation=use_interpolation,
+                interpolation_beta=interpolation_beta
             )
 
             context_length = context_info["context_length"]
@@ -64,11 +81,16 @@ class VariableOrderMarkovModel:
                 "context_count": context_count,
                 "min_context_depth": min_context_depth,
                 "min_context_count": min_context_count,
+                "use_interpolation": use_interpolation,
+                "interpolation_beta": (
+                    float(interpolation_beta)
+                    if use_interpolation
+                    else None),
                 "prediction": decision
             })
 
         return predictions, explainability_logs
-    def predict_smoothed(self,test_patterns,anomaly_threshold=0.05,smooth_window=1, min_context_depth=0,min_context_count=0):
+    def predict_smoothed(self,test_patterns,anomaly_threshold=0.05,smooth_window=1, min_context_depth=0,min_context_count=0,use_interpolation=False,interpolation_beta=1.0):
 
         eps = 1e-12
         raw_scores = []
@@ -80,8 +102,11 @@ class VariableOrderMarkovModel:
             context = test_patterns[start_idx:i]
             target = test_patterns[i]
 
-            prob, context_info = self.pst.predict_probability_with_context_info(
-                context, target
+            prob, context_info = self._get_probability_with_context_info(
+                context, 
+                target,
+                use_interpolation=use_interpolation,
+                interpolation_beta=interpolation_beta
             )
 
             #dusuk olasilik -> yuksek skor (anomali sinyali)
@@ -122,6 +147,12 @@ class VariableOrderMarkovModel:
                 "smooth_window": smooth_window,
                 "context_length": context_length,
                 "context_count": context_count,
+                "use_interpolation": use_interpolation,
+                "interpolation_beta": (
+                    float(interpolation_beta)
+                    if use_interpolation
+                    else None
+                ),
                 "prediction": decision
             })
 

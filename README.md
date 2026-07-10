@@ -210,3 +210,16 @@ Validation üzerinden seçilen ayar test setine uygulandığında aşağıdaki s
 
 Nearest-pattern backoff yaklaşımı görülmeyen pattern’lere verilen skorların çeşitlenmesini sağlamış olsa da gerçek anomalili pattern’lerin bilinen pattern’lere eşlenmesi recall değerinin `1.0000` seviyesinden `0.6000` seviyesine düşmesine neden olmuştur. Final F1-score mevcut VOMM/PST + regularization sonucunun altında kaldığı için yöntem final modele dahil edilmemiştir.
 
+### Interpolated VOMM/PST Denemesi
+
+BATADAL tarafında seyrek context’lerin oluşturduğu false positive tahminleri azaltmak amacıyla Interpolated VOMM/PST yaklaşımı denenmiştir. Bu yöntemde yalnızca en uzun context’i kullanmak yerine, kısa ve uzun context’lerden elde edilen geçiş olasılıkları ağırlıklı olarak birleştirilmiştir.
+
+Validation setinde `beta=[0.5, 1.0, 2.0, 5.0, 10.0]` değerleri denenmiştir. Ancak bütün beta değerlerinde aynı sonuç elde edilmiş ve validation F1-score `0.1655` seviyesinde kalmıştır. Model tüm validation pattern’lerini anomalili tahmin ettiği için interpolation ek bir ayrım sağlayamamıştır.
+
+Bu nedenle yöntem final modele dahil edilmemiş, mevcut VOMM/PST + regularization sonucu korunmuştur.
+
+| Yöntem | Precision | Recall | F1-score |
+|---|---:|---:|---:|
+| Interpolated VOMM/PST – Validation | 0.0902 | 1.0000 | 0.1655 |
+| Mevcut VOMM/PST – Test | 0.1923 | 1.0000 | 0.3226 |
+

@@ -119,7 +119,9 @@ def select_best_threshold_on_validation(
     window_size,
     min_context_depth_values=None,
     min_context_count_values=None,
-    smooth_window_values=None
+    smooth_window_values=None,
+    use_interpolation=False,
+    interpolation_beta=1.0
 ):
     best_threshold = threshold_values[0]
     best_context_depth = 0
@@ -147,7 +149,9 @@ def select_best_threshold_on_validation(
                         anomaly_threshold=threshold,
                         smooth_window=smooth_window,
                         min_context_depth=min_context_depth,
-                        min_context_count=min_context_count
+                        min_context_count=min_context_count,
+                        use_interpolation=use_interpolation,
+                        interpolation_beta=interpolation_beta
                     )
 
                     preds_val = preds_val[:len(y_val_aligned)]
@@ -866,7 +870,438 @@ def run_batadal_vomm_regularization_analysis(config):
             f"threshold={best_row['selected_threshold']} | "
             f"F1={best_row['f1_score']:.4f}"
         )    
+# BATADAL için Interpolated VOMM/PST analizi
+def run_batadal_vomm_interpolation_analysis(config):
+    print(
+        "\n--- BATADAL INTERPOLATED VOMM/PST "
+        "ANALİZİ BAŞLATILIYOR ---"
+    )
 
+    os.makedirs("results/outputs", exist_ok=True)
+
+    required_files = [
+        "data/processed/batadal_X_train_adasyn_pc1.csv",
+        "data/processed/batadal_X_val_pc1.csv",
+        "data/processed/batadal_y_val.csv",
+        "data/processed/batadal_X_test_pc1.csv",
+        "data/processed/batadal_y_test.csv"
+    ]
+
+    for file_path in required_files:
+        if not os.path.exists(file_path):
+            print(
+                "Eksik dosya bulundu, interpolation deneyi atlandı: "
+                f"{file_path}"
+            )
+            return
+
+    # Ortak veri dosyaları yalnızca okunur.
+    X_train = pd.read_csv(
+        "data/processed/batadal_X_train_adasyn_pc1.csv"
+    ).values.flatten()
+
+    X_val = pd.read_csv(
+        "data/processed/batadal_X_val_pc1.csv"
+    ).values.flatten()
+
+    y_val = pd.read_csv(
+        "data/processed/batadal_y_val.csv"
+    ).values.flatten()
+
+    X_test = pd.read_csv(
+        "data/processed/batadal_X_test_pc1.csv"
+    ).values.flatten()
+
+    y_test = pd.read_csv(
+        "data/processed/batadal_y_test.csv"
+    ).values.flatten()
+
+    y_val = np.where(y_val == -999, 0, y_val)
+    y_test = np.where(y_test == -999, 0, y_test)
+
+    # Mevcut en iyi Single VOMM/PST ayarları
+    window_size = 6
+    alphabet_size = 4
+    min_count = 3
+    smoothing_alpha = 1.0
+
+    transformer = SaxPaaTransformer(
+        alphabet_size=alphabet_size
+    )
+
+    train_patterns = transformer.transform(
+        X_train,
+        window_size=window_size
+    )
+
+    val_patterns = transformer.transform(
+        X_val,
+        window_size=window_size
+    )
+
+    test_patterns = transformer.transform(
+        X_test,
+        window_size=window_size
+    )
+
+    y_val_aligned = align_labels_to_patterns(
+        y_val,
+        len(val_patterns),
+        window_size
+    )
+
+    y_test_aligned = align_labels_to_patterns(
+        y_test,
+        len(test_patterns),
+        window_size
+    )
+
+    model = VariableOrderMarkovModel(
+        max_depth=window_size,
+        min_count=min_count,
+        smoothing=True,
+        smoothing_alpha=smoothing_alpha
+    )
+
+    model.fit(train_patterns)
+
+    print("\n--- INTERPOLATION VERİ KONTROLÜ ---")
+    print(f"Train pattern sayısı      : {len(train_patterns)}")
+    print(f"Validation pattern sayısı : {len(val_patterns)}")
+    print(f"Test pattern sayısı       : {len(test_patterns)}")
+    print(f"Validation etiket sayısı  : {len(y_val_aligned)}")
+    print(f"Test etiket sayısı        : {len(y_test_aligned)}")
+
+    # Her şeyi anomali kabul eden validation baseline
+    all_anomaly_predictions = np.ones_like(
+        y_val_aligned,
+        dtype=int
+    )
+
+    all_anomaly_metrics = calculate_metrics(
+        y_val_aligned,
+        all_anomaly_predictions
+    )
+
+    print(
+        "\nAll-anomaly validation baseline -> "
+        f"Precision={all_anomaly_metrics['precision']:.4f} | "
+        f"Recall={all_anomaly_metrics['recall']:.4f} | "
+        f"F1={all_anomaly_metrics['f1_score']:.4f}"
+    )
+
+    threshold_values = config.get(
+        "vomm_threshold_values",
+        [
+            0.001,
+            0.005,
+            0.01,
+            0.02,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.5
+        ]
+    )
+
+    # Baseline ilk sırada tutulur.
+    # Eşit sonuçta daha basit olan baseline seçilir.
+    candidate_settings = [
+        {
+            "name": "baseline",
+            "use_interpolation": False,
+            "interpolation_beta": 1.0
+        },
+        {
+            "name": "interpolation_beta_0.5",
+            "use_interpolation": True,
+            "interpolation_beta": 0.5
+        },
+        {
+            "name": "interpolation_beta_1.0",
+            "use_interpolation": True,
+            "interpolation_beta": 1.0
+        },
+        {
+            "name": "interpolation_beta_2.0",
+            "use_interpolation": True,
+            "interpolation_beta": 2.0
+        },
+        {
+            "name": "interpolation_beta_5.0",
+            "use_interpolation": True,
+            "interpolation_beta": 5.0
+        },
+        {
+            "name": "interpolation_beta_10.0",
+            "use_interpolation": True,
+            "interpolation_beta": 10.0
+        }
+    ]
+
+    validation_results = []
+
+    best_setting = None
+    best_threshold = None
+    best_metrics = None
+    best_key = None
+
+    for setting in candidate_settings:
+        use_interpolation = setting["use_interpolation"]
+        interpolation_beta = setting["interpolation_beta"]
+
+        (
+            selected_threshold,
+            _,
+            _,
+            _,
+            val_metrics
+        ) = select_best_threshold_on_validation(
+            model=model,
+            transformer=transformer,
+            X_val=X_val,
+            y_val=y_val,
+            threshold_values=threshold_values,
+            window_size=window_size,
+
+            # Yalnızca interpolation etkisi ölçülür.
+            min_context_depth_values=[0],
+            min_context_count_values=[0],
+            smooth_window_values=[1],
+
+            use_interpolation=use_interpolation,
+            interpolation_beta=interpolation_beta
+        )
+
+        preds_val, logs_val = model.predict_smoothed(
+            val_patterns,
+            anomaly_threshold=selected_threshold,
+            smooth_window=1,
+            min_context_depth=0,
+            min_context_count=0,
+            use_interpolation=use_interpolation,
+            interpolation_beta=interpolation_beta
+        )
+
+        preds_val = np.asarray(
+            preds_val[:len(y_val_aligned)]
+        )
+
+        logs_val = logs_val[:len(y_val_aligned)]
+
+        predicted_anomaly_count = int(
+            np.sum(preds_val == 1)
+        )
+
+        raw_scores = np.asarray([
+            log_item["raw_score"]
+            for log_item in logs_val
+        ])
+
+        unique_score_count = len(
+            np.unique(
+                np.round(raw_scores, 12)
+            )
+        )
+
+        mean_score = (
+            float(np.mean(raw_scores))
+            if len(raw_scores) > 0
+            else 0.0
+        )
+
+        result_row = {
+            "stage": "validation",
+            "setting": setting["name"],
+            "use_interpolation": use_interpolation,
+            "interpolation_beta": (
+                interpolation_beta
+                if use_interpolation
+                else "disabled"
+            ),
+            "selected_threshold": selected_threshold,
+            "accuracy": val_metrics["accuracy"],
+            "precision": val_metrics["precision"],
+            "recall": val_metrics["recall"],
+            "f1_score": val_metrics["f1_score"],
+            "predicted_anomaly_count": predicted_anomaly_count,
+            "total_pattern_count": len(y_val_aligned),
+            "unique_score_count": unique_score_count,
+            "mean_anomaly_score": mean_score,
+            "all_anomaly_f1": all_anomaly_metrics["f1_score"]
+        }
+
+        validation_results.append(result_row)
+
+        print(
+            f"\n{setting['name']} -> "
+            f"beta="
+            f"{interpolation_beta if use_interpolation else 'disabled'} | "
+            f"threshold={selected_threshold} | "
+            f"Precision={val_metrics['precision']:.4f} | "
+            f"Recall={val_metrics['recall']:.4f} | "
+            f"F1={val_metrics['f1_score']:.4f}"
+        )
+
+        print(
+            f"Farklı skor sayısı: {unique_score_count} | "
+            f"Tahmin edilen anomaly: "
+            f"{predicted_anomaly_count}/{len(y_val_aligned)}"
+        )
+
+        # Öncelik:
+        # 1. Yüksek validation F1
+        # 2. Yüksek precision
+        # 3. Eşitlikte baseline gibi daha basit yöntem
+        complexity_penalty = (
+            1 if use_interpolation else 0
+        )
+
+        candidate_key = (
+            val_metrics["f1_score"],
+            val_metrics["precision"],
+            -complexity_penalty
+        )
+
+        if best_key is None or candidate_key > best_key:
+            best_key = candidate_key
+            best_setting = setting.copy()
+            best_threshold = selected_threshold
+            best_metrics = val_metrics.copy()
+
+    print("\n--- VALIDATION ÜZERİNDEN SEÇİLEN AYAR ---")
+    print(f"Seçilen yöntem   : {best_setting['name']}")
+    print(
+        "Interpolation     : "
+        f"{best_setting['use_interpolation']}"
+    )
+    print(
+        "Seçilen beta      : "
+        f"{best_setting['interpolation_beta']}"
+    )
+    print(f"Seçilen threshold : {best_threshold}")
+    print(
+        f"Validation precision: "
+        f"{best_metrics['precision']:.4f}"
+    )
+    print(
+        f"Validation recall   : "
+        f"{best_metrics['recall']:.4f}"
+    )
+    print(
+        f"Validation F1       : "
+        f"{best_metrics['f1_score']:.4f}"
+    )
+
+    # Validation ile seçilen tek ayarı testte ölç
+    preds_test, logs_test = model.predict_smoothed(
+        test_patterns,
+        anomaly_threshold=best_threshold,
+        smooth_window=1,
+        min_context_depth=0,
+        min_context_count=0,
+        use_interpolation=best_setting[
+            "use_interpolation"
+        ],
+        interpolation_beta=best_setting[
+            "interpolation_beta"
+        ]
+    )
+
+    preds_test = np.asarray(
+        preds_test[:len(y_test_aligned)]
+    )
+
+    logs_test = logs_test[:len(y_test_aligned)]
+
+    test_metrics = calculate_metrics(
+        y_test_aligned,
+        preds_test
+    )
+
+    test_predicted_anomaly_count = int(
+        np.sum(preds_test == 1)
+    )
+
+    test_raw_scores = np.asarray([
+        log_item["raw_score"]
+        for log_item in logs_test
+    ])
+
+    test_unique_score_count = len(
+        np.unique(
+            np.round(test_raw_scores, 12)
+        )
+    )
+
+    test_result = {
+        "stage": "test",
+        "setting": best_setting["name"],
+        "use_interpolation": best_setting[
+            "use_interpolation"
+        ],
+        "interpolation_beta": (
+            best_setting["interpolation_beta"]
+            if best_setting["use_interpolation"]
+            else "disabled"
+        ),
+        "selected_threshold": best_threshold,
+        "accuracy": test_metrics["accuracy"],
+        "precision": test_metrics["precision"],
+        "recall": test_metrics["recall"],
+        "f1_score": test_metrics["f1_score"],
+        "predicted_anomaly_count": test_predicted_anomaly_count,
+        "total_pattern_count": len(y_test_aligned),
+        "unique_score_count": test_unique_score_count,
+        "mean_anomaly_score": (
+            float(np.mean(test_raw_scores))
+            if len(test_raw_scores) > 0
+            else 0.0
+        ),
+        "all_anomaly_f1": np.nan
+    }
+
+    all_results = validation_results + [test_result]
+
+    pd.DataFrame(all_results).to_csv(
+        "results/outputs/"
+        "batadal_vomm_interpolation_analysis.csv",
+        index=False
+    )
+
+    with open(
+        "results/outputs/"
+        "batadal_vomm_interpolation_explainability.json",
+        "w"
+    ) as file:
+        json.dump(
+            logs_test[:100],
+            file,
+            indent=4
+        )
+
+    print("\n--- FINAL TEST SONUCU ---")
+    print(f"Yöntem   : {best_setting['name']}")
+    print(f"Threshold: {best_threshold}")
+    print(
+        f"Precision={test_metrics['precision']:.4f} | "
+        f"Recall={test_metrics['recall']:.4f} | "
+        f"F1={test_metrics['f1_score']:.4f}"
+    )
+    print(
+        f"Tahmin edilen anomaly: "
+        f"{test_predicted_anomaly_count}/"
+        f"{len(y_test_aligned)}"
+    )
+    print(
+        f"Farklı test skoru sayısı: "
+        f"{test_unique_score_count}"
+    )
+    print(
+        "BATADAL interpolated VOMM/PST sonuçları kaydedildi."
+    )
 
 #batadal için dual vomm-pst deneyi
 def run_batadal_dual_vomm_experiment(config):

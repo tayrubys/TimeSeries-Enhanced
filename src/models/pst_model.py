@@ -125,7 +125,127 @@ class ProbabilisticSuffixTree:
             "context_count": total,
             "context": list(context)
         }
+    #farklı context uzunluklarından gelen olasıkları ağrılık biçiminde  birleştirme eger eğtimde cok gorulursa daha etkılı(uzun olan)
+    def predict_probability_interpolated_with_context_info(
+        self,
+        history,
+        next_symbol,
+        beta=1.0
+    ):
+        """
+        Farklı context uzunluklarından gelen olasılıkları
+        ağırlıklı biçimde birleştirir.
 
+        Context eğitimde sık görülmüşse uzun context daha etkili,
+        seyrek görülmüşse kısa context daha etkili olur.
+        """
+
+        if beta <= 0:
+            raise ValueError(
+                "Interpolation beta değeri 0'dan büyük olmalıdır."
+            )
+
+        vocab_size = max(1, len(self.vocabulary))
+
+        # -----------------------------------------------------
+        # 1. Başlangıç olasılığı: root dağılımı
+        # -----------------------------------------------------
+        root_total = self.root.total_count()
+        root_count = self.root.counts.get(next_symbol, 0)
+
+        if self.smoothing:
+            probability = (
+                root_count + self.smoothing_alpha
+            ) / (
+                root_total
+                + self.smoothing_alpha * vocab_size
+            )
+        else:
+            probability = (
+                root_count / root_total
+                if root_total > 0
+                else 0.0
+            )
+
+        used_contexts = [{
+            "depth": 0,
+            "context": [],
+            "context_count": int(root_total),
+            "target_count": int(root_count),
+            "local_probability": float(probability),
+            "interpolation_weight": 1.0
+        }]
+
+        deepest_context = []
+        deepest_context_count = root_total
+
+        max_context = min(
+            self.max_depth,
+            len(history)
+        )
+
+        # -----------------------------------------------------
+        # 2. Kısa context'ten uzun context'e doğru ilerle
+        # -----------------------------------------------------
+        for depth in range(1, max_context + 1):
+            context = history[-depth:]
+            node = self._find_node(context)
+
+            if node is None:
+                continue
+
+            context_count = node.total_count()
+
+            # Yeterince görülmeyen context'leri kullanma
+            if context_count < self.min_count:
+                continue
+
+            target_count = node.counts.get(
+                next_symbol,
+                0
+            )
+
+            # Context'e ait yerel maximum likelihood olasılığı
+            local_probability = (
+                target_count / context_count
+                if context_count > 0
+                else 0.0
+            )
+
+            # Context çok görülmüşse ağırlık 1'e yaklaşır.
+            # Context seyrekse alt seviye olasılığı daha etkili olur.
+            interpolation_weight = (
+                context_count
+                / (context_count + beta)
+            )
+
+            probability = (
+                interpolation_weight * local_probability
+                + (1.0 - interpolation_weight) * probability
+            )
+
+            deepest_context = context
+            deepest_context_count = context_count
+
+            used_contexts.append({
+                "depth": depth,
+                "context": list(context),
+                "context_count": int(context_count),
+                "target_count": int(target_count),
+                "local_probability": float(local_probability),
+                "interpolation_weight": float(
+                    interpolation_weight
+                )
+            })
+
+        return probability, {
+            "context_length": len(deepest_context),
+            "context_count": int(deepest_context_count),
+            "context": list(deepest_context),
+            "interpolation_beta": float(beta),
+            "num_interpolated_levels": len(used_contexts),
+            "used_contexts": used_contexts
+        }
     #pst ağacındaki toplam context/node ve geçiş sayılarını hesaplama
     def count_nodes_and_transitions(self):
         def traverse(node):
