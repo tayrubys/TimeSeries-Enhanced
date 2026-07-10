@@ -183,4 +183,30 @@ BATADAL tarafında false positive tahminleri azaltmak amacıyla quantile-based t
 Validation seti üzerinde farklı anomaly oranları ve skor yönleri denenmiştir. Ancak normal ve anomalili pattern’lerin skor ortalamalarının birbirine çok yakın olduğu görülmüş, bu nedenle yöntem sınıflar arasında yeterli ayrım sağlayamamıştır.
 
 Deney sonucunda F1-score mevcut VOMM/PST sonucunun altında kaldığı için quantile-based thresholding final modele dahil edilmemiştir.
+### Nearest-Pattern Backoff Denemesi
+
+BATADAL tarafında VOMM/PST modelinin görülmeyen pattern’lere aynı veya çok benzer olasılıklar vermesi nedeniyle nearest-pattern backoff yaklaşımı denenmiştir. Bu yöntemde validation veya test sırasında eğitim kümesinde bulunmayan bir SAX pattern’i, Levenshtein uzaklığına göre eğitimdeki en yakın pattern ile eşleştirilmiştir. Eşleştirilen pattern daha sonra VOMM/PST olasılık hesabında kullanılmıştır.
+
+Yöntemin amacı, görülmeyen pattern’lerin doğrudan smoothing olasılığı alması yerine eğitimde bulunan benzer pattern’lerden yararlanmasını sağlamaktır. Eşleştirmenin yalnızca belirli bir uzaklığa kadar yapılabilmesi için `max_nearest_distance` değerleri `1`, `2`, `3` ve sınırsız olarak validation seti üzerinde denenmiştir.
+
+Validation sonuçları aşağıdaki gibi elde edilmiştir:
+
+| Yöntem | Max Distance | Precision | Recall | F1-score | Farklı Skor Sayısı |
+|---|---:|---:|---:|---:|---:|
+| Mevcut VOMM/PST | Kapalı | 0.0902 | 1.0000 | 0.1655 | 1 |
+| Nearest Backoff | 1 | 0.0909 | 1.0000 | 0.1667 | 21 |
+| Nearest Backoff | 2 | 0.1000 | 0.7500 | 0.1765 | 32 |
+| Nearest Backoff | 3 | 0.1098 | 0.7500 | 0.1915 | 35 |
+| Nearest Backoff | Sınırsız | 0.1098 | 0.7500 | 0.1915 | 35 |
+
+Validation seti üzerinde en iyi sonuç `max_nearest_distance=3` ve `threshold=0.005` ile elde edilmiştir. Bu ayar, bütün validation pattern’lerini anomalili tahmin eden temel davranışı azaltmış ve farklı anomali skorlarının oluşmasını sağlamıştır. Tahmin edilen anomalili pattern sayısı `133/133` değerinden `82/133` değerine düşmüştür.
+
+Validation üzerinden seçilen ayar test setine uygulandığında aşağıdaki sonuç elde edilmiştir:
+
+| Yöntem | Precision | Recall | F1-score |
+|---|---:|---:|---:|
+| VOMM/PST + Nearest-Pattern Backoff | 0.1829 | 0.6000 | 0.2804 |
+| Mevcut VOMM/PST + Regularization | 0.1923 | 1.0000 | 0.3226 |
+
+Nearest-pattern backoff yaklaşımı görülmeyen pattern’lere verilen skorların çeşitlenmesini sağlamış olsa da gerçek anomalili pattern’lerin bilinen pattern’lere eşlenmesi recall değerinin `1.0000` seviyesinden `0.6000` seviyesine düşmesine neden olmuştur. Final F1-score mevcut VOMM/PST + regularization sonucunun altında kaldığı için yöntem final modele dahil edilmemiştir.
 
