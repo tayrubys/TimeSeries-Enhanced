@@ -61,6 +61,27 @@ def load_json_config(config_path="src/config/settings.json"):
         "seeds": [42, 123, 2026, 7, 999],
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20,
+
+        # Time-decay feature parametreleri
+        "time_decay_enabled": False,
+        "time_decay_rate": 0.99,
+        "time_decay_min_weight": 0.01,
+        "time_decay_rates": [0.999, 0.995, 0.99, 0.98, 0.95],
+        "time_decay_min_weights": [0.001, 0.01, 0.05],
+        "run_time_decay_sweep": False,
+
+        # Dataset bazlı final time-decay ayarları; yoksa ortak ayarlar kullanılır.
+        "batadal_final_time_decay_enabled": False,
+        "batadal_final_time_decay_rate": 0.99,
+        "batadal_final_time_decay_min_weight": 0.01,
+
+        "skab_final_time_decay_enabled": False,
+        "skab_final_time_decay_rate": 0.99,
+        "skab_final_time_decay_min_weight": 0.01,
+
+        # Time-decay sweep için score threshold aralıkları
+        "batadal_time_decay_score_thresholds": [3.5066, 3.9120, 4.2, 4.5],
+        "skab_time_decay_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108],
     }
 
     if os.path.exists(config_path):
@@ -97,6 +118,9 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         order=config.get("order", 2),
         learning_rate=config.get("learning_rate", 0.0),
         smoothing_alpha=config.get("smoothing_alpha", 1.0),
+        time_decay_enabled=config.get("time_decay_enabled", False),
+        time_decay_rate=config.get("time_decay_rate", 0.99),
+        time_decay_min_weight=config.get("time_decay_min_weight", 0.01),
     )
     model.fit(train_patterns)
 
@@ -133,6 +157,10 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
         "order": config.get("order", 2),
         "anomaly_threshold": config["anomaly_threshold"],
         "smoothing_alpha": config.get("smoothing_alpha", 1.0),
+        "time_decay_enabled": config.get("time_decay_enabled", False),
+        "time_decay_rate": config.get("time_decay_rate", 0.99),
+        "time_decay_min_weight": config.get("time_decay_min_weight", 0.01),
+        "time_decay_candidate": config.get("time_decay_candidate", "final"),
         "decision_mode": config.get("decision_mode", "probability"),
         "score_threshold": computed_score_threshold,
         "auto_score_percentile": auto_score_percentile,
@@ -327,7 +355,6 @@ def run_markov_order_threshold_sweep(config):
     print(f"[OK] Dataset bazlı threshold sweep sonuçları kaydedildi: {dataset_threshold_sweep_path}")
     print(f"[OK] Alpha sweep sonuçları kaydedildi: {alpha_sweep_path}")
 
-    # Optimizasyon için original senaryonun özetini ayrıca yazıyoruz.
     df_original = df_sweep[df_sweep["scenario"] == "original"].copy()
     if not df_original.empty:
         summary_df = df_original.groupby(["dataset", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
@@ -354,7 +381,6 @@ def run_markov_order_threshold_sweep(config):
         print(f"[OK] Dataset bazlı threshold sweep özeti kaydedildi: {dataset_threshold_summary_path}")
         print(f"[OK] Alpha sweep özeti kaydedildi: {alpha_summary_path}")
 
-        # Recall düşmeden en yüksek precision/F1 adaylarını görmeyi kolaylaştırır.
         best_df = summary_df.sort_values(
             by=["dataset", "recall_mean", "precision_mean", "f1_score_mean"],
             ascending=[True, False, False, False],
@@ -534,8 +560,6 @@ def run_mapping_distance_sweep(config):
     max_mapping_distances = config.get("max_mapping_distances", [None, 1, 2, 3])
     sweep_results = []
 
-    # Önceki avg negative log sweep'te iyi sonuç veren adaylar üzerinden mesafe eşiğini tarıyoruz.
-    # Böylece gereksiz tüm kombinasyonları tekrar çalıştırmadan 18-20. adımları izole test ediyoruz.
     batadal_candidates = config.get("batadal_mapping_candidates", [
         {"order": 3, "smoothing_alpha": 0.1, "score_window": 5, "score_threshold": 3.9120},
         {"order": 2, "smoothing_alpha": 0.1, "score_window": 5, "score_threshold": 3.9120},
@@ -691,7 +715,6 @@ def run_validation_threshold_sweep(config):
     percentiles = config.get("auto_score_percentiles", [90, 95, 97, 99])
     sweep_results = []
 
-    # Önceki adımlarda iyi sonuç veren avg_negative_log adayları üzerinden threshold'u otomatik seçiyoruz.
     batadal_candidates = config.get("batadal_validation_threshold_candidates", [
         {"order": 3, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},
         {"order": 2, "smoothing_alpha": 0.1, "score_window": 5, "max_mapping_distance": None},
@@ -845,6 +868,210 @@ def run_validation_threshold_sweep(config):
     print(f"[OK] Validation threshold en iyi adaylar kaydedildi: {best_path}")
 
 
+def run_time_decay_sweep(config):
+    """Time-decay rate/min_weight kombinasyonlarını final Markov ayarları üzerinde tarar."""
+    print("\n--- TIME-DECAY MARKOV SWEEP BAŞLATILIYOR ---")
+
+    seeds = config.get("seeds", [42, 123, 2026, 7, 999])
+    decay_rates = config.get("time_decay_rates", [0.999, 0.995, 0.99, 0.98, 0.95])
+    min_weights = config.get("time_decay_min_weights", [0.001, 0.01, 0.05])
+    batadal_score_thresholds = config.get("batadal_time_decay_score_thresholds", [3.5066, 3.9120, 4.2, 4.5])
+    skab_score_thresholds = config.get("skab_time_decay_score_thresholds", [0.1054, 0.2231, 0.3567, 0.5108])
+
+    time_decay_candidates = config.get("time_decay_candidates")
+    if time_decay_candidates is None:
+        time_decay_candidates = [{"name": "base_disabled", "enabled": False, "rate": 0.99, "min_weight": 0.01}]
+        for rate in decay_rates:
+            for min_weight in min_weights:
+                time_decay_candidates.append({
+                    "name": f"decay_rate_{rate}_min_{min_weight}",
+                    "enabled": True,
+                    "rate": rate,
+                    "min_weight": min_weight,
+                })
+
+    sweep_results = []
+
+    # BATADAL: final Markov parametreleri sabit tutulur; sadece decay ve score threshold taranır.
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        X_train_b = pd.read_csv("data/processed/batadal_X_train_adasyn_pc1.csv").values.flatten()
+        X_test_b = pd.read_csv("data/processed/batadal_X_test_pc1.csv").values.flatten()
+        y_test_b = pd.read_csv("data/processed/batadal_y_test.csv").values.flatten()
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        print("\n>> BATADAL Time-Decay Taraması...")
+        print(f"   candidate sayısı: {len(time_decay_candidates)}")
+        print(f"   score_threshold aralığı: {batadal_score_thresholds}")
+
+        for candidate in time_decay_candidates:
+            for score_threshold in batadal_score_thresholds:
+                for seed in seeds:
+                    cc = {
+                        **config,
+                        "order": config.get("batadal_final_order", 3),
+                        "smoothing_alpha": config.get("batadal_final_smoothing_alpha", 0.1),
+                        "decision_mode": config.get("batadal_final_decision_mode", "avg_negative_log"),
+                        "score_window": config.get("batadal_final_score_window", 5),
+                        "score_threshold": score_threshold,
+                        "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
+                        "auto_score_percentile": None,
+                        "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+                        "time_decay_enabled": candidate.get("enabled", False),
+                        "time_decay_rate": candidate.get("rate", 0.99),
+                        "time_decay_min_weight": candidate.get("min_weight", 0.01),
+                        "time_decay_candidate": candidate.get("name", "custom"),
+                    }
+                    res, _ = run_experiment_pipeline(
+                        X_train_b,
+                        X_test_b,
+                        y_test_b,
+                        cc,
+                        "BATADAL",
+                        "time_decay_sweep",
+                        seed=seed,
+                    )
+                    sweep_results.extend(res)
+
+                temp_df = pd.DataFrame([
+                    r for r in sweep_results
+                    if r["dataset"] == "BATADAL"
+                    and r["scenario"] == "original"
+                    and r["time_decay_candidate"] == candidate.get("name", "custom")
+                    and r["score_threshold"] == score_threshold
+                ])
+                if not temp_df.empty:
+                    print(
+                        f"BATADAL -> candidate={candidate.get('name', 'custom')}, "
+                        f"enabled={candidate.get('enabled', False)}, "
+                        f"rate={candidate.get('rate', 0.99)}, "
+                        f"min_weight={candidate.get('min_weight', 0.01)}, "
+                        f"score_threshold={score_threshold} | "
+                        f"Precision={temp_df['precision'].mean():.4f}, "
+                        f"Recall={temp_df['recall'].mean():.4f}, "
+                        f"F1={temp_df['f1_score'].mean():.4f}"
+                    )
+
+    # SKAB: final Markov parametreleri sabit tutulur; bütün fold/seed kombinasyonları taranır.
+    print("\n>> SKAB Time-Decay Taraması...")
+    print(f"   candidate sayısı: {len(time_decay_candidates)}")
+    print(f"   score_threshold aralığı: {skab_score_thresholds}")
+
+    for candidate in time_decay_candidates:
+        for score_threshold in skab_score_thresholds:
+            for fold in range(1, 6):
+                train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                if not (os.path.exists(train_file) and os.path.exists(test_file) and os.path.exists(y_test_file)):
+                    continue
+
+                X_train_s = pd.read_csv(train_file).values.flatten()
+                X_test_s = pd.read_csv(test_file).values.flatten()
+                y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                for seed in seeds:
+                    cc = {
+                        **config,
+                        "order": config.get("skab_final_order", 3),
+                        "smoothing_alpha": config.get("skab_final_smoothing_alpha", 0.5),
+                        "decision_mode": config.get("skab_final_decision_mode", "avg_negative_log"),
+                        "score_window": config.get("skab_final_score_window", 10),
+                        "score_threshold": score_threshold,
+                        "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
+                        "auto_score_percentile": None,
+                        "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+                        "time_decay_enabled": candidate.get("enabled", False),
+                        "time_decay_rate": candidate.get("rate", 0.99),
+                        "time_decay_min_weight": candidate.get("min_weight", 0.01),
+                        "time_decay_candidate": candidate.get("name", "custom"),
+                    }
+                    res, _ = run_experiment_pipeline(
+                        X_train_s,
+                        X_test_s,
+                        y_test_s,
+                        cc,
+                        "SKAB",
+                        f"time_decay_fold_{fold}",
+                        seed=seed,
+                    )
+                    sweep_results.extend(res)
+
+            temp_df = pd.DataFrame([
+                r for r in sweep_results
+                if r["dataset"] == "SKAB"
+                and r["scenario"] == "original"
+                and r["time_decay_candidate"] == candidate.get("name", "custom")
+                and r["score_threshold"] == score_threshold
+            ])
+            if not temp_df.empty:
+                print(
+                    f"SKAB -> candidate={candidate.get('name', 'custom')}, "
+                    f"enabled={candidate.get('enabled', False)}, "
+                    f"rate={candidate.get('rate', 0.99)}, "
+                    f"min_weight={candidate.get('min_weight', 0.01)}, "
+                    f"score_threshold={score_threshold} | "
+                    f"Precision={temp_df['precision'].mean():.4f}, "
+                    f"Recall={temp_df['recall'].mean():.4f}, "
+                    f"F1={temp_df['f1_score'].mean():.4f}"
+                )
+
+    if not sweep_results:
+        print("[UYARI] Time-decay sweep için uygun veri bulunamadı.")
+        return pd.DataFrame()
+
+    df_sweep = pd.DataFrame(sweep_results)
+    os.makedirs("results/outputs", exist_ok=True)
+
+    metrics_path = "results/outputs/automata_time_decay_sweep_metrics.csv"
+    summary_path = "results/outputs/automata_time_decay_sweep_summary.csv"
+    best_path = "results/outputs/automata_time_decay_best_candidates.csv"
+
+    df_sweep.to_csv(metrics_path, index=False)
+
+    summary_cols = [
+        "dataset",
+        "scenario",
+        "order",
+        "smoothing_alpha",
+        "decision_mode",
+        "score_window",
+        "score_threshold",
+        "max_mapping_distance",
+        "time_decay_enabled",
+        "time_decay_rate",
+        "time_decay_min_weight",
+        "time_decay_candidate",
+    ]
+
+    summary = df_sweep.groupby(summary_cols, dropna=False).agg(
+        accuracy_mean=("accuracy", "mean"),
+        accuracy_std=("accuracy", "std"),
+        precision_mean=("precision", "mean"),
+        precision_std=("precision", "std"),
+        recall_mean=("recall", "mean"),
+        recall_std=("recall", "std"),
+        f1_score_mean=("f1_score", "mean"),
+        f1_score_std=("f1_score", "std"),
+        transition_density_mean=("transition_density", "mean"),
+        num_states_mean=("num_states", "mean"),
+        num_transitions_mean=("num_transitions", "mean"),
+    ).reset_index()
+    summary.to_csv(summary_path, index=False)
+
+    best_candidates = summary[summary["scenario"] == "original"].sort_values(
+        ["dataset", "f1_score_mean", "recall_mean", "precision_mean"],
+        ascending=[True, False, False, False],
+    )
+    best_candidates.to_csv(best_path, index=False)
+
+    print(f"\n[OK] Time-decay sweep sonuçları kaydedildi: {metrics_path}")
+    print(f"[OK] Time-decay sweep özeti kaydedildi: {summary_path}")
+    print(f"[OK] Time-decay en iyi adaylar kaydedildi: {best_path}")
+
+    return df_sweep
+
+
 def write_summary_files(df_all):
     """Ana metrik CSV'sinden SKAB/BATADAL özet dosyalarını üretir."""
     if df_all.empty:
@@ -852,7 +1079,7 @@ def write_summary_files(df_all):
 
     df_skab = df_all[df_all["dataset"] == "SKAB"]
     if not df_skab.empty:
-        summary_df = df_skab.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
+        summary_df = df_skab.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold", "time_decay_enabled", "time_decay_rate", "time_decay_min_weight"], dropna=False).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -868,7 +1095,7 @@ def write_summary_files(df_all):
 
     df_batadal = df_all[df_all["dataset"] == "BATADAL"]
     if not df_batadal.empty:
-        batadal_summary = df_batadal.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold"]).agg(
+        batadal_summary = df_batadal.groupby(["scenario", "order", "smoothing_alpha", "anomaly_threshold", "time_decay_enabled", "time_decay_rate", "time_decay_min_weight"], dropna=False).agg(
             accuracy_mean=("accuracy", "mean"),
             accuracy_std=("accuracy", "std"),
             precision_mean=("precision", "mean"),
@@ -913,6 +1140,19 @@ def main():
             "max_mapping_distance": config.get("batadal_final_max_mapping_distance", None),
             "auto_score_percentile": None,
             "anomaly_threshold": config.get("batadal_anomaly_threshold", config.get("anomaly_threshold", 0.05)),
+            "time_decay_enabled": config.get(
+                "batadal_final_time_decay_enabled",
+                config.get("time_decay_enabled", False),
+            ),
+            "time_decay_rate": config.get(
+                "batadal_final_time_decay_rate",
+                config.get("time_decay_rate", 0.99),
+            ),
+            "time_decay_min_weight": config.get(
+                "batadal_final_time_decay_min_weight",
+                config.get("time_decay_min_weight", 0.01),
+            ),
+            "time_decay_candidate": "final_batadal",
         }
 
         batadal_logs = None
@@ -923,7 +1163,10 @@ def main():
                 f"alpha={config_batadal['smoothing_alpha']}, "
                 f"mode={config_batadal['decision_mode']}, "
                 f"window={config_batadal['score_window']}, "
-                f"score_threshold={config_batadal['score_threshold']} çalışıyor..."
+                f"score_threshold={config_batadal['score_threshold']}, "
+                f"time_decay_enabled={config_batadal['time_decay_enabled']}, "
+                f"time_decay_rate={config_batadal['time_decay_rate']}, "
+                f"time_decay_min_weight={config_batadal['time_decay_min_weight']} çalışıyor..."
             )
             batadal_res, logs = run_experiment_pipeline(
                 X_train,
@@ -952,6 +1195,19 @@ def main():
         "max_mapping_distance": config.get("skab_final_max_mapping_distance", None),
         "auto_score_percentile": None,
         "anomaly_threshold": config.get("skab_anomaly_threshold", config.get("anomaly_threshold", 0.90)),
+        "time_decay_enabled": config.get(
+            "skab_final_time_decay_enabled",
+            config.get("time_decay_enabled", False),
+        ),
+        "time_decay_rate": config.get(
+            "skab_final_time_decay_rate",
+            config.get("time_decay_rate", 0.99),
+        ),
+        "time_decay_min_weight": config.get(
+            "skab_final_time_decay_min_weight",
+            config.get("time_decay_min_weight", 0.01),
+        ),
+        "time_decay_candidate": "final_skab",
     }
 
     for fold in range(1, 6):
@@ -969,7 +1225,10 @@ def main():
                     f"alpha={config_skab['smoothing_alpha']}, "
                     f"mode={config_skab['decision_mode']}, "
                     f"window={config_skab['score_window']}, "
-                    f"score_threshold={config_skab['score_threshold']} çalışıyor..."
+                    f"score_threshold={config_skab['score_threshold']}, "
+                    f"time_decay_enabled={config_skab['time_decay_enabled']}, "
+                    f"time_decay_rate={config_skab['time_decay_rate']}, "
+                    f"time_decay_min_weight={config_skab['time_decay_min_weight']} çalışıyor..."
                 )
                 fold_res, _ = run_experiment_pipeline(
                     X_train,
@@ -986,7 +1245,10 @@ def main():
     df_all.to_csv("results/outputs/automata_advanced_all_scenarios_metrics.csv", index=False)
     write_summary_files(df_all)
 
-    # Final koşuda sweep çalıştırılmaz; ana metrikler sabit final parametrelerle üretilir.
+    if config.get("run_time_decay_sweep", False):
+        run_time_decay_sweep(config)
+    else:
+        print("[INFO] Time-decay sweep kapalı. Açmak için settings.json -> automata.run_time_decay_sweep=true")
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
