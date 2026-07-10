@@ -93,6 +93,25 @@
             2026,
             7,
             999
-        ]
+        ],
+        "run_time_decay_sweep": true,
+
+        "time_decay_enabled": true,
+        "time_decay_rate": 0.99,
+        "time_decay_min_weight": 0.01,
+
+        "time_decay_rates": [0.999, 0.995, 0.99, 0.98, 0.95],
+        "time_decay_min_weights": [0.001, 0.01, 0.05],
+
+        "batadal_final_time_decay_enabled": true,
+        "batadal_final_time_decay_rate": 0.99,
+        "batadal_final_time_decay_min_weight": 0.01,
+
+        "skab_final_time_decay_enabled": true,
+        "skab_final_time_decay_rate": 0.99,
+        "skab_final_time_decay_min_weight": 0.01,
+
+        "batadal_time_decay_score_thresholds": [3.5066, 3.9120, 4.2, 4.5],
+        "skab_time_decay_score_thresholds": [0.1054, 0.2231, 0.3567, 0.5108]
     }
 }
