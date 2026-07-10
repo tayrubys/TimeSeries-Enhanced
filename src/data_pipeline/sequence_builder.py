@@ -60,8 +60,8 @@ def build_and_save_batadal_sequences(
 
     datasets = {
         "train": (
-            processed_dir / "batadal_X_train_scaled.csv",
-            processed_dir / "batadal_y_train.csv"
+            processed_dir / "batadal_X_train_adasyn.csv",
+            processed_dir / "batadal_y_train_adasyn.csv"
         ),
         "val": (
             processed_dir / "batadal_X_val_scaled.csv",

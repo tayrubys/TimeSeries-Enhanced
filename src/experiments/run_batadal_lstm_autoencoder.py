@@ -10,11 +10,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 
-# Eğer validation loss 3 epoch boyunca iyileşmezse learning rate'i yarıya düşürür
-lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-5)
-
-
-
 def load_batadal_sequence_data(processed_dir="data/processed"):
     X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
     y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("int32")
@@ -29,6 +24,10 @@ def load_batadal_sequence_data(processed_dir="data/processed"):
     y_val = np.where(y_val == -999, 0, y_val)
     y_test = np.where(y_test == -999, 0, y_test)
 
+    X_train = np.clip(X_train, -5, 5)
+    X_val = np.clip(X_val, -5, 5)
+    X_test = np.clip(X_test, -5, 5)
+
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 
@@ -42,7 +41,7 @@ def build_lstm_autoencoder(input_shape, units=128, dropout_rate=0.2):
         Dropout(dropout_rate),
         
         # Sıkıştırma (Darboğaz) Katmanı - Özellikleri 64'e indiriyoruz
-        Dense(64, activation="relu"), 
+        Dense(32, activation="relu"), 
         
         # Zaman boyutunu tekrar kopyalama
         RepeatVector(timesteps),
@@ -79,7 +78,7 @@ def evaluate_binary(y_true, y_pred):
 
 
 def find_best_threshold_from_validation(y_val, val_errors):
-    percentiles = np.arange(90, 100, 0.1)
+    percentiles = np.arange(99, 100, 0.1)
     thresholds = np.percentile(val_errors, percentiles)
 
     best_threshold = None
@@ -109,7 +108,27 @@ def train_one_seed(seed):
     np.random.seed(seed)
     tf.random.set_seed(seed)
 
+    lr_reducer = ReduceLROnPlateau(
+        monitor="val_loss",
+        factor=0.5,
+        patience=3,
+        min_lr=1e-5
+    )
+
+
     X_train, y_train, X_val, y_val, X_test, y_test = load_batadal_sequence_data()
+
+    print("=" * 50)
+    print("VERİ ARALIKLARI")
+    print("=" * 50)
+
+    print("X_train min/max :", X_train.min(), X_train.max())
+    print("X_val   min/max :", X_val.min(), X_val.max())
+    print("X_test  min/max :", X_test.min(), X_test.max())
+
+    print("\nSensör 17")
+    print("Train min/max :", X_train[:, :, 17].min(), X_train[:, :, 17].max())
+    print("Val   min/max :", X_val[:, :, 17].min(), X_val[:, :, 17].max())
 
     # AutoEncoder sadece normal sequence'lerle eğitilir
     X_train_normal = X_train[y_train == 0]
@@ -121,8 +140,8 @@ def train_one_seed(seed):
 
     model = build_lstm_autoencoder(
         input_shape=X_train.shape[1:],
-        units=128,
-        dropout_rate=0.2
+        units=64,
+        dropout_rate=0.3
     )
 
     early_stopping = EarlyStopping(
@@ -142,6 +161,12 @@ def train_one_seed(seed):
     )
 
     val_errors = reconstruction_errors(model, X_val)
+
+    analysis_dir = Path("results/outputs/autoencoder_analysis")
+    analysis_dir.mkdir(parents=True, exist_ok=True)
+
+    np.save(analysis_dir / "val_errors.npy", val_errors)
+    model.save(analysis_dir / f"lstm_autoencoder_seed_{seed}.keras")
 
     best_threshold, best_percentile, val_metrics = find_best_threshold_from_validation(
         y_val=y_val,
@@ -171,6 +196,7 @@ def train_one_seed(seed):
 
     print("Validation sonucu:", val_metrics)
     print("Test sonucu:", result)
+ 
 
     return result
 
