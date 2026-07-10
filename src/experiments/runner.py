@@ -192,37 +192,228 @@ def select_best_dual_score_threshold_on_validation(
     score_threshold_values,
     window_size
 ):
-    best_threshold = score_threshold_values[0]
-    best_f1 = -1.0
-    best_metrics = None
-
-    # Validation etiketlerini pattern seviyesine hizalıyoruz.
+    # Validation etiketlerini pattern seviyesine hizala
     y_val_aligned = align_labels_to_patterns(
         y_val,
         len(val_patterns),
         window_size
     )
-    #validation setindeki gerçek pattern-level sınıf dağılımını hesaplayıp dual-pst karar skoruna eklenecek.
-    prior_normal, prior_anomaly = calculate_pattern_priors(y_val_aligned)
 
-    for score_threshold in score_threshold_values:
-        preds_val, _ = model.predict(
-            val_patterns,
-            score_threshold=score_threshold,
-            prior_normal=prior_normal,
-            prior_anomaly=prior_anomaly          
+    # Validation setindeki gerçek pattern-level sınıf oranları
+    prior_normal, prior_anomaly = calculate_pattern_priors(
+        y_val_aligned
+    )
+
+    # Threshold burada önemli değil.
+    # Bu çağrıyı yalnızca validation skorlarını loglardan almak için yapıyoruz.
+    _, score_logs = model.predict(
+        val_patterns,
+        score_threshold=-np.inf,
+        prior_normal=prior_normal,
+        prior_anomaly=prior_anomaly
+    )
+
+    val_scores = np.array(
+        [log_item["score"] for log_item in score_logs],
+        dtype=float
+    )
+
+    # Tahmin skorlarıyla etiketlerin uzunluklarını güvenli biçimde eşleştir
+    usable_length = min(
+        len(val_scores),
+        len(y_val_aligned)
+    )
+
+    val_scores = val_scores[:usable_length]
+    y_val_aligned = y_val_aligned[:usable_length]
+    validation_logs = score_logs[:usable_length]
+
+    normal_root_counts = model.normal_pst.root.counts
+    anomaly_root_counts = model.anomaly_pst.root.counts
+
+    seen_in_normal = 0
+    seen_in_anomaly = 0
+    seen_in_both = 0
+    unseen_in_both = 0
+
+    normal_root_fallback = 0
+    anomaly_root_fallback = 0
+
+    p_normal_values = [] 
+    p_anomaly_values = []
+
+    for log_item in validation_logs:
+        target = log_item["target"]
+        context = log_item["context"]
+
+        target_seen_normal = target in normal_root_counts
+        target_seen_anomaly = target in anomaly_root_counts
+
+        if target_seen_normal:
+            seen_in_normal += 1
+
+        if target_seen_anomaly:
+            seen_in_anomaly += 1
+
+        if target_seen_normal and target_seen_anomaly:
+            seen_in_both += 1
+
+        if not target_seen_normal and not target_seen_anomaly:
+            unseen_in_both += 1
+
+        normal_context, _ = model.normal_pst.find_best_context(context)
+
+        anomaly_context, _ = model.anomaly_pst.find_best_context(context)
+
+        # Boş context dönmesi modelin root seviyesine düştüğünü gösterir.
+        if len(normal_context) == 0:
+            normal_root_fallback += 1
+
+        if len(anomaly_context) == 0:
+            anomaly_root_fallback += 1
+
+        p_normal_values.append(log_item["p_normal"])
+        p_anomaly_values.append(log_item["p_anomaly"])
+
+    unique_p_normal = np.unique(
+        np.round(np.asarray(p_normal_values), 12)
+    )
+
+    unique_p_anomaly = np.unique(
+        np.round(np.asarray(p_anomaly_values), 12)
+    )
+
+    print("\n--- DUAL VOMM/PST PATTERN KAPSAMA ANALİZİ ---")
+    print(f"Toplam validation geçişi         : {usable_length}")
+    print(f"Normal PST'de görülen target     : {seen_in_normal}")
+    print(f"Anomaly PST'de görülen target    : {seen_in_anomaly}")
+    print(f"Her iki PST'de görülen target    : {seen_in_both}")
+    print(f"Her iki PST'de görülmeyen target : {unseen_in_both}")
+    print(f"Normal PST root fallback         : {normal_root_fallback}")
+    print(f"Anomaly PST root fallback        : {anomaly_root_fallback}")
+    print(f"Farklı p_normal sayısı           : {len(unique_p_normal)}")
+    print(f"Farklı p_anomaly sayısı          : {len(unique_p_anomaly)}")
+
+    print("p_normal değerleri:", unique_p_normal[:20])
+    print("p_anomaly değerleri:", unique_p_anomaly[:20])
+    if usable_length == 0:
+        raise ValueError(
+            "Dual VOMM/PST validation skoru oluşturulamadı."
         )
 
-        preds_val = preds_val[:len(y_val_aligned)]
-        metrics = calculate_metrics(y_val_aligned, preds_val)
+    normal_scores = val_scores[y_val_aligned == 0]
+    anomaly_scores = val_scores[y_val_aligned == 1]
 
-        # En iyi F1 veren skor threshold'unu seçiyoruz.
+    if len(normal_scores) == 0:
+        raise ValueError(
+            "Validation setinde normal pattern bulunamadı."
+        )
+
+    if len(anomaly_scores) == 0:
+        raise ValueError(
+            "Validation setinde anomalili pattern bulunamadı."
+        )
+
+    print("\n--- DUAL VOMM/PST VALIDATION SKOR ANALİZİ ---")
+    print(f"Validation pattern sayısı : {usable_length}")
+    print(f"Normal pattern sayısı     : {len(normal_scores)}")
+    print(f"Anomaly pattern sayısı    : {len(anomaly_scores)}")
+
+    print("\nNormal skor dağılımı:")
+    print(f"  minimum : {np.min(normal_scores):.6f}")
+    print(f"  ortalama: {np.mean(normal_scores):.6f}")
+    print(f"  medyan  : {np.median(normal_scores):.6f}")
+    print(f"  maksimum: {np.max(normal_scores):.6f}")
+
+    print("\nAnomaly skor dağılımı:")
+    print(f"  minimum : {np.min(anomaly_scores):.6f}")
+    print(f"  ortalama: {np.mean(anomaly_scores):.6f}")
+    print(f"  medyan  : {np.median(anomaly_scores):.6f}")
+    print(f"  maksimum: {np.max(anomaly_scores):.6f}")
+
+    print("\nNormal skor quantile değerleri:")
+    print(
+        np.quantile(
+            normal_scores,
+            [0.10, 0.25, 0.50, 0.75, 0.90]
+        )
+    )
+
+    print("Anomaly skor quantile değerleri:")
+    print(
+        np.quantile(
+            anomaly_scores,
+            [0.10, 0.25, 0.50, 0.75, 0.90]
+        )
+    )
+
+    # Her şeyi anomalili kabul eden baseline
+    all_anomaly_predictions = np.ones_like(
+        y_val_aligned,
+        dtype=int
+    )
+
+    all_anomaly_metrics = calculate_metrics(
+        y_val_aligned,
+        all_anomaly_predictions
+    )
+
+    print(
+        "\nTüm pattern'leri anomaly kabul eden baseline F1: "
+        f"{all_anomaly_metrics['f1_score']:.4f}"
+    )
+
+    # Elle verilen threshold'lara ek olarak,
+    # validation skor dağılımından daha ayrıntılı threshold adayları üret
+    quantile_thresholds = np.quantile(
+        val_scores,
+        np.linspace(0.0, 1.0, 201)
+    )
+
+    boundary_thresholds = np.array([
+        np.min(val_scores) - 1e-9,
+        np.max(val_scores) + 1e-9
+    ])
+
+    candidate_thresholds = np.unique(
+        np.concatenate([
+            np.asarray(score_threshold_values, dtype=float),
+            quantile_thresholds,
+            boundary_thresholds
+        ])
+    )
+
+    best_threshold = candidate_thresholds[0]
+    best_f1 = -1.0
+    best_metrics = None
+    best_predictions = None
+
+    for score_threshold in candidate_thresholds:
+        # Yüksek skor anomalili modele daha yakın demektir
+        preds_val = (
+            val_scores > score_threshold
+        ).astype(int)
+
+        metrics = calculate_metrics(
+            y_val_aligned,
+            preds_val
+        )
+
         if metrics["f1_score"] > best_f1:
             best_f1 = metrics["f1_score"]
-            best_threshold = score_threshold
+            best_threshold = float(score_threshold)
             best_metrics = metrics
+            best_predictions = preds_val.copy()
 
-    return best_threshold, best_metrics, prior_normal, prior_anomaly
+    predicted_anomaly_count = int(np.sum(best_predictions == 1))
+    print("\n--- DUAL VOMM/PST EN İYİ VALIDATION SONUCU ---")
+    print(f"Seçilen threshold       : {best_threshold:.6f}")
+    print(f"Validation precision    : {best_metrics['precision']:.4f}")
+    print(f"Validation recall       : {best_metrics['recall']:.4f}")
+    print(f"Validation F1           : {best_metrics['f1_score']:.4f}")
+    print("Tahmin edilen anomaly   : "
+          f"{predicted_anomaly_count}/{usable_length}")
+    return (best_threshold,best_metrics,prior_normal,prior_anomaly)
 #hiperparametre optimizasyonu
 def select_best_vomm_config_on_validation(
     X_train,
@@ -740,6 +931,44 @@ def run_batadal_dual_vomm_experiment(config):
         len(train_patterns),
         window_size
     )
+    # DUAL VOMM/PST PATTERN–LABEL UYUMLULUK KONTROLÜ
+    print("\n--- DUAL VOMM/PST VERİ KONTROLÜ ---")
+    print(f"X_train ham uzunluğu       : {len(X_train)}")
+    print(f"y_train ham uzunluğu       : {len(y_train)}")
+    print(f"Train pattern sayısı       : {len(train_patterns)}")
+    print(f"Beklenen geçiş sayısı      : {len(train_patterns) - 1}")
+    print(f"Hizalanmış etiket sayısı   : {len(y_train_aligned)}")
+
+    unique_labels, label_counts = np.unique(y_train_aligned,
+        return_counts=True
+    )
+
+    pattern_label_distribution = {
+        int(label): int(count)
+        for label, count in zip(unique_labels, label_counts) 
+    }
+
+    print("Pattern-level sınıf dağılımı:",pattern_label_distribution)
+
+
+    #Her pattern geçişi için bir etiket bulunması gerekir.
+    if len(y_train_aligned) != len(train_patterns) - 1:
+        raise ValueError(
+            "Dual VOMM/PST pattern-label hizalama hatası: "
+            f"beklenen etiket sayısı={len(train_patterns) - 1}, "
+            f"oluşturulan etiket sayısı={len(y_train_aligned)}"
+        )
+
+    # Etiketlerin yalnızca 0 ve 1 olduğundan emin ol 
+    unexpected_labels = set(np.unique(y_train_aligned)) - {0, 1}
+
+    if unexpected_labels:
+        raise ValueError(
+            "Pattern-level etiketlerde beklenmeyen değerler bulundu: "
+            f"{unexpected_labels}"
+        )
+
+    print("Pattern-label kontrolü başarılı.\n")
 
     model = DualVariableOrderMarkovModel(
         max_depth=window_size,
@@ -865,7 +1094,7 @@ def run_batadal_dual_vomm_experiment(config):
     with open("results/outputs/batadal_dual_vomm_pst_explainability.json", "w") as f:
         json.dump(logs_test[:100], f, indent=4)
 
-    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.")       
+    print("BATADAL Dual VOMM/PST sonuçları kaydedildi.")      
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -1011,10 +1240,10 @@ def main():
         print("\nBATADAL VOMM/PST (5 seed):")
         print(batadal_summary)
  
-    #run_parameter_sensitivity_analysis(config)
-    #run_vomm_threshold_sensitivity_analysis(config)
+    run_parameter_sensitivity_analysis(config)
+    run_vomm_threshold_sensitivity_analysis(config)
     #run_batadal_vomm_regularization_analysis(config)
-    #run_batadal_dual_vomm_experiment(config)
+    run_batadal_dual_vomm_experiment(config)
 
 
     try:

@@ -1,0 +1,1887 @@
+[
+    {
+        "index": 1,
+        "context": [
+            "dacccb"
+        ],
+        "target": "acccbc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 2,
+        "context": [
+            "dacccb",
+            "acccbc"
+        ],
+        "target": "cccbcd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 3,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd"
+        ],
+        "target": "ccbcdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 4,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc"
+        ],
+        "target": "cbcdca",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 5,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca"
+        ],
+        "target": "bcdcab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 6,
+        "context": [
+            "dacccb",
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab"
+        ],
+        "target": "cdcabb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 7,
+        "context": [
+            "acccbc",
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb"
+        ],
+        "target": "dcabbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 8,
+        "context": [
+            "cccbcd",
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd"
+        ],
+        "target": "cabbdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 9,
+        "context": [
+            "ccbcdc",
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc"
+        ],
+        "target": "abbdcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 10,
+        "context": [
+            "cbcdca",
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc"
+        ],
+        "target": "bbdccb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 11,
+        "context": [
+            "bcdcab",
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb"
+        ],
+        "target": "bdccbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 12,
+        "context": [
+            "cdcabb",
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd"
+        ],
+        "target": "dccbdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 13,
+        "context": [
+            "dcabbd",
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc"
+        ],
+        "target": "ccbdcb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 14,
+        "context": [
+            "cabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb"
+        ],
+        "target": "cbdcba",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 15,
+        "context": [
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba"
+        ],
+        "target": "bdcbac",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 16,
+        "context": [
+            "bbdccb",
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac"
+        ],
+        "target": "dcbacc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 17,
+        "context": [
+            "bdccbd",
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc"
+        ],
+        "target": "cbaccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 18,
+        "context": [
+            "dccbdc",
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc"
+        ],
+        "target": "bacccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 19,
+        "context": [
+            "ccbdcb",
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc"
+        ],
+        "target": "accccd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 20,
+        "context": [
+            "cbdcba",
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd"
+        ],
+        "target": "ccccdb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 21,
+        "context": [
+            "bdcbac",
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb"
+        ],
+        "target": "cccdbc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 22,
+        "context": [
+            "dcbacc",
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc"
+        ],
+        "target": "ccdbcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 23,
+        "context": [
+            "cbaccc",
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc"
+        ],
+        "target": "cdbccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 24,
+        "context": [
+            "bacccc",
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc"
+        ],
+        "target": "dbccca",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 25,
+        "context": [
+            "accccd",
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca"
+        ],
+        "target": "bcccaa",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 26,
+        "context": [
+            "ccccdb",
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa"
+        ],
+        "target": "cccaac",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 27,
+        "context": [
+            "cccdbc",
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac"
+        ],
+        "target": "ccaacd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 28,
+        "context": [
+            "ccdbcc",
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd"
+        ],
+        "target": "caacdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 29,
+        "context": [
+            "cdbccc",
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc"
+        ],
+        "target": "aacdca",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 30,
+        "context": [
+            "dbccca",
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca"
+        ],
+        "target": "acdcab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 31,
+        "context": [
+            "bcccaa",
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab"
+        ],
+        "target": "cdcabd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 32,
+        "context": [
+            "cccaac",
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd"
+        ],
+        "target": "dcabdb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 33,
+        "context": [
+            "ccaacd",
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb"
+        ],
+        "target": "cabdba",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 34,
+        "context": [
+            "caacdc",
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba"
+        ],
+        "target": "abdbaa",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 35,
+        "context": [
+            "aacdca",
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa"
+        ],
+        "target": "bdbaac",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 36,
+        "context": [
+            "acdcab",
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac"
+        ],
+        "target": "dbaacc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 37,
+        "context": [
+            "cdcabd",
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc"
+        ],
+        "target": "baaccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 38,
+        "context": [
+            "dcabdb",
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc"
+        ],
+        "target": "aacccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 39,
+        "context": [
+            "cabdba",
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc"
+        ],
+        "target": "accccd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 40,
+        "context": [
+            "abdbaa",
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd"
+        ],
+        "target": "ccccda",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 41,
+        "context": [
+            "bdbaac",
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda"
+        ],
+        "target": "cccdab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 42,
+        "context": [
+            "dbaacc",
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab"
+        ],
+        "target": "ccdabb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 43,
+        "context": [
+            "baaccc",
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb"
+        ],
+        "target": "cdabbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 44,
+        "context": [
+            "aacccc",
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd"
+        ],
+        "target": "dabbdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 45,
+        "context": [
+            "accccd",
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc"
+        ],
+        "target": "abbdcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 46,
+        "context": [
+            "ccccda",
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc"
+        ],
+        "target": "bbdccb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 47,
+        "context": [
+            "cccdab",
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb"
+        ],
+        "target": "bdccbc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 48,
+        "context": [
+            "ccdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc"
+        ],
+        "target": "dccbcb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 49,
+        "context": [
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb"
+        ],
+        "target": "ccbcbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 50,
+        "context": [
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd"
+        ],
+        "target": "cbcbdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 51,
+        "context": [
+            "abbdcc",
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc"
+        ],
+        "target": "bcbdcd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 52,
+        "context": [
+            "bbdccb",
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd"
+        ],
+        "target": "cbdcda",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 53,
+        "context": [
+            "bdccbc",
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda"
+        ],
+        "target": "bdcdaa",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 54,
+        "context": [
+            "dccbcb",
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa"
+        ],
+        "target": "dcdaab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 55,
+        "context": [
+            "ccbcbd",
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab"
+        ],
+        "target": "cdaabd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 56,
+        "context": [
+            "cbcbdc",
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd"
+        ],
+        "target": "daabdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 57,
+        "context": [
+            "bcbdcd",
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc"
+        ],
+        "target": "aabdcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 58,
+        "context": [
+            "cbdcda",
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc"
+        ],
+        "target": "abdccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 59,
+        "context": [
+            "bdcdaa",
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc"
+        ],
+        "target": "bdcccd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 60,
+        "context": [
+            "dcdaab",
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd"
+        ],
+        "target": "dcccdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 61,
+        "context": [
+            "cdaabd",
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc"
+        ],
+        "target": "cccdcb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 62,
+        "context": [
+            "daabdc",
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb"
+        ],
+        "target": "ccdcba",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 63,
+        "context": [
+            "aabdcc",
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba"
+        ],
+        "target": "cdcbab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 64,
+        "context": [
+            "abdccc",
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab"
+        ],
+        "target": "dcbabb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 65,
+        "context": [
+            "bdcccd",
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb"
+        ],
+        "target": "cbabbb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 66,
+        "context": [
+            "dcccdc",
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb"
+        ],
+        "target": "babbbc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 67,
+        "context": [
+            "cccdcb",
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc"
+        ],
+        "target": "abbbcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 68,
+        "context": [
+            "ccdcba",
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc"
+        ],
+        "target": "bbbcca",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 69,
+        "context": [
+            "cdcbab",
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca"
+        ],
+        "target": "bbccaa",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 70,
+        "context": [
+            "dcbabb",
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa"
+        ],
+        "target": "bccaac",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 71,
+        "context": [
+            "cbabbb",
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac"
+        ],
+        "target": "ccaacc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 72,
+        "context": [
+            "babbbc",
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc"
+        ],
+        "target": "caaccb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 73,
+        "context": [
+            "abbbcc",
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb"
+        ],
+        "target": "aaccbb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 74,
+        "context": [
+            "bbbcca",
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb"
+        ],
+        "target": "accbbb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 75,
+        "context": [
+            "bbccaa",
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb"
+        ],
+        "target": "ccbbbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 76,
+        "context": [
+            "bccaac",
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd"
+        ],
+        "target": "cbbbda",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 77,
+        "context": [
+            "ccaacc",
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda"
+        ],
+        "target": "bbbdab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 78,
+        "context": [
+            "caaccb",
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab"
+        ],
+        "target": "bbdabc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 79,
+        "context": [
+            "aaccbb",
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc"
+        ],
+        "target": "bdabcd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 80,
+        "context": [
+            "accbbb",
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd"
+        ],
+        "target": "dabcda",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 81,
+        "context": [
+            "ccbbbd",
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda"
+        ],
+        "target": "abcdab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 82,
+        "context": [
+            "cbbbda",
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab"
+        ],
+        "target": "bcdabc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 83,
+        "context": [
+            "bbbdab",
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc"
+        ],
+        "target": "cdabcd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 84,
+        "context": [
+            "bbdabc",
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd"
+        ],
+        "target": "dabcda",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 85,
+        "context": [
+            "bdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda"
+        ],
+        "target": "abcdab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 86,
+        "context": [
+            "dabcda",
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab"
+        ],
+        "target": "bcdabb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 87,
+        "context": [
+            "abcdab",
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb"
+        ],
+        "target": "cdabbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 88,
+        "context": [
+            "bcdabc",
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd"
+        ],
+        "target": "dabbdc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 89,
+        "context": [
+            "cdabcd",
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc"
+        ],
+        "target": "abbdcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 90,
+        "context": [
+            "dabcda",
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc"
+        ],
+        "target": "bbdccb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 91,
+        "context": [
+            "abcdab",
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb"
+        ],
+        "target": "bdccbd",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 92,
+        "context": [
+            "bcdabb",
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd"
+        ],
+        "target": "dccbda",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 93,
+        "context": [
+            "cdabbd",
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda"
+        ],
+        "target": "ccbdab",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 94,
+        "context": [
+            "dabbdc",
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab"
+        ],
+        "target": "cbdabb",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 95,
+        "context": [
+            "abbdcc",
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb"
+        ],
+        "target": "bdabbc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 96,
+        "context": [
+            "bbdccb",
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc"
+        ],
+        "target": "dabbcc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 97,
+        "context": [
+            "bdccbd",
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc"
+        ],
+        "target": "abbccc",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    },
+    {
+        "index": 98,
+        "context": [
+            "dccbda",
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc"
+        ],
+        "target": "bbcccc",
+        "probability": 0.007407407407407408,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 0
+    },
+    {
+        "index": 99,
+        "context": [
+            "ccbdab",
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc",
+            "bbcccc"
+        ],
+        "target": "bccccc",
+        "probability": 0.012345679012345678,
+        "threshold": 0.005,
+        "context_length": 1,
+        "context_count": 4,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 0
+    },
+    {
+        "index": 100,
+        "context": [
+            "cbdabb",
+            "bdabbc",
+            "dabbcc",
+            "abbccc",
+            "bbcccc",
+            "bccccc"
+        ],
+        "target": "ccccca",
+        "probability": 0.001851851851851852,
+        "threshold": 0.005,
+        "context_length": 0,
+        "context_count": 382,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "prediction": 1
+    }
+]
