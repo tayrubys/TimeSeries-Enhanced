@@ -6,14 +6,60 @@ from src.models.explainability import AutomataExplainer
 class ProbabilisticAutomata:
 
     # yüksek dereceli olasılıksal otomata modelini başlatır
-    def __init__(self, smoothing=True, order=2, learning_rate=0.0, smoothing_alpha=1.0):
+    def __init__(
+        self,
+        smoothing=True,
+        order=2,
+        learning_rate=0.0,
+        smoothing_alpha=1.0,
+        time_decay_enabled=False,
+        time_decay_rate=0.99,
+        time_decay_min_weight=0.01,
+    ):
         self.smoothing = smoothing
         self.order = order
         self.learning_rate = learning_rate
         self.smoothing_alpha = smoothing_alpha
+
+        # Time-decay parametreleri varsayılan olarak kapalıdır.
+        # Kapalıyken transition sayımları markov-base ile aynı kalır.
+        self.time_decay_enabled = time_decay_enabled
+        self.time_decay_rate = time_decay_rate
+        self.time_decay_min_weight = time_decay_min_weight
+
+        self._validate_time_decay_params()
+
         self.transitions = defaultdict(lambda: defaultdict(float))
         self.total_exits = defaultdict(float)
         self.trained_patterns = set()
+
+    def _validate_time_decay_params(self):
+        if self.order < 1:
+            raise ValueError("order en az 1 olmalıdır.")
+
+        if self.smoothing_alpha < 0:
+            raise ValueError("smoothing_alpha negatif olamaz.")
+
+        if self.time_decay_enabled:
+            if not (0.0 < self.time_decay_rate <= 1.0):
+                raise ValueError("time_decay_rate 0 ile 1 arasında olmalıdır: 0 < rate <= 1")
+
+            if not (0.0 <= self.time_decay_min_weight <= 1.0):
+                raise ValueError("time_decay_min_weight 0 ile 1 arasında olmalıdır.")
+
+    def _get_time_decay_weight(self, age):
+        """
+        Transition ağırlığını hesaplar.
+
+        age=0 en yeni transition anlamına gelir ve ağırlık 1.0 olur.
+        age büyüdükçe ağırlık time_decay_rate ** age şeklinde azalır.
+        time_decay_min_weight, çok eski transition'ların tamamen etkisizleşmesini engeller.
+        """
+        if not self.time_decay_enabled:
+            return 1.0
+
+        weight = self.time_decay_rate ** age
+        return float(max(self.time_decay_min_weight, weight))
 
     # modeli verilen eğitim örüntüleriyle eğitir ve geçiş frekanslarını kaydeder
     def fit(self, train_patterns):
@@ -23,11 +69,19 @@ class ProbabilisticAutomata:
         self.trained_patterns = set(train_patterns)
 
         for ord_idx in range(1, self.order + 1):
-            for i in range(len(train_patterns) - ord_idx):
+            num_transitions_for_order = len(train_patterns) - ord_idx
+
+            for i in range(num_transitions_for_order):
                 state = tuple(train_patterns[i : i + ord_idx])
                 next_pattern = train_patterns[i + ord_idx]
-                self.transitions[state][next_pattern] += 1
-                self.total_exits[state] += 1
+
+                # Daha yeni transition'lara daha yüksek ağırlık verilir.
+                # En sondaki transition age=0, en eski transition age büyük olur.
+                age = (num_transitions_for_order - 1) - i
+                transition_weight = self._get_time_decay_weight(age)
+
+                self.transitions[state][next_pattern] += transition_weight
+                self.total_exits[state] += transition_weight
 
     # katz back-off algoritması ile bir sonraki durumun geçiş olasılığını hesaplar
     def get_transition_probability(self, current_state, next_pattern):
@@ -91,7 +145,6 @@ class ProbabilisticAutomata:
                 best_distance = dist
                 nearest_pattern = trained_pattern
         return nearest_pattern, best_distance
-
 
     # verilen pattern dizisi için karar vermeden olasılık/anomali skorlarını hesaplar
     def calculate_scores(
