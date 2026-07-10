@@ -1,137 +1,199 @@
-# BATADAL LSTM AutoEncoder Deneyi
+# BATADAL CNN-LSTM AutoEncoder Deneyi
+Literatürde kullanılan hibrit mimarilerden esinlenerek,buçalışmada BATADAL veri seti üzerinde **CNN-LSTM AutoEncoder tabanlı anomali tespiti** gerçekleştirilmiştir. Amaç, Conv1D katmanı kullanarak sensör verilerindeki yerel örüntüleri çıkarmak ve bu özellikleri LSTM ile zamansal olarak modelleyerek anomali tespit performansını artırmaktır.
 
-Bu çalışmada BATADAL veri seti üzerinde **LSTM AutoEncoder tabanlı anomali tespiti** gerçekleştirilmiştir. Model yalnızca normal etiketli sequence verileriyle eğitilmiş, anomaliler reconstruction error üzerinden belirlenmiştir.
+---
 
-## Deney Akışı
+# Deney Akışı
 
 ```text
-BATADAL verisi
-      ↓
-Sequence oluşturma
+BATADAL Verisi
+        ↓
+Sequence Oluşturma
 (window = 20)
-      ↓
-Uç değerleri kırpma
-(np.clip: -5 ile 5)
-      ↓
-Sadece normal sequence'lerle eğitim
-      ↓
-LSTM AutoEncoder
-      ↓
-Validation reconstruction error
-      ↓
-Percentile tabanlı threshold optimizasyonu
-      ↓
-Test değerlendirmesi
+        ↓
+Uç Değer Kırpma
+(np.clip [-5, 5])
+        ↓
+Sadece Normal Sequence'lerle Eğitim
+        ↓
+CNN-LSTM AutoEncoder
+        ↓
+Reconstruction Error Hesabı
+        ↓
+Validation Threshold Optimizasyonu
+        ↓
+Test Değerlendirmesi
 ```
 
-## Model Yapısı
+---
 
-- Encoder: LSTM, 64 unit
-- Darboğaz katmanı: Dense, 32 unit
-- Decoder: LSTM, 64 unit
-- Dropout: 0.3
-- Loss: Mean Squared Error
-- Batch size: 32
-- Maksimum epoch: 100
-- Early Stopping patience: 10
-- ReduceLROnPlateau patience: 3
+# Model Mimarisi
 
-## Reconstruction Error Hesaplaması
-
-LSTM AutoEncoder modeli, giriş olarak aldığı bir sequence'i yeniden üretmeye çalışmaktadır. Modelin ürettiği çıktı ile gerçek giriş arasındaki fark **Reconstruction Error** olarak adlandırılır.
-
-Modelin girdisi:
-
-```math
-X
+```text
+Sequence
+    ↓
+Conv1D
+    ↓
+LSTM Encoder
+    ↓
+Dense Darboğaz Katmanı
+    ↓
+RepeatVector
+    ↓
+LSTM Decoder
+    ↓
+TimeDistributed Dense
+    ↓
+Reconstruction Error
 ```
 
-Model çıktısı:
+---
+
+# Model Parametreleri
+
+| Parametre | Değer |
+|------------|--------|
+| Window Size | 20 |
+| Conv1D Filters | 32 |
+| Kernel Size | 3 |
+| LSTM Units | 64 |
+| Latent Dimension | 32 |
+| Dropout | 0.30 |
+| Batch Size | 32 |
+| Epoch | 50 |
+| Optimizer | Adam |
+| Loss Function | MSE |
+
+---
+
+# Reconstruction Error
+
+Model yalnızca normal sequence'leri öğrenmektedir. Test sırasında bir sequence'in yeniden üretim hatası aşağıdaki şekilde hesaplanmaktadır:
 
 ```math
-\hat{X}
-```
-
-olarak gösterilsin.
-
-Her sequence için reconstruction error, Ortalama Kare Hata (Mean Squared Error - MSE) kullanılarak hesaplanmaktadır:
-
-```math
-\text{Reconstruction Error}
-=
+Reconstruction\ Error =
 \frac{1}{N}
 \sum_{i=1}^{N}
 (X_i-\hat{X}_i)^2
 ```
 
-Burada:
-
-* $X_i$: Gerçek sensör değeri
-* $\hat{X}_i$: Model tarafından yeniden üretilen sensör değeri
-* $N$: Sequence içerisindeki toplam eleman sayısıdır.
-
-Kod içerisinde bu hesaplama aşağıdaki şekilde gerçekleştirilmektedir:
+Kod karşılığı:
 
 ```python
 errors = np.mean(
     np.square(X - X_pred),
-    axis=(1, 2)
+    axis=(1,2)
 )
 ```
 
-Bu işlem:
+Threshold üzerindeki sequence'ler anomali olarak işaretlenmektedir.
 
-1. Gerçek ve tahmin edilen sequence arasındaki farkı hesaplar.
-2. Farkların karesini alır.
-3. Tüm zaman adımları ve sensörler boyunca ortalamasını alır.
+---
 
-Elde edilen reconstruction error değeri büyükse, model ilgili sequence'i iyi yeniden üretememiş demektir ve bu durum sequence'in anomali olabileceğini göstermektedir.
+# Uç Değer İşlemi
 
-Son aşamada validation kümesi üzerinde percentile tabanlı bir threshold seçilerek:
+Bazı sensörlerde oldukça yüksek değerler gözlemlenmiştir.
 
-```math
-\text{error} \ge threshold
-\Rightarrow anomaly
-```
-
-kuralı uygulanmıştır.
-
-## Uç Değer İşlemi
-
-Sensörlerdeki aşırı uç değerlerin reconstruction error değerlerini bozduğu gözlemlenmiştir. Bu nedenle train, validation ve test verileri aşağıdaki aralıkta sınırlandırılmıştır:
-
-![Validation Reconstruction Error Boxplot](validation_error_boxplot.png)
+Bu nedenle veri aşağıdaki aralıkta sınırlandırılmıştır:
 
 ```python
 X_train = np.clip(X_train, -5, 5)
-X_val = np.clip(X_val, -5, 5)
-X_test = np.clip(X_test, -5, 5)
+X_val   = np.clip(X_val, -5, 5)
+X_test  = np.clip(X_test, -5, 5)
 ```
 
-Bu işlem sonucunda 5 farklı seed için daha kararlı test sonuçları elde edilmiştir.
+Bu işlem reconstruction error dağılımını daha kararlı hale getirmiştir.
 
-## Seed Bazlı Sonuçlar
+---
 
-| Seed | Percentile | Threshold | Accuracy | Precision | Recall | F1-Score |
-|-----:|-----------:|----------:|---------:|----------:|-------:|---------:|
-| 42 | 99.1 | 0.7473 | 0.9425 | 0.6460 | 0.9125 | 0.7565 |
-| 123 | 99.0 | 0.8038 | 0.9412 | 0.6404 | 0.9125 | 0.7526 |
-| 2026 | 99.0 | 0.7083 | 0.9523 | 0.6952 | 0.9125 | 0.7892 |
-| 7 | 99.3 | 0.7374 | 0.9559 | 0.7157 | 0.9125 | **0.8022** |
-| 999 | 99.0 | 0.7266 | 0.9449 | 0.6577 | 0.9125 | 0.7644 |
+# Seed Bazlı Sonuçlar
 
-## Ortalama Sonuçlar
+| Seed | Validation F1 | Threshold |
+|------|---------------|------------|
+| 42 | 0.6596 | 0.4887 |
+| 123 | **0.7021** | 0.5012 |
+| 2026 | 0.6465 | 0.5092 |
+| 7 | 0.6667 | 0.5167 |
+| 999 | 0.6882 | 0.5386 |
 
-| Metrik | Ortalama ± Standart Sapma |
-|---|---:|
-| Accuracy | 0.9474 ± 0.0064 |
-| Precision | 0.6710 ± 0.0329 |
-| Recall | 0.9125 ± 0.0000 |
-| F1-Score | **0.7730 ± 0.0217** |
-| Threshold | 0.7447 ± 0.0361 |
+---
 
-## Değerlendirme
+# Ortalama Sonuçlar
 
-Uç değerlerin sınırlandırılmasından sonra LSTM AutoEncoder modeli ortalama **0.7730 F1-score** elde etmiştir. Seed sonuçlarının birbirine yakın olması, modelin rastgele başlangıç değerlerine karşı kararlı çalıştığını göstermektedir.
+| Metrik | Ortalama ± Std |
+|---------|----------------|
+| Accuracy | 0.8632 ± 0.0132 |
+| Precision | 0.4170 ± 0.0230 |
+| Recall | **0.9825 ± 0.0190** |
+| F1-Score | **0.5851 ± 0.0223** |
+| Threshold | 0.5109 ± 0.0186 |
 
-Validation F1 değerlerinin test sonuçlarına göre düşük kalması, validation ve test saldırılarının reconstruction error dağılımlarının farklı olabileceğini göstermektedir. Bu durum ilerleyen çalışmalarda threshold seçimi ve veri bölme stratejileri açısından ayrıca incelenecektir.
+---
+
+# Değerlendirme
+
+CNN katmanı eklenmesi ile model saldırı örneklerini oldukça yüksek oranda yakalayabilmiştir (**Recall ≈ 0.98**). Ancak precision değerinde düşüş meydana gelmiş ve model daha fazla false positive üretmiştir.
+
+Önceki LSTM AutoEncoder deneyinde:
+
+```text
+F1 ≈ 0.77
+```
+
+elde edilirken, CNN-LSTM AutoEncoder modelinde:
+
+```text
+F1 ≈ 0.59
+```
+
+elde edilmiştir.
+
+Bu durum, mevcut veri boyutu ve pencere uzunluğu için Conv1D katmanının ek karmaşıklık oluşturduğu ve reconstruction error ayrımını zayıflattığını göstermektedir.
+
+---
+
+# Sonraki Çalışmalar
+
+Planlanan deneyler:
+
+### 1) Daha Hafif CNN-LSTM AutoEncoder
+
+```text
+Conv Filters : 16
+LSTM Units   : 32
+Latent Dim   : 16
+Dropout      : 0.20
+```
+
+Amaç:
+
+- model karmaşıklığını azaltmak
+- overfitting riskini düşürmek
+
+---
+
+### 2) Farklı Window Boyutları
+
+```text
+window = 10
+window = 30
+window = 40
+```
+
+farklı zaman ufuklarının etkisi incelenecektir.
+
+---
+
+### 3) Threshold Aralığının Genişletilmesi
+
+Mevcut:
+
+```text
+93-99 percentile
+```
+
+Yeni:
+
+```text
+90-99.9 percentile
+```
