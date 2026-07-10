@@ -66,9 +66,9 @@ Her sequence için reconstruction error, Ortalama Kare Hata (Mean Squared Error 
 
 Burada:
 
-- \(X_i\): Gerçek sensör değeri
-- \(\hat{X}_i\): Model tarafından yeniden üretilen sensör değeri
-- \(N\): Sequence içerisindeki toplam eleman sayısıdır.
+* $X_i$: Gerçek sensör değeri
+* $\hat{X}_i$: Model tarafından yeniden üretilen sensör değeri
+* $N$: Sequence içerisindeki toplam eleman sayısıdır.
 
 Kod içerisinde bu hesaplama aşağıdaki şekilde gerçekleştirilmektedir:
 
@@ -99,6 +99,8 @@ kuralı uygulanmıştır.
 ## Uç Değer İşlemi
 
 Sensörlerdeki aşırı uç değerlerin reconstruction error değerlerini bozduğu gözlemlenmiştir. Bu nedenle train, validation ve test verileri aşağıdaki aralıkta sınırlandırılmıştır:
+
+![Validation Reconstruction Error Boxplot](validation_error_boxplot.png)
 
 ```python
 X_train = np.clip(X_train, -5, 5)

@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from pathlib import Path
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, RepeatVector, TimeDistributed, Dense, Dropout
+from tensorflow.keras.layers import LSTM, RepeatVector, TimeDistributed, Dense, Dropout, Conv1D
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
