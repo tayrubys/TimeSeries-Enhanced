@@ -15,7 +15,7 @@ def load_json_config(config_path="src/config/settings.json"):
     default_config = {
         "window_size": 4,
         "alphabet_size": 3,
-        "window_sizes": [3, 4, 5, 6],
+        "window_sizes": [3, 4, 5, 6,7,8,9,10,12],
         "alphabet_sizes": [3, 4, 5, 6], 
         "anomaly_threshold": 0.05,
         "skab_anomaly_threshold": 0.90,
@@ -174,7 +174,7 @@ def select_best_vomm_config_on_validation(
     best_f1 = -1.0
     best_metrics = None
 
-    window_sizes = config.get("window_sizes", [3, 4, 5, 6])
+    window_sizes = config.get("window_sizes",  [3, 4, 5, 6, 7, 8, 9, 10, 12])
     alphabet_sizes = config.get("alphabet_sizes", [3, 4, 5, 6])
 
     #skab için min_count ve smoothing değerlerini de validation üzerinde tarıyoruz
@@ -263,13 +263,14 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     #SAX-PAA Dönüşümü ve Model Eğitimi
     transformer = SaxPaaTransformer(alphabet_size=config["alphabet_size"])
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
- 
+    #vomm-pst bağlam derinliği windows size ile aynı tutulur
     model = VariableOrderMarkovModel(
-        max_depth=config.get("max_depth", config["window_size"]), #vomm-pst nin gecmıste kac pattern bakacagını belırler
+        max_depth=config["window_size"],
         min_count=config.get("min_count", 2),
         smoothing=True,
         smoothing_alpha=config.get("smoothing_alpha", 1.0)
     )
+    
     model.fit(train_patterns)
     validation_threshold_f1 = None
     selected_threshold = config["anomaly_threshold"]
@@ -333,7 +334,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     common_fields = {
         "dataset": dataset_name, "fold": fold_name, "seed": seed,
         "window_size": config["window_size"],
-        "max_depth": config.get("max_depth", config["window_size"]),
+        "max_depth": config.get("max_depth",config["window_size"]),
         "alphabet_size": config["alphabet_size"],
         "min_count": config.get("min_count", 2),
         "smoothing_alpha": config.get("smoothing_alpha", 1.0),
@@ -617,7 +618,7 @@ def run_batadal_vomm_regularization_analysis(config):
         )
 
 #batadal için daha uzun window_size değerlerini deneme
-def run_batadal_large_window_analysis(config):
+def run_batadal_max_depth_analysis(config):
     print("\n--- BATADAL VOMM/PST LARGE WINDOW ANALİZİ BAŞLATILIYOR ---")
 
     required_files = [
@@ -838,7 +839,289 @@ def run_batadal_large_window_analysis(config):
         f"Recall={original_result['recall']:.4f} | "
         f"F1={original_result['f1_score']:.4f}"
     )     
+#skab için yalnızca window_size analizi
+def run_skab_window_size_analysis(config):
+    print("\n--- SKAB VOMM/PST WINDOW SIZE ANALİZİ BAŞLATILIYOR ---")
 
+    window_size_values = config.get(
+        "window_sizes",
+        [3, 4, 5, 6, 7, 8, 9, 10, 12]
+    )
+
+    threshold_values = config.get(
+        "vomm_threshold_values",
+        [
+            0.001, 0.005, 0.01, 0.02, 0.03,
+            0.05, 0.1, 0.2, 0.3, 0.5
+        ]
+    )
+
+    #window etkisini tek başına görebilmek için diğer model parametreleri sabit tutulur
+    alphabet_size = 4
+    min_count = 2
+    smoothing_alpha = 1.0
+
+    validation_results = []
+    final_test_results = []
+
+    for fold in range(1, 6):
+        train_file = (
+            f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+        )
+        test_file = (
+            f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+        )
+        y_train_file = (
+            f"data/processed/skab_fold{fold}_y_train.csv"
+        )
+        y_test_file = (
+            f"data/processed/skab_fold{fold}_y_test.csv"
+        )
+
+        required_files = [
+            train_file,
+            test_file,
+            y_train_file,
+            y_test_file
+        ]
+
+        if not all(os.path.exists(path) for path in required_files):
+            print(f"SKAB fold={fold} dosyaları eksik, fold atlandı.")
+            continue
+
+        X_train = pd.read_csv(
+            train_file
+        ).values.flatten()
+
+        X_test = pd.read_csv(
+            test_file
+        ).values.flatten()
+
+        y_train = pd.read_csv(
+            y_train_file
+        ).values.flatten()
+
+        y_test = pd.read_csv(
+            y_test_file
+        ).values.flatten()
+
+        #zaman sırası bozulmadan validation ayrılır
+        X_model_train, X_val, _, y_val = split_train_validation(
+            X_train,
+            y_train,
+            val_ratio=0.2
+        )
+
+        fold_results = []
+
+        print(f"\n>> SKAB fold={fold}")
+
+        for window_size in window_size_values:
+            transformer = SaxPaaTransformer(
+                alphabet_size=alphabet_size
+            )
+
+            train_patterns = transformer.transform(
+                X_model_train,
+                window_size=window_size
+            )
+
+            val_patterns = transformer.transform(
+                X_val,
+                window_size=window_size
+            )
+
+            y_val_aligned = align_labels_to_patterns(
+                y_val,
+                len(val_patterns),
+                window_size
+            )
+
+            if len(y_val_aligned) == 0:
+                print(
+                    f"window_size={window_size}: "
+                    "hizalanmış validation etiketi yok, atlandı."
+                )
+                continue
+
+            validation_anomaly_count = int(np.sum(y_val_aligned))
+
+            validation_normal_count = int(len(y_val_aligned)- validation_anomaly_count)
+
+            model = VariableOrderMarkovModel(
+                max_depth=window_size,
+                min_count=min_count,
+                smoothing=True,
+                smoothing_alpha=smoothing_alpha
+            )
+
+            model.fit(train_patterns)
+
+            (
+                selected_threshold,
+                _,
+                _,
+                _,
+                validation_metrics
+            ) = select_best_threshold_on_validation(
+                model=model,
+                transformer=transformer,
+                X_val=X_val,
+                y_val=y_val,
+                threshold_values=threshold_values,
+                window_size=window_size,
+
+                #diğer ek yontemler kapatılır
+                min_context_depth_values=[0],
+                min_context_count_values=[0],
+                smooth_window_values=[1]
+            )
+
+            model_stats = model.model_stats
+
+            result = {
+                "fold": fold,
+                "window_size": window_size,
+                "alphabet_size": alphabet_size,
+                "min_count": min_count,
+                "smoothing_alpha": smoothing_alpha,
+                "selected_threshold": selected_threshold,
+                "train_pattern_count": len(train_patterns),
+                "validation_pattern_count": len(
+                    y_val_aligned
+                ),
+                "validation_anomaly_count":validation_anomaly_count,
+                "validation_normal_count":validation_normal_count,
+                "num_states": model_stats["num_nodes"],
+                "num_transitions":model_stats["num_transitions"],
+                "validation_precision":validation_metrics["precision"],
+                "validation_recall":validation_metrics["recall"],
+                "validation_f1":validation_metrics["f1_score"]
+            }
+
+            validation_results.append(result)
+            fold_results.append(result)
+
+            print(
+                f"window_size={window_size} | "
+                f"threshold={selected_threshold} | "
+                f"val pattern={len(y_val_aligned)} | "
+                f"anomaly={validation_anomaly_count} | "
+                f"normal={validation_normal_count} | "
+                f"state={model_stats['num_nodes']} | "
+                f"Precision="
+                f"{validation_metrics['precision']:.4f} | "
+                f"Recall="
+                f"{validation_metrics['recall']:.4f} | "
+                f"F1="
+                f"{validation_metrics['f1_score']:.4f}"
+            )
+
+        if not fold_results:
+            continue
+
+        fold_df = pd.DataFrame(fold_results)
+
+        #f1 eşitse precision yüksek olan seçilire ğer o da eşitse daha kucuk window secilir
+        best_row = fold_df.sort_values(
+            by=[
+                "validation_f1",
+                "validation_precision",
+                "window_size"
+            ],
+            ascending=[False, False, True]
+        ).iloc[0]
+
+        selected_window_size = int(
+            best_row["window_size"]
+        )
+
+        selected_threshold = float(
+            best_row["selected_threshold"]
+        )
+
+        print(
+            f"SKAB fold={fold} seçilen ayar -> "
+            f"window_size={selected_window_size} | "
+            f"threshold={selected_threshold} | "
+            f"validation F1="
+            f"{best_row['validation_f1']:.4f}"
+        )
+
+        #validation ile seçilen tek window testte denenir.
+        final_config = {
+            **config,
+            "window_size": selected_window_size,
+            "alphabet_size": alphabet_size,
+            "min_count": min_count,
+            "smoothing_alpha": smoothing_alpha,
+            "anomaly_threshold": selected_threshold,
+            "min_context_depth": 0,
+            "min_context_count": 0,
+            "smooth_window": 1
+        }
+
+        fold_test_results, _ = run_experiment_pipeline(
+            X_train=X_model_train,
+            X_test=X_test,
+            y_test=y_test,
+            config=final_config,
+            dataset_name="SKAB",
+            fold_name=f"fold_{fold}_window_analysis",
+            seed=config["seeds"][0],
+            use_validation_threshold=False
+        )
+
+        original_result = [
+            result
+            for result in fold_test_results
+            if result["scenario"] == "original"
+        ][0]
+
+        final_test_results.append(original_result)
+
+        print(
+            f"SKAB fold={fold} test sonucu -> "
+            f"Precision="
+            f"{original_result['precision']:.4f} | "
+            f"Recall="
+            f"{original_result['recall']:.4f} | "
+            f"F1="
+            f"{original_result['f1_score']:.4f}"
+        )
+
+    if validation_results:
+        pd.DataFrame(validation_results).to_csv(
+            "results/outputs/"
+            "skab_vomm_window_size_validation.csv",
+            index=False
+        )
+
+    if final_test_results:
+        final_df = pd.DataFrame(final_test_results)
+
+        final_df.to_csv(
+            "results/outputs/"
+            "skab_vomm_window_size_final.csv",
+            index=False
+        )
+
+        print("\n--- SKAB WINDOW SIZE TEST ORTALAMASI ---")
+        print(
+            f"Precision="
+            f"{final_df['precision'].mean():.4f} | "
+            f"Recall="
+            f"{final_df['recall'].mean():.4f} | "
+            f"F1="
+            f"{final_df['f1_score'].mean():.4f}"
+        )
+SKAB_WINDOW_CONFIG_BY_FOLD = {
+1: {"window_size": 12,"anomaly_threshold": 0.5},
+2: {"window_size": 12,"anomaly_threshold": 0.02},
+3: {"window_size": 12,"anomaly_threshold": 0.02},
+4: {"window_size": 12,"anomaly_threshold": 0.02},
+5: {"window_size": 12,"anomaly_threshold": 0.005}
+}
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -895,14 +1178,7 @@ def main():
  
         with open("results/outputs/automata_batadal_advanced_explainability.json", "w") as f:
             json.dump(batadal_logs[:100], f, indent=4)
- 
-    config_skab = {
-        **config,
-        "window_size": 4,
-        "alphabet_size": 4,
-        "anomaly_threshold": 0.5 
-    }
- 
+  
     for fold in range(1, 6):
         train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
         test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
@@ -923,15 +1199,22 @@ def main():
                 y_train,
                 val_ratio=0.2
             )
-            best_skab_config, best_skab_val_metrics = select_best_vomm_config_on_validation(
-                X_model_train,
-                X_val,
-                y_val,
-                config,
-                f"SKAB fold_{fold}"
+            config_skab_fold = {
+                **config,
+                **SKAB_WINDOW_CONFIG_BY_FOLD[fold],
+                "alphabet_size": 4,
+                "min_count": 2,
+                "smoothing_alpha": 1.0,
+                "min_context_depth": 0,
+                "min_context_count": 0,
+                "smooth_window": 1
+            }
+
+            print(
+                f"SKAB fold={fold} final ayar -> "
+                f"window_size={config_skab_fold['window_size']} | "
+                f"threshold={config_skab_fold['anomaly_threshold']}"
             )
-            config_skab_fold = { **config,**best_skab_config}
-                
             for seed in seeds:
                 print(f"SKAB automata fold={fold}, seed={seed} çalışıyor...")
                 fold_res, _ = run_experiment_pipeline(
@@ -987,7 +1270,7 @@ def main():
  
     #run_parameter_sensitivity_analysis(config)
     #run_vomm_threshold_sensitivity_analysis(config)
-    run_batadal_vomm_regularization_analysis(config)
+    #run_batadal_vomm_regularization_analysis(config)
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main

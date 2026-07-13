@@ -231,3 +231,27 @@ SAX/PAA sonucunda oluşan benzer pattern’leri ortak durumlarda birleştirerek 
 
 Bu nedenle State Aggregation yaklaşımı final modele dahil edilmemiştir.
 
+### Uzun Window Size ve Context Derinliği Analizi
+
+VOMM-PST modelinde daha uzun geçmiş kullanımının performansa etkisini incelemek amacıyla BATADAL veri setinde daha büyük window_size ve max_depth değerleri denenmiştir.
+Ancak mevcut SAX/PAA yapısında aynı `window_size` hem PAA segment boyutunu hem de pattern uzunluğunu belirlediği için, window büyüdükçe pattern’lerin kapsadığı zaman aralığı da genişlemiştir.
+Bir pattern’in içinde tek bir anomalili nokta olması tüm pattern’in anomalili kabul edilmesine neden olduğundan, büyük window değerlerinde normal noktalar da anomalili pattern’lerin içine girmiş ve F1 değeri yapay olarak yükselmiştir.
+
+| Window Size | Validation Anomaly | Validation Normal | Validation F1 |
+|---:|---:|---:|---:|
+| 12 | 15 | 42 | 0.4167 |
+| 16 | 18 | 18 | 0.6667 |
+| 20 | 19 | 2 | 0.9500 |
+
+`window_size=20` için elde edilen yüksek sonuç bu nedenle gerçek bir iyileşme olarak kabul edilmemiştir.
+
+Daha adil bir karşılaştırma için `window_size=6` sabit tutulmuş ve yalnızca `max_depth` değiştirilmiştir.
+
+| Max Depth | PST Durum Sayısı | Validation F1 |
+|---:|---:|---:|
+| 6 | 2.111 | 0.1655 |
+| 12 | 6.012 | 0.1655 |
+| 20 | 11.966 | 0.1655 |
+
+`max_depth` arttıkça model karmaşıklığı yükselmiş ancak performans değişmemiştir. Bu nedenle final modelde `window_size=6` ve `max_depth=6` korunmuştur.
+
