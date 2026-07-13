@@ -255,3 +255,15 @@ Daha adil bir karşılaştırma için `window_size=6` sabit tutulmuş ve yalnız
 
 `max_depth` arttıkça model karmaşıklığı yükselmiş ancak performans değişmemiştir. Bu nedenle final modelde `window_size=6` ve `max_depth=6` korunmuştur.
 
+### SKAB Window Size Analizi
+
+SKAB üzerinde daha uzun pattern uzunluklarının etkisini incelemek amacıyla `window_size=[3,4,5,6,7,8,9,10,12]` değerleri validation seti üzerinde taranmıştır. Mevcut model yapısında VOMM/PST `max_depth` değeri de `window_size` ile aynı tutulmuştur.
+
+Beş fold’un tamamında en iyi değer `window_size=12` olarak seçilmiştir. Fold bazlı threshold değerleri kullanılarak test setinde aşağıdaki ortalama sonuç elde edilmiştir:
+
+| Window Size | Precision | Recall | F1-score |
+|---:|---:|---:|---:|
+| 12 | 0.4938 | 0.7952 | 0.6051 |
+
+Bu nedenle SKAB final modelinde `window_size=12` kullanılmıştır. Window büyüdükçe pattern seviyesindeki sınıf dağılımının değiştiği de sonuçlar değerlendirilirken dikkate alınmıştır.
+
