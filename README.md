@@ -426,8 +426,64 @@ Bu deneyde, önceki çalışmalarda elde edilen bulgular doğrultusunda LSTM mod
 
 > Özellikle önceki deneylerde bazı seed değerlerinde gözlemlenen performans çöküşleri bu konfigürasyonda ortadan kalkmış, tüm seed senaryolarında yüksek recall ve dengeli F1-score değerleri elde edilmiştir. Elde edilen bulgular, LSTM kapasitesinin artırılması ve daha hassas threshold seçiminin birlikte kullanılmasının BATADAL veri seti üzerinde hem performansı hem de model kararlılığını önemli ölçüde iyileştirdiğini göstermektedir.
 
+---
+
+# 5. SKAB Veri Seti Üzerinde Pencere Boyutu Analizi
+
+Bu bölümde, BATADAL veri seti üzerinde elde edilen bulguların farklı bir endüstriyel zaman serisi veri kümesi üzerinde ne ölçüde genellenebilir olduğunu incelemek amacıyla SKAB veri seti üzerinde ek deneyler gerçekleştirilmiştir.
+
+SKAB veri seti, BATADAL'dan farklı olarak daha dengeli bir anomali dağılımına sahip olduğundan, bu deneylerde herhangi bir veri artırma yöntemi (ADASYN/SMOTE) uygulanmamıştır. Veri kümesi, `GroupKFold (5-fold)` yöntemi kullanılarak eğitim ve test kümelerine ayrılmıştır. Her fold içerisinde eğitim kümesinin son `%20`'lik kısmı doğrulama (validation) amacıyla kullanılmıştır.
+
+## Deneysel Kurulum
+
+| Parametre | Değer |
+|------------|--------|
+| Epoch | 100 |
+| Batch Size | 32 |
+| Early Stopping Patience | 15 |
+| LSTM Units | 64 |
+| GRU Units | 64 |
+| Dense Units | 64 |
+| Dropout | 0.3 / 0.2 |
+| Seed | 42 |
+| Fold Sayısı | 5 |
+| Threshold Aralığı | 0.10 – 0.50 |
+
+Bu deneylerde yalnızca `sequence_window_size` parametresinin etkisi incelenmiştir.
+
+İncelenen pencere boyutları:
+
+- Window = 10
+- Window = 20
+- Window = 40
+
+Her pencere boyutu için LSTM ve GRU modelleri 5-fold çapraz doğrulama ile eğitilmiş ve sonuçlar Accuracy, Precision, Recall ve F1-score metrikleri üzerinden değerlendirilmiştir.
+
+## Araştırma Sorusu
+
+> Farklı zaman penceresi uzunlukları, SKAB veri setinde LSTM ve GRU tabanlı anomali tespit performansını nasıl etkilemektedir?
+
+## Beklenen Metodolojik Katkı
+
+Bu deneylerin amacı:
+
+1. Pencere boyutunun model performansı üzerindeki etkisini incelemek,
+2. BATADAL üzerinde gözlemlenen bulguların farklı veri kümelerinde de geçerli olup olmadığını araştırmak,
+3. LSTM ve GRU mimarilerinin farklı zaman ufuklarına karşı duyarlılığını analiz etmektir.
+
+### Sonuçlar
+
+| Model | Window | Accuracy | Precision | Recall | F1 |
+|--------|---------|-----------|------------|---------|----|
+| LSTM | 10 | 0.8905 ± 0.0386 | 0.8864 ± 0.1336 | 0.8193 ± 0.0800 | 0.8416 ± 0.0431 |
+| LSTM | 20 | ... | ... | ... | ... |
+| LSTM | 40 | ... | ... | ... | ... |
+| GRU | 10 | 0.9016 ± 0.0235 | 0.9019 ± 0.1010 | 0.8237 ± 0.0739 | 0.8545 ± 0.0303 |
+| GRU | 20 | ... | ... | ... | ... |
+| GRU | 40 | ... | ... | ... | ... |
+
 ###  Metodolojik Güvence (Veri Sızıntısı Önlemleri)
 
 Projede veri sızıntısını (data leakage) engellemek ve modellerin gerçek dünya performansını dürüstçe ölçmek adına aşağıdaki protokole kesin olarak sadık kalınmıştır:
-1. **Saf Doğrulama ve Test:** ADASYN ile veri artırımı (pencere seviyesinde) **yalnızca Eğitim (Train) kümesine** uygulanmıştır. Doğrulama (Validation) ve Test kümelerine hiçbir şekilde sentetik veri bulaştırılmamış; bu kümeler tamamen orijinal ve ham zaman serisi akışından koparılmıştır.
+1. **Saf Doğrulama ve Test:** BATADAL, ADASYN ile veri artırımı (pencere seviyesinde) **yalnızca Eğitim (Train) kümesine** uygulanmıştır. Doğrulama (Validation) ve Test kümelerine hiçbir şekilde sentetik veri bulaştırılmamış; bu kümeler tamamen orijinal ve ham zaman serisi akışından koparılmıştır.
 2. **Eşik Kararsızlığı Notu:** Bazı konfigürasyonlarda ve belirli başlangıç ağırlıklarında (örneğin Seed=42) test F1 skorunun `0.0000` çıkması, bir veri sızıntısından değil; tamamen saf validation setinden öğrenilen katı eşik değerlerinin (threshold), ADASYN ile eğitilen modelin ham test kümesindeki tahmin olasılık aralığını (confidence interval) karşılayamamış olmasından kaynaklanmaktadır.

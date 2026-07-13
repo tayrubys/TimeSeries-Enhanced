@@ -17,10 +17,10 @@ WINDOW_SIZE = DL_CONFIG["sequence_window_size"]
 N_FOLDS = DL_CONFIG["n_folds"]
 
 
-build_and_save_batadal_sequences(
-    processed_dir="data/processed",
-    window_size=WINDOW_SIZE
-)
+#build_and_save_batadal_sequences(
+   # processed_dir="data/processed",
+    #window_size=WINDOW_SIZE
+#)
 
 build_and_save_skab_sequences(
     processed_dir="data/processed",

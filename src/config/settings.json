@@ -39,32 +39,31 @@
         ]
     },
     "deep_learning": {
-        "epochs": 75,
+        "epochs": 100,
         "batch_size": 32,
-        "early_stopping_patience": 12,
-        "learning_rate": 0.0005,
-        "lstm_units": 128,
+        "early_stopping_patience": 15,
+        "learning_rate": 0.001,
+        "lstm_units": 64,
         "gru_units": 64,
         "dense_units": 64,
         "dropout_rate_1": 0.3,
         "dropout_rate_2": 0.2,
         "val_ratio": 0.2,
-        "sequence_window_size": 20,
+        "sequence_window_size": 10,
         "n_folds": 5,
-        "thresholds": [
-            0.5,
-            0.4,
-            0.3,
-            0.2,
-            0.1
+        "thresholds":[
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5
         ],
         "seeds": [
-            42,
-            123,
-            2026,
-            7,
-            999
-
+            42
         ],
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20
