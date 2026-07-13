@@ -265,7 +265,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
  
     model = VariableOrderMarkovModel(
-        max_depth=config["window_size"],
+        max_depth=config.get("max_depth", config["window_size"]), #vomm-pst nin gecmıste kac pattern bakacagını belırler
         min_count=config.get("min_count", 2),
         smoothing=True,
         smoothing_alpha=config.get("smoothing_alpha", 1.0)
@@ -333,6 +333,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     common_fields = {
         "dataset": dataset_name, "fold": fold_name, "seed": seed,
         "window_size": config["window_size"],
+        "max_depth": config.get("max_depth", config["window_size"]),
         "alphabet_size": config["alphabet_size"],
         "min_count": config.get("min_count", 2),
         "smoothing_alpha": config.get("smoothing_alpha", 1.0),
@@ -613,7 +614,231 @@ def run_batadal_vomm_regularization_analysis(config):
             f"smoothing_alpha={best_row['smoothing_alpha']}, "
             f"threshold={best_row['selected_threshold']} | "
             f"F1={best_row['f1_score']:.4f}"
-        )    
+        )
+
+#batadal için daha uzun window_size değerlerini deneme
+def run_batadal_large_window_analysis(config):
+    print("\n--- BATADAL VOMM/PST LARGE WINDOW ANALİZİ BAŞLATILIYOR ---")
+
+    required_files = [
+        "data/processed/batadal_X_train_adasyn_pc1.csv",
+        "data/processed/batadal_X_val_pc1.csv",
+        "data/processed/batadal_y_val.csv",
+        "data/processed/batadal_X_test_pc1.csv",
+        "data/processed/batadal_y_test.csv"
+    ]
+
+    for file_path in required_files:
+        if not os.path.exists(file_path):
+            print(f"Eksik dosya: {file_path}")
+            return
+
+    X_train = pd.read_csv(
+        "data/processed/batadal_X_train_adasyn_pc1.csv"
+    ).values.flatten()
+
+    X_val = pd.read_csv(
+        "data/processed/batadal_X_val_pc1.csv"
+    ).values.flatten()
+
+    y_val = pd.read_csv(
+        "data/processed/batadal_y_val.csv"
+    ).values.flatten()
+
+    X_test = pd.read_csv(
+        "data/processed/batadal_X_test_pc1.csv"
+    ).values.flatten()
+
+    y_test = pd.read_csv(
+        "data/processed/batadal_y_test.csv"
+    ).values.flatten()
+
+    y_val = np.where(y_val == -999, 0, y_val)
+    y_test = np.where(y_test == -999, 0, y_test)
+
+    # SAX/PAA gösterimi sabit kalacak.
+    sax_window_size = 6
+
+    #Sadece VOMM/PST geçmiş uzunluğu değişecek.
+    max_depth_values = [6, 8, 10, 12, 16, 20]
+
+    #window etkisini tek başına görebilmek için diğer parametreleri sabit tutuyor
+    alphabet_size = 4
+    min_count = 3
+    smoothing_alpha = 1.0
+
+    threshold_values = config.get(
+        "vomm_threshold_values",
+        [
+            0.001,
+            0.005,
+            0.01,
+            0.02,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.5
+        ]
+    )
+
+    validation_results = []
+
+    for max_depth in max_depth_values:
+        transformer = SaxPaaTransformer(
+            alphabet_size=alphabet_size
+        )
+
+        train_patterns = transformer.transform(
+            X_train,
+            window_size=sax_window_size
+        )
+        #window büyüdükçe validation pattern ve etiket dağılımını kontrol ediyor
+        val_patterns = transformer.transform(
+            X_val,
+            window_size=sax_window_size
+        )
+ 
+        y_val_aligned = align_labels_to_patterns(
+            y_val,
+            len(val_patterns),
+            sax_window_size
+        )
+
+        validation_anomaly_count = int(np.sum(y_val_aligned))
+        validation_normal_count = int(
+            len(y_val_aligned) - validation_anomaly_count
+        )
+        model = VariableOrderMarkovModel(
+            max_depth=max_depth,
+            min_count=min_count,
+            smoothing=True,
+            smoothing_alpha=smoothing_alpha
+        )
+
+        model.fit(train_patterns)
+
+        (
+            selected_threshold,
+            selected_context_depth,
+            selected_context_count,
+            selected_smooth_window,
+            validation_metrics
+        ) = select_best_threshold_on_validation(
+            model=model,
+            transformer=transformer,
+            X_val=X_val,
+            y_val=y_val,
+            threshold_values=threshold_values,
+            window_size=sax_window_size,
+
+            #diğer yöntemleri kapalı tutuluyor
+            min_context_depth_values=[0],
+            min_context_count_values=[0],
+            smooth_window_values=[1]
+        )
+
+        model_stats = model.model_stats
+
+        validation_results.append({
+            "window_size": sax_window_size,
+            "max_depth": max_depth,
+            "alphabet_size": alphabet_size,
+            "min_count": min_count,
+            "smoothing_alpha": smoothing_alpha,
+            "selected_threshold": selected_threshold,
+            "train_pattern_count": len(train_patterns),
+            "num_states": model_stats["num_nodes"],
+            "num_transitions": model_stats["num_transitions"],
+            "validation_precision": validation_metrics["precision"],
+            "validation_recall": validation_metrics["recall"],
+            "validation_f1": validation_metrics["f1_score"]
+        })
+
+        print(
+            f"max_depth={max_depth} | "
+            f"SAX window={sax_window_size} | "
+            f"threshold={selected_threshold} | "
+            f"train pattern={len(train_patterns)} | "
+            f"val pattern={len(val_patterns)} | "
+            f"val anomaly={validation_anomaly_count} | "
+            f"val normal={validation_normal_count} | "
+            f"state={model_stats['num_nodes']} | "
+            f"Precision={validation_metrics['precision']:.4f} | "
+            f"Recall={validation_metrics['recall']:.4f} | "
+            f"Validation F1={validation_metrics['f1_score']:.4f}"
+        )
+
+    validation_df = pd.DataFrame(validation_results)
+
+    validation_df.to_csv(
+        "results/outputs/batadal_vomm_large_window_validation.csv",
+        index=False
+    )
+
+    best_row = validation_df.loc[
+        validation_df["validation_f1"].idxmax()
+    ]
+
+    best_window_size = int(best_row["window_size"])
+    best_max_depth = int(best_row["max_depth"])
+    best_threshold = float(best_row["selected_threshold"])
+
+    print("\n--- VALIDATION ÜZERİNDEN SEÇİLEN AYAR ---")
+    print(
+        f"window_size={best_window_size} | "
+        f"max_depth={best_max_depth} | "
+        f"threshold={best_threshold} | "
+        f"Validation F1={best_row['validation_f1']:.4f}"
+    )
+
+    #yalnızca validationda seçilen en iyi window testte denenir
+    final_config = {
+        **config,
+        "window_size": best_window_size,
+        "max_depth": best_max_depth,
+        "alphabet_size": alphabet_size,
+        "min_count": min_count,
+        "smoothing_alpha": smoothing_alpha,
+        "anomaly_threshold": best_threshold,
+        "min_context_depth": 0,
+        "min_context_count": 0,
+        "smooth_window": 1
+    }
+
+    final_results, _ = run_experiment_pipeline(
+        X_train=X_train,
+        X_test=X_test,
+        y_test=y_test,
+        config=final_config,
+        dataset_name="BATADAL",
+        fold_name="large_window_final",
+        seed=config["seeds"][0],
+        use_validation_threshold=False
+    )
+
+    original_result = [
+        result
+        for result in final_results
+        if result["scenario"] == "original"
+    ][0]
+
+    pd.DataFrame([original_result]).to_csv(
+        "results/outputs/batadal_vomm_large_window_final.csv",
+        index=False
+    )
+
+    print("\n--- LARGE WINDOW FINAL TEST SONUCU ---")
+    print(
+        f"window_size={best_window_size} | "
+        f"max_depth={best_max_depth} | "
+        f"threshold={best_threshold} | "
+        f"Precision={original_result['precision']:.4f} | "
+        f"Recall={original_result['recall']:.4f} | "
+        f"F1={original_result['f1_score']:.4f}"
+    )     
+
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -640,6 +865,7 @@ def main():
         config_batadal = {
             **config,
             "window_size": 6,
+            "max_depth": 6,
             "alphabet_size": 4,
             "anomaly_threshold": 0.005,
             "min_count": 3,
