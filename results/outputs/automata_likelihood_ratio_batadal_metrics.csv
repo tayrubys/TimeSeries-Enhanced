@@ -1,0 +1,2 @@
+dataset,model,window_size,alphabet_size,smoothing_alpha,selected_threshold,validation_anomaly_rate,validation_precision,validation_recall,validation_f1,validation_pr_auc,validation_roc_auc,test_accuracy,test_precision,test_recall,test_f1,test_pr_auc,test_roc_auc
+BATADAL,likelihood_ratio_automata,4,3,1.0,-1.3568804759135975,0.06372549019607843,0.07222222222222222,1.0,0.13471502590673576,0.048655558338023916,0.35219492549335485,0.3170731707317073,0.15432098765432098,0.8928571428571429,0.2631578947368421,0.3205151221283616,0.6913841807909604
