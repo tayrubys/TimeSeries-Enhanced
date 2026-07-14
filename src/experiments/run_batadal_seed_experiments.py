@@ -11,42 +11,14 @@ from src.experiments.evaluator import evaluate_binary_classification
 from src.config import get_dl_config
 
 
-def load_batadal_sequence_data(processed_dir="data/processed", balancing_method="class_weight", model_type="LSTM"):
-    """
-    balancing_method:
-      "class_weight" -> ham (dengesiz) train + class_weight kullanılacak
-      "smote"        -> SMOTE ile dengelenmiş train (class_weight KULLANILMAZ)
-      "adasyn"       -> ADASYN ile dengelenmiş train (Model tipine göre pencere boyutu değişir)
-    """
-    if balancing_method == "class_weight":
-        X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
-        y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
-    elif balancing_method == "smote":
-        X_train = np.load(f"{processed_dir}/batadal_X_train_seq_balanced.npy").astype("float32")
-        y_train = np.load(f"{processed_dir}/batadal_y_train_seq_balanced.npy").astype("float32")
-    elif balancing_method == "adasyn":
-        # GRU için window=10, LSTM için window=20 dosyaları yükleniyor
-        if model_type == "GRU":
-            X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_10.npy").astype("float32")
-            y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_10.npy").astype("float32")
-        else:  # LSTM
-            X_train = np.load(f"{processed_dir}/batadal_X_train_seq_adasyn_20.npy").astype("float32")
-            y_train = np.load(f"{processed_dir}/batadal_y_train_seq_adasyn_20.npy").astype("float32")
-    else:
-        raise ValueError(f"Bilinmeyen balancing_method: {balancing_method}")
+def load_batadal_sequence_data(processed_dir="data2/processed/robust_adasyn"):
+    X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
+    y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
+    X_val   = np.load(f"{processed_dir}/batadal_X_val_seq.npy").astype("float32")
+    y_val   = np.load(f"{processed_dir}/batadal_y_val_seq.npy").astype("float32")
+    X_test  = np.load(f"{processed_dir}/batadal_X_test_seq.npy").astype("float32")
+    y_test  = np.load(f"{processed_dir}/batadal_y_test_seq.npy").astype("float32")
 
-    # Validation ve Test setleri model tipine (pencere boyutuna) göre dinamik yükleniyor
-    if model_type == "GRU":
-        X_val   = np.load(f"{processed_dir}/batadal_X_val_seq_10.npy").astype("float32")
-        y_val   = np.load(f"{processed_dir}/batadal_y_val_seq_10.npy").astype("float32")
-        X_test  = np.load(f"{processed_dir}/batadal_X_test_seq_10.npy").astype("float32")
-        y_test  = np.load(f"{processed_dir}/batadal_y_test_seq_10.npy").astype("float32")
-    else:  # LSTM (Window=20)
-        X_val   = np.load(f"{processed_dir}/batadal_X_val_seq_20.npy").astype("float32")
-        y_val   = np.load(f"{processed_dir}/batadal_y_val_seq_20.npy").astype("float32")
-        X_test  = np.load(f"{processed_dir}/batadal_X_test_seq_20.npy").astype("float32")
-        y_test  = np.load(f"{processed_dir}/batadal_y_test_seq_20.npy").astype("float32")
-        
     return X_train, y_train, X_val, y_val, X_test, y_test
 
 
@@ -202,10 +174,10 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     results_df = pd.DataFrame(all_results)
-    results_df.to_csv(output_dir / "batadal_deep_learning_seed_results.csv", index=False)
+    results_df.to_csv(output_dir / "batadal2_deep_learning_seed_results.csv", index=False)
 
     summary_df = summarize_results(results_df)
-    summary_df.to_csv(output_dir / "batadal_deep_learning_seed_summary.csv", index=False)
+    summary_df.to_csv(output_dir / "batadal2_deep_learning_seed_summary.csv", index=False)
 
     print("\nBATADAL seed bazlı sonuçlar:")
     print(results_df)

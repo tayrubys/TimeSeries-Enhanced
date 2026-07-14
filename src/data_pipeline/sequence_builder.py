@@ -52,36 +52,48 @@ def build_sequences_from_csv(X_path, y_path, window_size=20):
 
 #batadal train/validation/test scaled csv dosylarından lstm ve gru ıcın sequence verileri uretıp .npy olarak kaydetme
 def build_and_save_batadal_sequences(
-    processed_dir="data/processed",
-    window_size=20
+    processed_dir="data2/processed/robust_adasyn",
+    window_size=20,
 ):
-
     processed_dir = Path(processed_dir)
 
     datasets = {
         "train": (
-            processed_dir / "batadal_X_train_scaled.csv",
-            processed_dir / "batadal_y_train.csv"
+            processed_dir / "X_train_adasyn.csv",
+            processed_dir / "y_train_adasyn.csv",
         ),
         "val": (
-            processed_dir / "batadal_X_val_scaled.csv",
-            processed_dir / "batadal_y_val.csv"
+            processed_dir / "X_val_scaled.csv",
+            processed_dir / "y_val.csv",
         ),
         "test": (
-            processed_dir / "batadal_X_test_scaled.csv",
-            processed_dir / "batadal_y_test.csv"
-        )
+            processed_dir / "X_test_scaled.csv",
+            processed_dir / "y_test.csv",
+        ),
     }
 
     for split_name, (X_path, y_path) in datasets.items():
+        if not X_path.exists():
+            raise FileNotFoundError(f"Feature dosyası bulunamadı: {X_path}")
+
+        if not y_path.exists():
+            raise FileNotFoundError(f"Etiket dosyası bulunamadı: {y_path}")
+
         X_seq, y_seq = build_sequences_from_csv(
             X_path=X_path,
             y_path=y_path,
-            window_size=window_size
+            window_size=window_size,
         )
 
-        X_output_path = processed_dir / f"batadal_X_{split_name}_seq_{window_size}.npy"
-        y_output_path = processed_dir / f"batadal_y_{split_name}_seq_{window_size}.npy"
+        X_output_path = (
+            processed_dir
+            / f"batadal_X_{split_name}_seq.npy"
+        )
+
+        y_output_path = (
+            processed_dir
+            / f"batadal_y_{split_name}_seq.npy"
+        )
 
         np.save(X_output_path, X_seq)
         np.save(y_output_path, y_seq)
@@ -91,7 +103,6 @@ def build_and_save_batadal_sequences(
         print(f"  y shape: {y_seq.shape}")
         print(f"  X dosyası: {X_output_path}")
         print(f"  y dosyası: {y_output_path}")
-
 #skab ıcın sequence
 def create_sequences_by_group(X, y, groups, window_size=20):
 

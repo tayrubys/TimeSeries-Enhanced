@@ -376,7 +376,24 @@ Bu deneyde, önceki çalışmalarda kullanılan sınırlı threshold aralığın
 > Bununla birlikte, bazı seed değerlerinde (özellikle **LSTM-999**) modelin anomalileri tamamen kaçırdığı görülmüştür. Bu durum, threshold optimizasyonunun tek başına yeterli olmadığını; eğitim süreci, başlangıç ağırlıkları (seed) ve model kararlılığının da performans üzerinde önemli etkileri olduğunu göstermektedir. Sonuç olarak ince taneli threshold optimizasyonu genel performansı artırmış, ancak seed duyarlılığı problemini tamamen ortadan kaldıramamıştır.
 
 
+## Deney 2.8 RobustScaler + ADASYN + Window Size = 10 Sonuçları
+
+Bu deneyde yalnızca `RobustScaler` ön işleme yöntemi uygulanmış, ardından yalnızca eğitim kümesine `ADASYN` ile veri artırımı yapılmıştır. Sequence oluşturma aşamasında pencere boyutu (`window_size`) 10 olarak seçilmiştir. Modeller 5 farklı rastgele başlangıç ağırlığı (42, 123, 2026, 7, 999) ile eğitilmiş ve ortalama ± standart sapma değerleri raporlanmıştır.
+
+| Model | Accuracy | Precision | Recall | F1-score |
+|--------|-----------|------------|---------|-----------|
+| GRU | **0.9548 ± 0.0104** | **0.6964 ± 0.0549** | **0.9575 ± 0.0391** | **0.8049 ± 0.0364** |
+| LSTM | 0.9195 ± 0.0349 | 0.5225 ± 0.1857 | 0.5050 ± 0.4117 | 0.4823 ± 0.3171 |
+
+#### Gözlemler
+
+- Pencere boyutunun 10'a düşürülmesi, özellikle GRU modelinin performansını ve kararlılığını önemli ölçüde artırmıştır.
+- GRU modeli tüm seed değerlerinde tutarlı sonuçlar üretmiş ve düşük standart sapma (`σ = 0.0364`) göstermiştir.
+- LSTM modeli bazı başlangıç ağırlıklarında yüksek performans üretmesine rağmen, bazı seed değerlerinde performansın ciddi şekilde düşmesi nedeniyle standart sapması yüksek kalmıştır.
+- Sonuçlar, BATADAL veri setinde kısa zaman ufkunun (window=10) daha etkili olduğunu ve GRU mimarisinin kısa dönemli bağımlılıkları modellemede daha başarılı olduğunu göstermektedir.
+
 ---
+
 ## 3.Genel Değerlendirme: Hangi Konfigürasyon Gerçekten En İyisi
  
 Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin optimizasyon müdahalelerine **tamamen zıt yönde** tepki verdiği görülmektedir:
@@ -400,35 +417,10 @@ Yukarıdaki dört deney setini yan yana koyduğumuzda, LSTM ve GRU modellerinin 
 
 >GRU, LSTM'e kıyasla daha sade bir hücre yapısına (daha az parametreye) sahiptir. Bu durum, ADASYN'in yüksek boyutlu uzaylardaki gürültüsünden (Boyutun Laneti) GRU'nun çok daha hızlı etkilenmesine yol açmaktadır. GRU için en başarılı hamle, pencere boyutunu 10'a düşürerek öznitelik uzayını daraltmak ve düşük öğrenme oranı + sıkı dropout ile modeli kısıtlamaktır. Bu sayede GRU, rastgele başlangıç ağırlıklarına (seed) olan hassasiyetini tamamen kırmış, Precision standart sapmasını 0.0434 gibi mükemmel bir seviyeye indirerek 0.7279 kararlı ortalama F1 başarısı yakalamıştır.
 
----
-## 4.Nihai Optimizasyon Sonuçları
-## 4.1. Optimize Edilmiş LSTM Mimarisi ve İnce Taneli Threshold Optimizasyonu
-
-Bu deneyde, önceki çalışmalarda elde edilen bulgular doğrultusunda LSTM modeli yeniden optimize edilmiştir. Model kapasitesi **128 LSTM birimi** ve **64 dense nöronu** olacak şekilde yapılandırılmış; eğitim süresi **75 epoch**, **Early Stopping patience değeri 12** olarak belirlenmiştir. Ayrıca önceki deneyde önerilen ince taneli threshold optimizasyonu korunmuş ve doğrulama kümesinde **0.01–0.50** aralığında **0.01** adımlarla en uygun eşik değeri seçilerek test kümesine uygulanmıştır.
-
-### Seed Bazlı Detaylı Sonuçlar (Test Kümesi)
-
-| Model | Seed | Threshold | Accuracy | Precision | Recall | F1-score |
-|---|---|---|---|---|---|---|
-| **LSTM** | 42 | 0.03 | 0.9266 | 0.5725 | 0.9875 | 0.7248 |
-| **LSTM** | 123 | 0.01 | 0.9376 | 0.6160 | 0.9625 | 0.7512 |
-| **LSTM** | 2026 | 0.02 | 0.9278 | 0.5755 | 1.0000 | 0.7306 |
-| **LSTM** | 7 | 0.10 | 0.9498 | 0.6726 | 0.9500 | 0.7876 |
-| **LSTM** | 999 | 0.11 | 0.9572 | 0.7064 | 0.9625 | 0.8148 |
-
-### Model Performans Özeti (Ortalama ± Standart Sapma)
-
-| Model | Ortalama Accuracy | Ortalama Precision | Ortalama Recall | Ortalama F1-score |
-|---|---|---|---|---|
-| **LSTM (Optimize Edilmiş)** | **0.9398 ± 0.0135** | **0.6286 ± 0.0594** | **0.9725 ± 0.0205** | **0.7618 ± 0.0385** |
-
-> **Sonuçların Değerlendirilmesi:** Optimize edilen LSTM mimarisi ile birlikte uygulanan ince taneli threshold optimizasyonu, önceki deneylere kıyasla model performansını belirgin şekilde artırmıştır. Ortalama **F1-score 0.5929'dan 0.7618'e yükselirken**, standart sapma **0.3333'ten 0.0385'e** düşmüştür. Bu durum yalnızca ortalama performansın arttığını değil, aynı zamanda modelin farklı başlangıç ağırlıkları (seed) altında çok daha **kararlı** sonuçlar ürettiğini göstermektedir.
-
-> Özellikle önceki deneylerde bazı seed değerlerinde gözlemlenen performans çöküşleri bu konfigürasyonda ortadan kalkmış, tüm seed senaryolarında yüksek recall ve dengeli F1-score değerleri elde edilmiştir. Elde edilen bulgular, LSTM kapasitesinin artırılması ve daha hassas threshold seçiminin birlikte kullanılmasının BATADAL veri seti üzerinde hem performansı hem de model kararlılığını önemli ölçüde iyileştirdiğini göstermektedir.
 
 ---
 
-# 5. SKAB Veri Seti Üzerinde Pencere Boyutu Analizi
+# 4. SKAB Veri Seti Üzerinde Pencere Boyutu Analizi
 
 Bu bölümde, BATADAL veri seti üzerinde elde edilen bulguların farklı bir endüstriyel zaman serisi veri kümesi üzerinde ne ölçüde genellenebilir olduğunu incelemek amacıyla SKAB veri seti üzerinde ek deneyler gerçekleştirilmiştir.
 
