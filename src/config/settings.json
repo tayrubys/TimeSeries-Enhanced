@@ -108,6 +108,7 @@
             0.95
         ],
         "entropy_mode": "normalized",
-        "entropy_min_total_exits": 1
+        "entropy_min_total_exits": 1,
+        "window_threshold_fast_predict": false
     }
 }
