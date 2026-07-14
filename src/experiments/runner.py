@@ -357,6 +357,8 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     )
     preds_orig = preds_orig[:len(y_test_aligned_orig)]
     metrics_orig = calculate_metrics(y_test_aligned_orig, preds_orig)
+    metrics_orig["predicted_positive_rate"] = float(np.mean(preds_orig))#model yuzde kacına anomali diyor
+    metrics_orig["actual_positive_rate"] = float(np.mean(y_test_aligned_orig))
     metrics_orig.update({"scenario": "original", **common_fields})
     results.append(metrics_orig)
  
