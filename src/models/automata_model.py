@@ -51,7 +51,96 @@ class ProbabilisticAutomata:
                 best_distance = dist
                 nearest_pattern = trained_pattern
         return nearest_pattern, best_distance
+    
+    #Test pattern dizisindeki her geçiş için olasılık ve surprise skoru hesaplar
+    def calculate_transition_surprises(
+        self,
+        test_patterns,
+        epsilon=1e-12
+    ):
+       
+        if len(self.trained_patterns) == 0:
+            raise RuntimeError(
+                "Surprise skoru hesaplanmadan önce model "
+                "eğitilmelidir."
+            )
 
+        if epsilon <= 0:
+            raise ValueError(
+                "epsilon sıfırdan büyük olmalıdır."
+            )
+
+        test_patterns = list(test_patterns)
+
+        if len(test_patterns) < 2:
+            return np.array([], dtype=float), []
+
+        surprise_scores = []
+        transition_details = []
+
+        #ilk pattern unseen ise en yakın eğitim pattern'ına eşle.
+        current_state = test_patterns[0]
+
+        if current_state not in self.trained_patterns:
+            current_state, _ = self._find_nearest_pattern(
+                current_state
+            )
+
+        for time_step in range(1, len(test_patterns)):
+            incoming_pattern = test_patterns[time_step]
+
+            status = "seen"
+            mapped_to = incoming_pattern
+            distance = 0
+
+            #mevcut unseen yönetimini aynen koru
+            if incoming_pattern not in self.trained_patterns:
+                status = "unseen"
+
+                mapped_to, distance = self._find_nearest_pattern(
+                    incoming_pattern
+                )
+
+            transition_probability = float(
+                self.get_transition_probability(
+                    current_state,
+                    mapped_to
+                )
+            )
+
+            #log(0) oluşmasını önlemek için güvenli alt sınırı
+            safe_probability = max(
+                transition_probability,
+                epsilon
+            )
+
+            surprise_score = float(
+                -np.log(safe_probability)
+            )
+
+            surprise_scores.append(surprise_score)
+
+            transition_details.append(
+                {
+                    "time_step": time_step,
+                    "current_state": current_state,
+                    "incoming_pattern": incoming_pattern,
+                    "status": status,
+                    "mapped_to": mapped_to,
+                    "distance": int(distance),
+                    "transition_probability":
+                        transition_probability,
+                    "surprise_score": surprise_score
+                }
+            )
+
+            #sonraki geçişin mevcut state i eşlenmiş pattern olur
+            current_state = mapped_to
+
+        return (
+            np.asarray(surprise_scores, dtype=float),
+            transition_details
+        )
     def predict(self, test_patterns, anomaly_threshold=0.05):
         predictions = []
         explainability_logs = []

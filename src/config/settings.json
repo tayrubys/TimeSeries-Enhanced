@@ -74,8 +74,8 @@
         "anomaly_threshold": 0.05,
         "skab_anomaly_threshold": 0.90,
         "batadal_anomaly_threshold": 0.05,
-        "likelihood_smoothing_alpha": 1.0,
         "noise_level": 0.1,
+        "cusum_k_quantiles": [0.50,0.60,0.70,0.80,0.90,0.95],
         "window_sizes": [
             3,
             4,
