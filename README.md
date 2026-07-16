@@ -2,7 +2,48 @@
 
 Bu proje, zaman serilerindeki anomalileri tespit etmek için kullanılan Derin Öğrenme (Deep Learning) ve Otomata tabanlı yaklaşımların iyileştirilmesi ve optimize edilmesi amacıyla oluşturulmuştur. 
 
-## Odaklanılan Geliştirmeler
-* **Derin Öğrenme Optimizasyonları:** Parametre kısıtlamalarının kaldırılarak model performansının artırılması ve yeni denemelerin yapılması.
-* **Otomata İyileştirmeleri:** `window size` ve `alphabet size` gibi temel metriklerin test edilerek tespit algoritmalarının optimize edilmesi.
-* **Veri Seti Ön İşleme:** Model eğitimini iyileştirmek için BATADAL veri setindeki dengesizliklerin (imbalance) giderilmesi.
+## ALERGIA-inspired Probabilistic State-Merging Denemesi
+
+Bu branch üzerinde otomata modelinin BATADAL performansını artırmak amacıyla ALERGIA-inspired probabilistic state-merging yöntemini denedim. Model, ADASYN ile dengelenmiş PC1 eğitim verisi üzerinde PAA ve SAX dönüşümleri uygulanarak oluşturuldu.
+
+### İlk State-Merging Denemesi
+
+İlk aşamada benzer geçiş davranışlarına sahip SAX pattern state’leri istatistiksel olarak birleştirildi. Ancak normal ve anomalili geçişlerin aynı otomata içinde öğrenilmesi sınıflar arasındaki ayrımı azalttı. Bu sürümde test F1 değeri `0.0714` olarak elde edildi.
+
+### Dual ALERGIA Yaklaşımı
+
+Normal ve anomalili geçişlerin birbirinden ayrı öğrenilebilmesi için iki farklı state-merging modeli oluşturuldu:
+
+```text
+Normal geçişler  → Normal ALERGIA modeli
+Anomali geçişleri → Anomali ALERGIA modeli
+```
+Bir geçişin iki modelde ürettiği olasılık değerleri karşılaştırılarak anomali skoru hesaplandı. İlk sürümde istenen performans elde edilemediği için state birleştirme yapısı daha ayrıntılı hâle getirildi.
+
+Pattern-Aware State-Merging
+
+İlk modelde state’ler yalnızca sonraki SAX sembolüne göre karşılaştırılıyordu. Bu durum farklı pattern’ların gereğinden fazla birleştirilmesine neden oldu.
+
+Bu problemi azaltmak için state’ler, sonraki tek sembol yerine sonraki tam SAX pattern dağılımına göre karşılaştırıldı. Böylece geçiş davranışı farklı olan pattern’ların aynı state altında toplanması azaltıldı.
+
+Elde edilen en iyi sonuçlar:
+
+| Senaryo        | Precision | Recall |     F1 |
+| -------------- | --------: | -----: | -----: |
+| Original       |    0.1818 | 0.2143 | 0.1967 |
+| Gaussian Noise |    0.1765 | 0.2143 | 0.1935 |
+| Unseen Data    |    0.0000 | 0.0000 | 0.0000 |
+
+Pattern-aware geliştirme sonrasında test F1 değeri 0.0400 seviyesinden 0.1967 seviyesine yükseldi.
+
+Ek Denemeler
+
+State’lerin birleştirilmesi sırasında farklı Levenshtein mesafe sınırları denendi. Ayrıca unseen pattern’ların anomali skoruna mesafeye bağlı ek ceza verilmesi test edildi.
+
+Bu ek denemeler test performansında kararlı bir artış sağlamadığı için final yapıya dahil edilmedi.
+
+Genel Sonuç
+
+ALERGIA-inspired state-merging yöntemi içerisinde en iyi sonuç, state’lerin sonraki tam pattern dağılımına göre karşılaştırıldığı pattern-aware sürümde elde edildi.
+
+Yöntem state sayısını azaltarak daha genel bir otomata oluşturdu ve ilk ALERGIA sürümlerine göre performansı artırdı. Ancak unseen pattern’ların belirlenmesinde yeterli başarı sağlanamadığı görüldü
