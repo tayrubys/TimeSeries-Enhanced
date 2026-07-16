@@ -373,3 +373,318 @@ Ana final koşu çıktıları:
 results/outputs/automata_advanced_all_scenarios_metrics.csv
 results/outputs/statistical_test_results.csv
 ```
+---
+
+## Window Size + Score Threshold Ablation
+
+Transition-confidence branch üzerinde ek olarak `window_size` ve `score_threshold` değerlerinin performansa etkisi incelendi.
+
+Bu çalışma için ayrı bir ablation script’i kullanıldı:
+
+```text
+src/experiments/window_threshold_ablation.py
+```
+
+Bu script ile farklı `window_size` ve `score_threshold` kombinasyonları denenerek transition-confidence mekanizmasının farklı pencere boyutlarında nasıl davrandığı gözlemlendi.
+
+---
+
+### Deney Kurulumu
+
+Ablation çalışması şu branch üzerinde yürütüldü:
+
+```text
+feature/transition-confidence
+```
+
+Script dry-run aşamasında branch’i doğru şekilde algıladı:
+
+```text
+Branch slug: transition_confidence
+```
+
+Model tarafında transition-confidence parametreleri desteklenen model parametreleri içinde görüldü:
+
+```text
+transition_confidence_enabled
+transition_confidence_k
+transition_confidence_weight
+transition_confidence_mode
+transition_confidence_use_transition_count
+```
+
+Bu nedenle mevcut `window_threshold_ablation.py` script’inin transition-confidence branch ile uyumlu olduğu görüldü.
+
+Bu branch’te transition-confidence mekanizması hem `calculate_scores()` hem de `predict()` içinde uygulandığı için `Fast predict=True` ayarı feature’ı bypass etmedi. Bu nedenle ablation çalışması aşağıdaki ayarla yürütüldü:
+
+```text
+Fast predict: True
+```
+
+Test edilen window size aralığı:
+
+```text
+window_size = [3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+Main ablation senaryoları:
+
+```text
+original
+gaussian_noise
+```
+
+Main ablation tamamlandıktan sonra `original` F1 skoruna göre en iyi 3 aday seçildi. Daha sonra yalnızca bu en iyi 3 aday için `unseen_data` değerlendirmesi yapıldı.
+
+Çıktılar şu klasör altında üretildi:
+
+```text
+results/outputs/window_threshold_ablation/transition_confidence/
+```
+
+---
+
+### BATADAL Window Size Sonuçları
+
+BATADAL tarafında en iyi sonuç şu kombinasyonla elde edildi:
+
+```text
+window_size = 4
+score_threshold = 4.2000
+precision = 0.285714
+recall = 0.571429
+F1 = 0.380952
+accuracy = 0.936585
+```
+
+En iyi 3 aday:
+
+```text
+1. window_size = 4
+   score_threshold = 4.2000
+   precision = 0.285714
+   recall = 0.571429
+   F1 = 0.380952
+
+2. window_size = 4
+   score_threshold = 3.9120
+   precision = 0.128205
+   recall = 0.714286
+   F1 = 0.217391
+
+3. window_size = 4
+   score_threshold = 3.5066
+   precision = 0.069444
+   recall = 0.714286
+   F1 = 0.126582
+```
+
+BATADAL için en iyi pencere boyutu yine `window_size=4` oldu.
+
+Baseline BATADAL sonucu:
+
+```text
+Baseline BATADAL F1 = 0.444444
+```
+
+Transition-confidence window ablation sonrası en iyi BATADAL sonucu:
+
+```text
+Transition-confidence best BATADAL F1 = 0.380952
+```
+
+Bu nedenle transition-confidence branch, window size ve threshold araması sonrasında da BATADAL üzerinde baseline performansını geçemedi.
+
+---
+
+### BATADAL Unseen Data Sonuçları
+
+En iyi original F1 adayının unseen-data sonucu:
+
+```text
+window_size = 4
+score_threshold = 4.2000
+unseen_precision = 0.142857
+unseen_recall = 1.000000
+unseen_F1 = 0.250000
+unseen_accuracy = 0.625000
+```
+
+Diğer adayların unseen-data sonuçları:
+
+```text
+window_size = 4
+score_threshold = 3.9120
+unseen_F1 = 0.222222
+
+window_size = 4
+score_threshold = 3.5066
+unseen_F1 = 0.153846
+```
+
+Baseline BATADAL unseen F1 değeri daha önce `0.400000` seviyesindeydi. Bu nedenle transition-confidence window ablation, unseen-data tarafında da iyileşme sağlamadı.
+
+---
+
+### BATADAL Yorumu
+
+BATADAL tarafında `window_size=4` açık şekilde en iyi sonucu verdi.
+
+`window_size=3` düşük threshold değerlerinde recall’u yükseltti, ancak precision çok düşük kaldı. Bu durum modelin çok fazla false positive ürettiğini gösterdi.
+
+`window_size=5` ve üzerindeki değerlerde ise F1 skorları genel olarak `0.0` kaldı. Bu sonuç, BATADAL için daha büyük window size değerlerinin transition-confidence branch’inde de işe yaramadığını gösterdi.
+
+BATADAL için genel sonuç:
+
+```text
+Transition-confidence branch, BATADAL üzerinde window size ve threshold aramasıyla baseline performansını geçemedi.
+En iyi sonuç window_size=4 ve score_threshold=4.2 ile elde edildi.
+Ancak F1 skoru baseline değerinin altında kaldı.
+```
+
+---
+
+### SKAB Window Size Sonuçları
+
+SKAB tarafında en iyi original F1 sonucu şu kombinasyonla elde edildi:
+
+```text
+window_size = 5
+score_threshold = 0.05
+precision = 0.371625
+recall = 1.000000
+F1 = 0.541434
+accuracy = 0.387431
+```
+
+En iyi 3 aday:
+
+```text
+1. window_size = 5
+   score_threshold = 0.05
+   precision = 0.371625
+   recall = 1.000000
+   F1 = 0.541434
+
+2. window_size = 4
+   score_threshold = 0.05
+   precision = 0.391427
+   recall = 0.863158
+   F1 = 0.537760
+
+3. window_size = 5
+   score_threshold = 0.00
+   precision = 0.361195
+   recall = 1.000000
+   F1 = 0.530688
+```
+
+Önceki referans SKAB ayarı:
+
+```text
+window_size = 4
+score_threshold = 0.2231
+F1 ≈ 0.4911
+```
+
+Window ablation sonrası en iyi SKAB original sonucu:
+
+```text
+window_size = 5
+score_threshold = 0.05
+F1 = 0.541434
+```
+
+Bu sonuç SKAB original senaryoda sayısal olarak F1 artışı olduğunu gösterdi. Ancak bu artışın temel nedeni recall değerinin `1.0` seviyesine çıkmasıdır.
+
+En iyi adayda:
+
+```text
+recall = 1.000000
+precision = 0.371625
+accuracy = 0.387431
+```
+
+Bu durum modelin anomalileri yakaladığını, ancak çok fazla false positive ürettiğini göstermektedir.
+
+---
+
+### SKAB Unseen Data Sonuçları
+
+En iyi adayların unseen-data sonuçları:
+
+```text
+window_size = 5
+score_threshold = 0.05
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+```
+
+```text
+window_size = 4
+score_threshold = 0.05
+unseen_precision = 0.142857
+unseen_recall = 0.200000
+unseen_F1 = 0.166667
+unseen_accuracy = 0.547826
+```
+
+```text
+window_size = 5
+score_threshold = 0.00
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+```
+
+Unseen-data tarafında anlamlı bir iyileşme elde edilmedi. En iyi unseen F1 değeri yaklaşık `0.1667` seviyesinde kaldı.
+
+---
+
+### SKAB Yorumu
+
+SKAB tarafında `window_size=5` ve düşük threshold değerleri original F1 skorunu artırdı.
+
+Ancak bu artış yüksek recall ve düşük precision kaynaklıdır. Accuracy değerinin düşük kalması da modelin fazla false positive ürettiğini desteklemektedir.
+
+Bu nedenle SKAB original senaryodaki F1 artışı güçlü ve kararlı bir iyileşme olarak değerlendirilmedi.
+
+SKAB için genel sonuç:
+
+```text
+Transition-confidence branch, SKAB original senaryoda recall ağırlıklı bir F1 artışı sağladı.
+Ancak unseen-data tarafında iyileşme sağlamadı.
+Precision ve accuracy düşük kaldığı için bu artış güçlü bir model geliştirmesi olarak değerlendirilmedi.
+```
+
+---
+
+### Window Size Ablation Genel Yorumu
+
+Window size ablation sonuçları transition-confidence branch için şu tabloyu ortaya koydu:
+
+```text
+BATADAL:
+- En iyi window_size yine 4 oldu.
+- En iyi F1 = 0.380952
+- Bu değer baseline F1 = 0.444444 değerinin altında kaldı.
+- Büyük window size değerleri anlamlı sonuç üretmedi.
+
+SKAB:
+- En iyi original F1 window_size=5 ve threshold=0.05 ile elde edildi.
+- En iyi original F1 = 0.541434
+- Bu artış yüksek recall kaynaklıydı.
+- Precision ve accuracy düşük kaldı.
+- Unseen-data tarafında iyileşme görülmedi.
+```
+
+Sonuç olarak, window size ve score threshold araması transition-confidence branch’in genel kararını değiştirmedi.
+
+```text
+feature/transition-confidence = rejected / not merged
+```
+
+Bu branch, SKAB original senaryoda sınırlı ve recall-ağırlıklı bir F1 artışı üretmiştir. Ancak BATADAL üzerinde baseline performansının altında kalmış, SKAB unseen-data üzerinde anlamlı bir iyileşme sağlamamış ve datasetler arası tutarlı bir katkı göstermemiştir. Bu nedenle final model adayı olarak seçilmemiştir.
