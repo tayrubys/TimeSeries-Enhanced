@@ -267,7 +267,7 @@ Beş fold’un tamamında en iyi değer `window_size=12` olarak seçilmiştir. F
 
 Bu nedenle SKAB final modelinde `window_size=12` kullanılmıştır. Window büyüdükçe pattern seviyesindeki sınıf dağılımının değiştiği de sonuçlar değerlendirilirken dikkate alınmıştır.
 
-### Interpolated (Witten-Bell) Back-off Denemesi — Güncelleme
+### Interpolated Back-off Denemesi
 
 Önceki denemede tüm beta değerlerinin aynı sonucu vermesinin nedeni araştırıldı:
 `find_best_context` fonksiyonunun tek bir "en uzun context"i seçip diğerlerini
