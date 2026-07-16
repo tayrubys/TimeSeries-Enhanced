@@ -37,10 +37,8 @@ class AlergiaStateMergingAutomata:
         )
         self.raw_total_exits = defaultdict(int)
 
-        #state'in ardından gelen son sax sembollerinin sayıları
-        self.next_symbol_counts = defaultdict(
-            lambda: defaultdict(int)
-        )
+        #state'ten sonra hangi tam pattern'ların geldiğini tutuyoruz
+        self.next_pattern_counts = defaultdict(lambda: defaultdict(int))
 
         #birleştirme sonrası geçişler
         self.transitions = defaultdict(
@@ -52,28 +50,53 @@ class AlergiaStateMergingAutomata:
         self.state_mapping = {}
         self.merged_members = defaultdict(list)
         self.merged_states = set()
-
+    #eski kullanım bozulmasın diye tek pattern listesini bir tane sequence olarak gonderiyoz
     def fit(self, train_patterns):
-        if len(train_patterns) < 2:
+        return self.fit_sequences([train_patterns])
+
+    #birden fazla bagımısız pattern dizisiyle modeli eğitir
+    def fit_sequences(self, pattern_sequences):
+        """
+        Sequence'ler arasında geçiş oluşturmuyoruz.
+        Böylece gerçekte yan yana olmayan pattern'lar arasındayanlış geçiş öğrenilmemiş oluyor.
+        """
+
+        valid_sequences = []
+
+        for sequence in pattern_sequences:
+            sequence = list(sequence)
+
+            #geçiş öğrenmek için en az iki pattern lazım
+            if len(sequence) >= 2:
+                valid_sequences.append(sequence)
+
+        if len(valid_sequences) == 0:
             raise ValueError(
-                "State-merging eğitimi için en az 2 pattern gereklidir."
+                "Model eğitimi için en az bir geçerli "
+                "pattern sequence gereklidir."
             )
 
         self._reset()
 
-        self.trained_patterns = set(train_patterns)
+        for sequence in valid_sequences:
+            self.trained_patterns.update(sequence)
 
-        #önce orijinal pattern-state otomatasını oluştur
-        for index in range(len(train_patterns) - 1):
-            current_state = train_patterns[index]
-            next_state = train_patterns[index + 1]
+            for index in range(len(sequence) - 1):
+                current_state = sequence[index]
+                next_state = sequence[index + 1]
 
-            self.raw_transitions[current_state][next_state] += 1
-            self.raw_total_exits[current_state] += 1
+                self.raw_transitions[
+                    current_state
+                ][next_state] += 1
 
-            #sliding-window pattern'ın yeni eklenen sembolü
-            next_symbol = next_state[-1]
-            self.next_symbol_counts[current_state][next_symbol] += 1
+                self.raw_total_exits[
+                    current_state
+                ] += 1
+
+                #sadece son sac sembolünü değil, sonraki tam patternı kullanıyoruz
+                self.next_pattern_counts[
+                current_state
+                ][next_state] += 1
 
         self._merge_compatible_states()
         self._build_merged_transitions()
@@ -85,9 +108,8 @@ class AlergiaStateMergingAutomata:
             lambda: defaultdict(int)
         )
         self.raw_total_exits = defaultdict(int)
-        self.next_symbol_counts = defaultdict(
-            lambda: defaultdict(int)
-        )
+        
+        self.next_pattern_counts = defaultdict(lambda: defaultdict(int))
 
         self.transitions = defaultdict(
             lambda: defaultdict(int)
@@ -159,45 +181,48 @@ class AlergiaStateMergingAutomata:
         )
 
         return distance <= self.max_pattern_distance
+    #birleştirme grubundaki statelerin sonraki pattern sayılarını tek dağılımda topla
+    def _aggregate_next_pattern_counts(self, members):
 
-    def _aggregate_symbol_counts(self, members):
         aggregated = defaultdict(int)
 
         for state in members:
-            for symbol, count in self.next_symbol_counts[state].items():
-                aggregated[symbol] += count
+            for next_pattern, count in self.next_pattern_counts[
+                state
+            ].items():
+                aggregated[next_pattern] += count
 
         return aggregated
 
     def _are_compatible(self, members_a, members_b):
-        counts_a = self._aggregate_symbol_counts(members_a)
-        counts_b = self._aggregate_symbol_counts(members_b)
+        counts_a = self._aggregate_next_pattern_counts(members_a)
+        counts_b = self._aggregate_next_pattern_counts(members_b)
 
         total_a = sum(counts_a.values())
         total_b = sum(counts_b.values())
 
-        #yetersiz gözleme sahip state'leri birleştirmiyoruz
         if (
             total_a < self.min_state_count
             or total_b < self.min_state_count
         ):
             return False
 
-        symbols = set(counts_a) | set(counts_b)
+        next_patterns = set(counts_a) | set(counts_b)
 
-        #hoeffding tabanlı ALERGIA uyumluluk sınırı
         confidence_term = math.sqrt(
             0.5 * math.log(2.0 / self.merge_alpha)
         )
 
         bound = confidence_term * (
-            (1.0 / math.sqrt(total_a))
-            + (1.0 / math.sqrt(total_b))
-        )
+            (1.0 / math.sqrt(total_a))+ (1.0 / math.sqrt(total_b)))
 
-        for symbol in symbols:
-            probability_a = counts_a[symbol] / total_a
-            probability_b = counts_b[symbol] / total_b
+        for next_pattern in next_patterns:
+            probability_a = (
+                counts_a[next_pattern] / total_a
+            )
+            probability_b = (
+                counts_b[next_pattern] / total_b
+            )
 
             if abs(probability_a - probability_b) > bound:
                 return False
@@ -205,8 +230,12 @@ class AlergiaStateMergingAutomata:
         return True
 
     def _distribution_distance(self, members_a, members_b):
-        counts_a = self._aggregate_symbol_counts(members_a)
-        counts_b = self._aggregate_symbol_counts(members_b)
+        counts_a = self._aggregate_next_pattern_counts(
+        members_a
+        )
+        counts_b = self._aggregate_next_pattern_counts(
+        members_b
+        )
 
         total_a = sum(counts_a.values())
         total_b = sum(counts_b.values())
@@ -214,16 +243,20 @@ class AlergiaStateMergingAutomata:
         if total_a == 0 or total_b == 0:
             return float("inf")
 
-        symbols = set(counts_a) | set(counts_b)
-
-        #total variation distance
+        next_patterns = set(counts_a) | set(counts_b)
         distance = 0.0
 
-        for symbol in symbols:
-            probability_a = counts_a[symbol] / total_a
-            probability_b = counts_b[symbol] / total_b
+        for next_pattern in next_patterns:
+            probability_a = (
+            counts_a[next_pattern] / total_a
+            )
+            probability_b = (
+            counts_b[next_pattern] / total_b
+            )
 
-            distance += abs(probability_a - probability_b)
+            distance += abs(
+            probability_a - probability_b
+            )
 
         return 0.5 * distance
 

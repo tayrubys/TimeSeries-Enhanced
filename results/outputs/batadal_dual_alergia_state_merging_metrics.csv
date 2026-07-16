@@ -1,0 +1,4 @@
+dataset,model,scenario,window_size,alphabet_size,merge_alpha,min_state_count,smoothing_alpha,selected_threshold,validation_f1,normal_states_before,normal_states_after,anomaly_states_before,anomaly_states_after,sample_count,actual_anomaly_count,unseen_count,accuracy,precision,recall,f1_score
+BATADAL,dual_alergia_state_merging,original,4,3,0.01,2,1.0,0.6395260891208476,0.19230769230769232,49,15,42,18,205,28,19,0.7609756097560976,0.18181818181818182,0.21428571428571427,0.19672131147540983
+BATADAL,dual_alergia_state_merging,gaussian_noise,4,3,0.01,2,1.0,0.6395260891208476,0.19230769230769232,49,15,42,18,205,28,18,0.7560975609756098,0.17647058823529413,0.21428571428571427,0.1935483870967742
+BATADAL,dual_alergia_state_merging,unseen_data,4,3,0.01,2,1.0,0.6395260891208476,0.19230769230769232,49,15,42,18,19,2,19,0.8947368421052632,0.0,0.0,0.0

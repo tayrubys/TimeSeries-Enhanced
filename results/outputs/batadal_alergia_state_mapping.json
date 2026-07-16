@@ -1,0 +1,250 @@
+{
+    "best_config": {
+        "window_size": 4,
+        "alphabet_size": 3,
+        "merge_alpha": 0.01,
+        "min_state_count": 10,
+        "smoothing_alpha": 0.1,
+        "max_pattern_distance": null
+    },
+    "selected_threshold": 4.59511985013459,
+    "model_statistics": {
+        "original_state_count": 65,
+        "merged_state_count": 49,
+        "merged_state_reduction": 16,
+        "transition_count": 121,
+        "transition_density": 0.05039566847147022
+    },
+    "state_mapping": {
+        "bbbb": "bbbb",
+        "aaaa": "aaaa",
+        "babb": "bbbb",
+        "abbb": "bbbb",
+        "bbab": "bbbb",
+        "bbba": "bbbb",
+        "cccc": "cccc",
+        "bbbc": "bbbb",
+        "bbcb": "bbbb",
+        "bcbb": "bbbb",
+        "abba": "bbbb",
+        "cbbb": "bbbb",
+        "aabb": "bbbb",
+        "bcba": "bbbb",
+        "cbab": "bbbb",
+        "bbaa": "aaaa",
+        "aaab": "bbbb",
+        "baaa": "aaaa",
+        "cabb": "bbbb",
+        "babc": "babc",
+        "abcb": "abcb",
+        "bbca": "bbca",
+        "abbc": "abbc",
+        "bbcc": "bbcc",
+        "bcab": "bcab",
+        "ccab": "ccab",
+        "aaac": "aaac",
+        "aacc": "aacc",
+        "abaa": "abaa",
+        "baab": "baab",
+        "bcca": "bcca",
+        "caaa": "caaa",
+        "cbba": "cbba",
+        "cbcb": "cbcb",
+        "cbcc": "cbcc",
+        "ccaa": "ccaa",
+        "ccca": "ccca",
+        "aaba": "aaba",
+        "aacb": "aacb",
+        "acbb": "acbb",
+        "acbc": "acbc",
+        "accc": "accc",
+        "baac": "baac",
+        "bcbc": "bcbc",
+        "bccb": "bccb",
+        "bccc": "bccc",
+        "cbbc": "cbbc",
+        "abca": "abca",
+        "acca": "acca",
+        "baba": "baba",
+        "bacb": "bacb",
+        "bbac": "bbac",
+        "bcaa": "bcaa",
+        "bcac": "bcac",
+        "caab": "caab",
+        "cacc": "cacc",
+        "cbaa": "cbaa",
+        "ccba": "ccba",
+        "ccbb": "ccbb",
+        "ccbc": "ccbc",
+        "cccb": "cccb",
+        "abab": "abab",
+        "accb": "accb",
+        "cacb": "cacb",
+        "ccac": "ccac"
+    },
+    "merged_state_members": {
+        "bbbb": [
+            "aaab",
+            "aabb",
+            "abba",
+            "abbb",
+            "babb",
+            "bbab",
+            "bbba",
+            "bbbb",
+            "bbbc",
+            "bbcb",
+            "bcba",
+            "bcbb",
+            "cabb",
+            "cbab",
+            "cbbb"
+        ],
+        "aaaa": [
+            "aaaa",
+            "baaa",
+            "bbaa"
+        ],
+        "cccc": [
+            "cccc"
+        ],
+        "babc": [
+            "babc"
+        ],
+        "abcb": [
+            "abcb"
+        ],
+        "bbca": [
+            "bbca"
+        ],
+        "abbc": [
+            "abbc"
+        ],
+        "bbcc": [
+            "bbcc"
+        ],
+        "bcab": [
+            "bcab"
+        ],
+        "ccab": [
+            "ccab"
+        ],
+        "aaac": [
+            "aaac"
+        ],
+        "aacc": [
+            "aacc"
+        ],
+        "abaa": [
+            "abaa"
+        ],
+        "baab": [
+            "baab"
+        ],
+        "bcca": [
+            "bcca"
+        ],
+        "caaa": [
+            "caaa"
+        ],
+        "cbba": [
+            "cbba"
+        ],
+        "cbcb": [
+            "cbcb"
+        ],
+        "cbcc": [
+            "cbcc"
+        ],
+        "ccaa": [
+            "ccaa"
+        ],
+        "ccca": [
+            "ccca"
+        ],
+        "aaba": [
+            "aaba"
+        ],
+        "aacb": [
+            "aacb"
+        ],
+        "acbb": [
+            "acbb"
+        ],
+        "acbc": [
+            "acbc"
+        ],
+        "accc": [
+            "accc"
+        ],
+        "baac": [
+            "baac"
+        ],
+        "bcbc": [
+            "bcbc"
+        ],
+        "bccb": [
+            "bccb"
+        ],
+        "bccc": [
+            "bccc"
+        ],
+        "cbbc": [
+            "cbbc"
+        ],
+        "abca": [
+            "abca"
+        ],
+        "acca": [
+            "acca"
+        ],
+        "baba": [
+            "baba"
+        ],
+        "bacb": [
+            "bacb"
+        ],
+        "bbac": [
+            "bbac"
+        ],
+        "bcaa": [
+            "bcaa"
+        ],
+        "bcac": [
+            "bcac"
+        ],
+        "caab": [
+            "caab"
+        ],
+        "cacc": [
+            "cacc"
+        ],
+        "cbaa": [
+            "cbaa"
+        ],
+        "ccba": [
+            "ccba"
+        ],
+        "ccbb": [
+            "ccbb"
+        ],
+        "ccbc": [
+            "ccbc"
+        ],
+        "cccb": [
+            "cccb"
+        ],
+        "abab": [
+            "abab"
+        ],
+        "accb": [
+            "accb"
+        ],
+        "cacb": [
+            "cacb"
+        ],
+        "ccac": [
+            "ccac"
+        ]
+    }
+}

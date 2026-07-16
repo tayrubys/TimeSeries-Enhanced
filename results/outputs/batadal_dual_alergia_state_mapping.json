@@ -1,0 +1,284 @@
+{
+    "best_config": {
+        "window_size": 4,
+        "alphabet_size": 3,
+        "merge_alpha": 0.01,
+        "min_state_count": 2,
+        "smoothing_alpha": 1.0
+    },
+    "threshold": 0.6395260891208476,
+    "normal_model": {
+        "statistics": {
+            "original_state_count": 49,
+            "merged_state_count": 15,
+            "merged_state_reduction": 34,
+            "transition_count": 42,
+            "transition_density": 0.18666666666666668
+        },
+        "state_mapping": {
+            "bbbb": "bbbb",
+            "babb": "babb",
+            "bbab": "bbab",
+            "abbb": "bbbb",
+            "bbba": "bbba",
+            "bbbc": "bbbc",
+            "bbcb": "bbcb",
+            "abba": "bbba",
+            "bcbb": "bbbc",
+            "bcba": "bcba",
+            "cbab": "bbab",
+            "cbbb": "bbbb",
+            "cabb": "babb",
+            "babc": "bbbc",
+            "abcb": "bbcb",
+            "bbca": "bbbb",
+            "abbc": "bbbc",
+            "aabb": "babb",
+            "bcab": "bbcb",
+            "ccab": "bbcb",
+            "bbaa": "babb",
+            "bbcc": "babb",
+            "cbcb": "bbcb",
+            "aacb": "babb",
+            "acbb": "bbbc",
+            "acbc": "bbbb",
+            "baab": "babb",
+            "baac": "babb",
+            "bcbc": "bbbb",
+            "bcca": "bbbb",
+            "cbba": "bbba",
+            "cbbc": "bbbc",
+            "cbcc": "babb",
+            "abca": "bbbb",
+            "bacb": "bbbc",
+            "bbac": "babb",
+            "bcaa": "bbbb",
+            "bcac": "bbbb",
+            "bccb": "bbbb",
+            "caab": "babb",
+            "cbaa": "babb",
+            "accb": "accb",
+            "bccc": "bccc",
+            "cacb": "cacb",
+            "cacc": "cacc",
+            "ccba": "ccba",
+            "ccbb": "ccbb",
+            "ccbc": "ccbc",
+            "ccca": "ccca"
+        },
+        "merged_members": {
+            "bbbb": [
+                "abbb",
+                "abca",
+                "acbc",
+                "bbbb",
+                "bbca",
+                "bcaa",
+                "bcac",
+                "bcbc",
+                "bcca",
+                "bccb",
+                "cbbb"
+            ],
+            "babb": [
+                "aabb",
+                "aacb",
+                "baab",
+                "baac",
+                "babb",
+                "bbaa",
+                "bbac",
+                "bbcc",
+                "caab",
+                "cabb",
+                "cbaa",
+                "cbcc"
+            ],
+            "bbab": [
+                "bbab",
+                "cbab"
+            ],
+            "bbba": [
+                "abba",
+                "bbba",
+                "cbba"
+            ],
+            "bbbc": [
+                "abbc",
+                "acbb",
+                "babc",
+                "bacb",
+                "bbbc",
+                "bcbb",
+                "cbbc"
+            ],
+            "bbcb": [
+                "abcb",
+                "bbcb",
+                "bcab",
+                "cbcb",
+                "ccab"
+            ],
+            "bcba": [
+                "bcba"
+            ],
+            "accb": [
+                "accb"
+            ],
+            "bccc": [
+                "bccc"
+            ],
+            "cacb": [
+                "cacb"
+            ],
+            "cacc": [
+                "cacc"
+            ],
+            "ccba": [
+                "ccba"
+            ],
+            "ccbb": [
+                "ccbb"
+            ],
+            "ccbc": [
+                "ccbc"
+            ],
+            "ccca": [
+                "ccca"
+            ]
+        }
+    },
+    "anomaly_model": {
+        "statistics": {
+            "original_state_count": 42,
+            "merged_state_count": 18,
+            "merged_state_reduction": 24,
+            "transition_count": 62,
+            "transition_density": 0.19135802469135801
+        },
+        "state_mapping": {
+            "bbbb": "bbbb",
+            "aaaa": "aaaa",
+            "cccc": "cccc",
+            "aaab": "aaab",
+            "baaa": "aaaa",
+            "abbb": "bbbb",
+            "aabb": "aaab",
+            "bbaa": "aaab",
+            "bbba": "aaab",
+            "bbbc": "aaab",
+            "bbcb": "bbcb",
+            "bcbb": "cccc",
+            "cbbb": "bbbb",
+            "babb": "aaab",
+            "bbab": "cccc",
+            "aaac": "cccc",
+            "aacc": "aaaa",
+            "abaa": "aaab",
+            "abba": "aaab",
+            "caaa": "aaaa",
+            "ccaa": "cccc",
+            "aaba": "bbbb",
+            "accc": "cccc",
+            "ccca": "bbbb",
+            "acca": "bbbb",
+            "baba": "bbbb",
+            "bbcc": "bbbb",
+            "bccc": "cccc",
+            "cccb": "cccc",
+            "abab": "abab",
+            "baab": "baab",
+            "bcca": "bcca",
+            "bccb": "bccb",
+            "cacc": "cacc",
+            "cbab": "cbab",
+            "cbba": "cbba",
+            "cbcc": "cbcc",
+            "ccac": "ccac",
+            "ccba": "ccba",
+            "ccbb": "ccbb",
+            "ccbc": "ccbc",
+            "ccab": "ccab"
+        },
+        "merged_members": {
+            "bbbb": [
+                "aaba",
+                "abbb",
+                "acca",
+                "baba",
+                "bbbb",
+                "bbcc",
+                "cbbb",
+                "ccca"
+            ],
+            "aaaa": [
+                "aaaa",
+                "aacc",
+                "baaa",
+                "caaa"
+            ],
+            "cccc": [
+                "aaac",
+                "accc",
+                "bbab",
+                "bcbb",
+                "bccc",
+                "ccaa",
+                "cccb",
+                "cccc"
+            ],
+            "aaab": [
+                "aaab",
+                "aabb",
+                "abaa",
+                "abba",
+                "babb",
+                "bbaa",
+                "bbba",
+                "bbbc"
+            ],
+            "bbcb": [
+                "bbcb"
+            ],
+            "abab": [
+                "abab"
+            ],
+            "baab": [
+                "baab"
+            ],
+            "bcca": [
+                "bcca"
+            ],
+            "bccb": [
+                "bccb"
+            ],
+            "cacc": [
+                "cacc"
+            ],
+            "cbab": [
+                "cbab"
+            ],
+            "cbba": [
+                "cbba"
+            ],
+            "cbcc": [
+                "cbcc"
+            ],
+            "ccac": [
+                "ccac"
+            ],
+            "ccba": [
+                "ccba"
+            ],
+            "ccbb": [
+                "ccbb"
+            ],
+            "ccbc": [
+                "ccbc"
+            ],
+            "ccab": [
+                "ccab"
+            ]
+        }
+    }
+}
