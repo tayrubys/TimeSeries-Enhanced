@@ -1,0 +1,16 @@
+accuracy,precision,recall,f1_score,scenario,dataset,fold,seed,window_size,alphabet_size,order,smoothing_alpha,decision_mode,score_window,score_threshold,anomaly_threshold,max_mapping_distance,num_states,vocab_size,num_transitions,transition_density,smoothing,learning_rate,transition_confidence_enabled,transition_confidence_k,transition_confidence_weight,transition_confidence_mode,transition_confidence_use_transition_count
+0.625,0.14285714285714285,1.0,0.25,unseen_data,BATADAL,single,42,4,3,3,0.1,avg_negative_log,5,4.2,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.625,0.14285714285714285,1.0,0.25,unseen_data,BATADAL,single,123,4,3,3,0.1,avg_negative_log,5,4.2,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.625,0.14285714285714285,1.0,0.25,unseen_data,BATADAL,single,2026,4,3,3,0.1,avg_negative_log,5,4.2,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.625,0.14285714285714285,1.0,0.25,unseen_data,BATADAL,single,7,4,3,3,0.1,avg_negative_log,5,4.2,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.625,0.14285714285714285,1.0,0.25,unseen_data,BATADAL,single,999,4,3,3,0.1,avg_negative_log,5,4.2,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.5625,0.125,1.0,0.2222222222222222,unseen_data,BATADAL,single,42,4,3,3,0.1,avg_negative_log,5,3.912,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.5625,0.125,1.0,0.2222222222222222,unseen_data,BATADAL,single,123,4,3,3,0.1,avg_negative_log,5,3.912,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.5625,0.125,1.0,0.2222222222222222,unseen_data,BATADAL,single,2026,4,3,3,0.1,avg_negative_log,5,3.912,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.5625,0.125,1.0,0.2222222222222222,unseen_data,BATADAL,single,7,4,3,3,0.1,avg_negative_log,5,3.912,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.5625,0.125,1.0,0.2222222222222222,unseen_data,BATADAL,single,999,4,3,3,0.1,avg_negative_log,5,3.912,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.3125,0.08333333333333333,1.0,0.15384615384615385,unseen_data,BATADAL,single,42,4,3,3,0.1,avg_negative_log,5,3.5066,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.3125,0.08333333333333333,1.0,0.15384615384615385,unseen_data,BATADAL,single,123,4,3,3,0.1,avg_negative_log,5,3.5066,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.3125,0.08333333333333333,1.0,0.15384615384615385,unseen_data,BATADAL,single,2026,4,3,3,0.1,avg_negative_log,5,3.5066,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.3125,0.08333333333333333,1.0,0.15384615384615385,unseen_data,BATADAL,single,7,4,3,3,0.1,avg_negative_log,5,3.5066,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True
+0.3125,0.08333333333333333,1.0,0.15384615384615385,unseen_data,BATADAL,single,999,4,3,3,0.1,avg_negative_log,5,3.5066,0.05,,366,65,553,0.023245060949978982,True,0.0,True,10.0,0.5,additive,True

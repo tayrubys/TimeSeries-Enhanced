@@ -1,0 +1,4 @@
+dataset,window_size,score_threshold,order,smoothing_alpha,decision_mode,score_window,max_mapping_distance,transition_confidence_enabled,transition_confidence_k,transition_confidence_weight,transition_confidence_mode,transition_confidence_use_transition_count,n_runs,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_score_mean,f1_score_std,transition_density_mean,num_states_mean,num_transitions_mean
+BATADAL,4,4.2,3,0.1,avg_negative_log,5,,True,10.0,0.5,additive,True,5,0.625,0.0,0.14285714285714285,0.0,1.0,0.0,0.25,0.0,0.023245060949978982,366.0,553.0
+BATADAL,4,3.912,3,0.1,avg_negative_log,5,,True,10.0,0.5,additive,True,5,0.5625,0.0,0.125,0.0,1.0,0.0,0.22222222222222224,0.0,0.023245060949978982,366.0,553.0
+BATADAL,4,3.5066,3,0.1,avg_negative_log,5,,True,10.0,0.5,additive,True,5,0.3125,0.0,0.08333333333333333,0.0,1.0,0.0,0.15384615384615385,0.0,0.023245060949978982,366.0,553.0
