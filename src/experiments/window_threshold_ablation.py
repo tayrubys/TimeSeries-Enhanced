@@ -59,7 +59,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "learning_rate": 0.0,
 
     # This ablation's search space
-    "window_threshold_window_sizes": list(range(3, 11)),
+    "window_threshold_window_sizes": list(range(3, 8)),
 
     # BATADAL threshold range is intentionally wider than the old [3.5066, 3.912, 4.2, 4.5]
     # because non-4 window sizes produced all-zero F1 under that narrow high-threshold range.
