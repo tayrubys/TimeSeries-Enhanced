@@ -377,3 +377,335 @@ results/outputs/automata_dirichlet_refined_sweep_summary.csv
 results/outputs/automata_dirichlet_refined_best_candidates.csv
 ```
 
+---
+
+## Window Size + Score Threshold Ablation
+
+Dirichlet-smoothing branch üzerinde ek olarak `window_size` ve `score_threshold` değerlerinin performansa etkisi incelendi.
+
+Bu çalışma için ayrı bir ablation script’i kullanıldı:
+
+```text
+src/experiments/window_threshold_ablation.py
+```
+
+Bu script ile farklı `window_size` ve `score_threshold` kombinasyonları denenerek Dirichlet smoothing mekanizmasının farklı pencere boyutlarında nasıl davrandığı gözlemlendi.
+
+---
+
+### Deney Kurulumu
+
+Ablation çalışması şu branch üzerinde yürütüldü:
+
+```text
+feature/dirichlet-smoothing
+```
+
+Script dry-run aşamasında branch’i doğru şekilde algıladı:
+
+```text
+Branch slug: dirichlet_smoothing
+```
+
+Model tarafında Dirichlet smoothing parametreleri desteklenen model parametreleri içinde görüldü:
+
+```text
+dirichlet_smoothing_enabled
+dirichlet_alpha
+dirichlet_prior_mode
+```
+
+Bu nedenle mevcut `window_threshold_ablation.py` script’inin Dirichlet-smoothing branch ile uyumlu olduğu görüldü.
+
+Dirichlet smoothing, karar aşamasına doğrudan bir gate veya penalty eklemediği için `Fast predict=True` ayarıyla çalıştırıldı. Bu branch’te smoothing etkisi transition probability / score hesaplama seviyesinde uygulandığından, hızlı skor hesaplama yolu feature’ı bypass etmedi.
+
+Test edilen window size aralığı:
+
+```text
+window_size = [3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+Main ablation senaryoları:
+
+```text
+original
+gaussian_noise
+```
+
+Main ablation tamamlandıktan sonra `original` F1 skoruna göre en iyi 3 aday seçildi. Daha sonra yalnızca bu en iyi 3 aday için `unseen_data` değerlendirmesi yapıldı.
+
+Çıktılar şu klasör altında üretildi:
+
+```text
+results/outputs/window_threshold_ablation/dirichlet_smoothing/
+```
+
+---
+
+### BATADAL Window Size Sonuçları
+
+BATADAL tarafında en iyi sonuç şu kombinasyonla elde edildi:
+
+```text
+window_size = 4
+score_threshold = 3.9120
+precision = 0.307692
+recall = 0.571429
+F1 = 0.400000
+accuracy = 0.941463
+```
+
+En iyi 3 aday:
+
+```text
+1. window_size = 4
+   score_threshold = 3.9120
+   precision = 0.307692
+   recall = 0.571429
+   F1 = 0.400000
+
+2. window_size = 4
+   score_threshold = 3.5066
+   precision = 0.166667
+   recall = 0.571429
+   F1 = 0.258065
+
+3. window_size = 4
+   score_threshold = 4.2000
+   precision = 0.333333
+   recall = 0.142857
+   F1 = 0.200000
+```
+
+BATADAL için en iyi pencere boyutu yine `window_size=4` oldu.
+
+Baseline BATADAL sonucu:
+
+```text
+Baseline BATADAL F1 = 0.444444
+```
+
+Dirichlet-smoothing window ablation sonrası en iyi BATADAL sonucu:
+
+```text
+Dirichlet-smoothing best BATADAL F1 = 0.400000
+```
+
+Bu nedenle Dirichlet-smoothing branch, window size ve threshold araması sonrasında da BATADAL üzerinde baseline performansını geçemedi.
+
+---
+
+### BATADAL Unseen Data Sonuçları
+
+En iyi original F1 adayının unseen-data sonucu:
+
+```text
+window_size = 4
+score_threshold = 3.9120
+unseen_precision = 0.142857
+unseen_recall = 1.000000
+unseen_F1 = 0.250000
+unseen_accuracy = 0.625000
+```
+
+Diğer adayların unseen-data sonuçları:
+
+```text
+window_size = 4
+score_threshold = 3.5066
+unseen_F1 = 0.222222
+
+window_size = 4
+score_threshold = 4.2000
+unseen_F1 = 0.000000
+```
+
+Baseline BATADAL unseen F1 değeri daha önce `0.400000` seviyesindeydi. Bu nedenle Dirichlet-smoothing window ablation, unseen-data tarafında da iyileşme sağlamadı.
+
+---
+
+### BATADAL Yorumu
+
+BATADAL tarafında `window_size=4` açık şekilde en iyi sonucu verdi.
+
+`window_size=3` düşük threshold değerlerinde recall’u yüksek tuttu, ancak precision çok düşük kaldı. Bu durum modelin çok fazla false positive ürettiğini gösterdi.
+
+`window_size=5` ve üzerindeki değerlerde ise F1 skorları genel olarak `0.0` kaldı. Bu sonuç, BATADAL için daha büyük window size değerlerinin Dirichlet-smoothing branch’inde de işe yaramadığını gösterdi.
+
+BATADAL için genel sonuç:
+
+```text
+Dirichlet-smoothing branch, BATADAL üzerinde window size ve threshold aramasıyla baseline performansını geçemedi.
+En iyi sonuç window_size=4 ve score_threshold=3.9120 ile elde edildi.
+Ancak F1 skoru baseline değerinin altında kaldı.
+```
+
+---
+
+### SKAB Window Size Sonuçları
+
+SKAB tarafında en iyi original F1 sonucu şu kombinasyonla elde edildi:
+
+```text
+window_size = 5
+score_threshold = 0.05
+precision = 0.371625
+recall = 1.000000
+F1 = 0.541434
+accuracy = 0.387431
+```
+
+En iyi 3 aday:
+
+```text
+1. window_size = 5
+   score_threshold = 0.05
+   precision = 0.371625
+   recall = 1.000000
+   F1 = 0.541434
+
+2. window_size = 4
+   score_threshold = 0.05
+   precision = 0.391427
+   recall = 0.863158
+   F1 = 0.537760
+
+3. window_size = 5
+   score_threshold = 0.00
+   precision = 0.361195
+   recall = 1.000000
+   F1 = 0.530688
+```
+
+Önceki referans SKAB ayarı:
+
+```text
+window_size = 4
+score_threshold = 0.2231
+F1 ≈ 0.4911
+```
+
+Window ablation sonrası en iyi SKAB original sonucu:
+
+```text
+window_size = 5
+score_threshold = 0.05
+F1 = 0.541434
+```
+
+Bu sonuç SKAB original senaryoda sayısal olarak F1 artışı olduğunu gösterdi. Ancak bu artışın temel nedeni recall değerinin `1.0` seviyesine çıkmasıdır.
+
+En iyi adayda:
+
+```text
+recall = 1.000000
+precision = 0.371625
+accuracy = 0.387431
+```
+
+Bu durum modelin anomalileri yakaladığını, ancak çok fazla false positive ürettiğini göstermektedir.
+
+---
+
+### SKAB Unseen Data Sonuçları
+
+En iyi adayların unseen-data sonuçları:
+
+```text
+window_size = 5
+score_threshold = 0.05
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+```
+
+```text
+window_size = 4
+score_threshold = 0.05
+unseen_precision = 0.142857
+unseen_recall = 0.200000
+unseen_F1 = 0.166667
+unseen_accuracy = 0.547826
+```
+
+```text
+window_size = 5
+score_threshold = 0.00
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+```
+
+Unseen-data tarafında anlamlı bir iyileşme elde edilmedi. En iyi unseen F1 değeri yaklaşık `0.1667` seviyesinde kaldı.
+
+---
+
+### SKAB Yorumu
+
+SKAB tarafında `window_size=5` ve düşük threshold değerleri original F1 skorunu artırdı.
+
+Ancak bu artış yüksek recall ve düşük precision kaynaklıdır. Accuracy değerinin düşük kalması da modelin fazla false positive ürettiğini desteklemektedir.
+
+Bu nedenle SKAB original senaryodaki F1 artışı güçlü ve kararlı bir iyileşme olarak değerlendirilmedi.
+
+SKAB için genel sonuç:
+
+```text
+Dirichlet-smoothing branch, SKAB original senaryoda recall ağırlıklı bir F1 artışı sağladı.
+Ancak unseen-data tarafında iyileşme sağlamadı.
+Precision ve accuracy düşük kaldığı için bu artış güçlü bir model geliştirmesi olarak değerlendirilmedi.
+```
+
+---
+
+### Window Size Ablation Genel Yorumu
+
+Window size ablation sonuçları Dirichlet-smoothing branch için şu tabloyu ortaya koydu:
+
+```text
+BATADAL:
+- En iyi window_size yine 4 oldu.
+- En iyi F1 = 0.400000
+- Bu değer baseline F1 = 0.444444 değerinin altında kaldı.
+- Unseen-data tarafında iyileşme görülmedi.
+- Büyük window size değerleri anlamlı sonuç üretmedi.
+
+SKAB:
+- En iyi original F1 window_size=5 ve threshold=0.05 ile elde edildi.
+- En iyi original F1 = 0.541434
+- Bu artış yüksek recall kaynaklıydı.
+- Precision ve accuracy düşük kaldı.
+- Unseen-data tarafında iyileşme görülmedi.
+```
+
+Sonuç olarak, window size ve score threshold araması Dirichlet-smoothing branch’in genel kararını değiştirmedi.
+
+```text
+feature/dirichlet-smoothing = not merged
+```
+
+Bu branch, SKAB original senaryoda sınırlı ve recall-ağırlıklı bir F1 artışı üretmiştir. Ancak BATADAL üzerinde baseline performansının altında kalmış, unseen-data üzerinde anlamlı bir iyileşme sağlamamış ve datasetler arası tutarlı bir katkı göstermemiştir. Bu nedenle final model adayı olarak seçilmemiştir.
+
+---
+
+### Üretilen Window Ablation Çıktıları
+
+Window size ve score threshold ablation çalışması sonucunda aşağıdaki dosyalar üretildi:
+
+```text
+results/outputs/window_threshold_ablation/dirichlet_smoothing/01_main_ablation/dirichlet_smoothing_batadal_main_metrics.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/01_main_ablation/dirichlet_smoothing_batadal_main_summary.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/01_main_ablation/dirichlet_smoothing_batadal_main_best_candidates.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/02_unseen_top_candidates/dirichlet_smoothing_batadal_unseen_top_candidates_metrics.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/02_unseen_top_candidates/dirichlet_smoothing_batadal_unseen_top_candidates_summary.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/03_reports/dirichlet_smoothing_batadal_final_comparison.csv
+
+results/outputs/window_threshold_ablation/dirichlet_smoothing/01_main_ablation/dirichlet_smoothing_skab_main_metrics.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/01_main_ablation/dirichlet_smoothing_skab_main_summary.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/01_main_ablation/dirichlet_smoothing_skab_main_best_candidates.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/02_unseen_top_candidates/dirichlet_smoothing_skab_unseen_top_candidates_metrics.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/02_unseen_top_candidates/dirichlet_smoothing_skab_unseen_top_candidates_summary.csv
+results/outputs/window_threshold_ablation/dirichlet_smoothing/03_reports/dirichlet_smoothing_skab_final_comparison.csv
+```
