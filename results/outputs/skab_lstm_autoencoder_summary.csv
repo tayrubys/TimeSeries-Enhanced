@@ -1,0 +1,2 @@
+dataset,model,window_size,feature_count,experiment_count,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_mean,f1_std,threshold_mean,threshold_std
+SKAB,LSTM_AutoEncoder,20,8,5,0.770601832678655,0.09691947894745473,0.7653143590295294,0.3227300236681832,0.4419345318557865,0.23156938037410424,0.5516015506291505,0.2660882323268075,0.6716424621582031,0.0679455851879605

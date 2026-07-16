@@ -1,11 +1,11 @@
-# BATADAL LSTM AutoEncoder Deneyi
+# LSTM AutoEncoder Deneyi
 
 Bu çalışmada BATADAL veri seti üzerinde **LSTM AutoEncoder tabanlı anomali tespiti** gerçekleştirilmiştir. Model yalnızca normal etiketli sequence verileriyle eğitilmiş, anomaliler reconstruction error üzerinden belirlenmiştir.
 
 ## Deney Akışı
 
 ```text
-BATADAL verisi
+BATADAL veya SKAB verisi
       ↓
 Sequence oluşturma
 (window = 20)
@@ -110,7 +110,7 @@ X_test = np.clip(X_test, -5, 5)
 
 Bu işlem sonucunda 5 farklı seed için daha kararlı test sonuçları elde edilmiştir.
 
-## Seed Bazlı Sonuçlar
+## Seed Bazlı Sonuçlar - Batadal
 
 | Seed | Percentile | Threshold | Accuracy | Precision | Recall | F1-Score |
 |-----:|-----------:|----------:|---------:|----------:|-------:|---------:|
@@ -129,9 +129,60 @@ Bu işlem sonucunda 5 farklı seed için daha kararlı test sonuçları elde edi
 | Recall | 0.9125 ± 0.0000 |
 | F1-Score | **0.7730 ± 0.0217** |
 | Threshold | 0.7447 ± 0.0361 |
-
 ## Değerlendirme
 
 Uç değerlerin sınırlandırılmasından sonra LSTM AutoEncoder modeli ortalama **0.7730 F1-score** elde etmiştir. Seed sonuçlarının birbirine yakın olması, modelin rastgele başlangıç değerlerine karşı kararlı çalıştığını göstermektedir.
 
 Validation F1 değerlerinin test sonuçlarına göre düşük kalması, validation ve test saldırılarının reconstruction error dağılımlarının farklı olabileceğini göstermektedir. Bu durum ilerleyen çalışmalarda threshold seçimi ve veri bölme stratejileri açısından ayrıca incelenecektir.
+
+## SKAB Deney Yapısı
+
+- Dataset: SKAB
+- Sequence Window Size: 20
+- Feature Count: 8
+- Evaluation Strategy: 5-Fold Cross Validation
+- Seed: 42
+
+## Ortalama Sonuçlar (5 Fold Seed=42) - Skab
+
+| Metrik | Ortalama ± Standart Sapma |
+|---|---:|
+| Accuracy | 0.7706 ± 0.0969 |
+| Precision | 0.7653 ± 0.3227 |
+| Recall | 0.4419 ± 0.2316 |
+| F1-Score | **0.5516 ± 0.2661** |
+| Threshold | 0.6716 ± 0.0679 |
+
+## Değerlendirme
+
+SKAB veri seti üzerinde gerçekleştirilen LSTM AutoEncoder deneyinde model ortalama **0.5516 F1-score** elde etmiştir.
+
+Sonuçlar incelendiğinde:
+
+- Precision değerinin yüksek olduğu,
+- Recall değerinin ise görece düşük kaldığı görülmektedir.
+
+Bu durum, modelin düşük yanlış alarm üretme eğiliminde olduğunu ancak bazı anomalileri kaçırabildiğini göstermektedir. Model, yalnızca reconstruction error değeri belirgin şekilde yükselen sequence'leri anomali olarak işaretlemiştir.
+
+Ayrıca:
+
+```text
+Recall Std : 0.2316
+F1 Std     : 0.2661
+```
+
+değerlerinin yüksek olması, foldlar arasında belirgin performans farklılıkları olduğunu göstermektedir.
+
+Bu durumun olası nedenleri:
+
+- Farklı operasyon senaryoları,
+- Foldlar arasındaki veri dağılımı farklılıkları,
+- Sequence window boyutunun etkisi,
+- Threshold değerinin tüm foldlara aynı başarıyla genellenememesi.
+
+## Veri Setleri Arası Karşılaştırma
+
+| Dataset | Evaluation | Accuracy | Precision | Recall | F1 |
+|----------|-------------|-----------|------------|---------|----|
+| BATADAL | 5 Seed Ortalama | 0.9474 | 0.6710 | 0.9125 | **0.7730** |
+| SKAB | 5 Fold Ortalama | 0.7706 | 0.7653 | 0.4419 | **0.5516** |
