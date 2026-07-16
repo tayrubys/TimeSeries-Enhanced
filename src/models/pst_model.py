@@ -126,6 +126,47 @@ class ProbabilisticSuffixTree:
             "context": list(context)
         }
 
+    def predict_probability_interpolated(self, history, next_symbol, beta=1.0):
+            """
+            hard back-off yerine, tum context derinlikleriniWitten-Bell tarzi agirlikli olarak karistirir
+            """
+            max_context = min(self.max_depth, len(history))
+            vocab_size = max(1, len(self.vocabulary))
+
+            #root ile baslıyoruz(en kısa oldugu icin)
+            node = self.root
+            total = node.total_count()
+            count = node.counts.get(next_symbol, 0)
+            prob = (count + self.smoothing_alpha) / (total + self.smoothing_alpha * vocab_size)
+
+            #derinlik 1 den en uzun context e dogru ilerleyip
+            #her adimda mevcut tahminle yeni derinligin tahminini karistiriyoruz
+            for depth in range(1, max_context + 1):
+                context = history[-depth:]
+                child_node = self._find_node(context)
+
+                if child_node is None:
+                    break  #bu derinlikte context hic gorulmemis daha derine inme
+
+                child_total = child_node.total_count()
+                child_count = child_node.counts.get(next_symbol, 0)
+                child_prob = (child_count + self.smoothing_alpha) / (
+                    child_total + self.smoothing_alpha * vocab_size
+                )
+
+                # guven agirligi: bu context ne kadar cok gorulmusse o kadar guvenilir
+                # beta kucukse derin context e daha hizli guven
+                weight = child_total / (child_total + beta)
+
+                prob = weight * child_prob + (1 - weight) * prob
+                node = child_node
+
+            return prob, {
+                "context_length": max_context,
+                "context_count": node.total_count(),
+                "context": list(history[-max_context:]) if max_context > 0 else []
+            }
+
     #pst ağacındaki toplam context/node ve geçiş sayılarını hesaplama
     def count_nodes_and_transitions(self):
         def traverse(node):

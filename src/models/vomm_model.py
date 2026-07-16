@@ -127,6 +127,47 @@ class VariableOrderMarkovModel:
             })
 
         return predictions, explainability_logs     
+    def predict_interpolated(self, test_patterns, anomaly_threshold=0.05, beta=1.0,min_context_depth=0, min_context_count=0):
+        #find_best_context'in hard cutoff'u yerine tum derinlikleri agirlikli olarak karistiran interpolated back-off 
+        predictions = []
+        explainability_logs = []
+
+        for i in range(1, len(test_patterns)):
+            start_idx = max(0, i - self.max_depth)
+            context = test_patterns[start_idx:i]
+            target = test_patterns[i]
+
+            prob, context_info = self.pst.predict_probability_interpolated(
+                context, target, beta=beta
+            )
+
+            context_length = context_info["context_length"]
+            context_count = context_info["context_count"]
+
+            decision = 1 if (
+                prob < anomaly_threshold
+                and context_length >= min_context_depth
+                and context_count >= min_context_count
+            ) else 0
+
+            predictions.append(decision)
+
+            explainability_logs.append({
+                "index": i,
+                "context": list(context),
+                "target": target,
+                "probability": float(prob),
+                "beta": beta,
+                "threshold": float(anomaly_threshold),
+                "context_length": context_length,
+                "context_count": context_count,
+                "min_context_depth": min_context_depth,
+                "min_context_count": min_context_count,
+                "prediction": decision
+            })
+
+        return predictions, explainability_logs
+
     @property
     def trained_patterns(self):
         return self._trained_patterns
