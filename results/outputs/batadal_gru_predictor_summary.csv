@@ -1,0 +1,2 @@
+dataset,model,window_size,feature_count,experiment_count,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_mean,f1_std,threshold_mean,threshold_std
+BATADAL,GRU_Predictor,10,43,5,0.946004842615012,0.0030387168033925455,0.6843144056923959,0.01456387689061255,0.8225,0.0408885680844903,0.746595615184112,0.01760882162800157,12.806404129028303,4.931601752751224
