@@ -265,7 +265,7 @@ def run_experiment_pipeline(X_train, X_test, y_test, config, dataset_name, fold_
     train_patterns = transformer.transform(X_train, window_size=config["window_size"])
     #vomm-pst bağlam derinliği windows size ile aynı tutulur
     model = VariableOrderMarkovModel(
-        max_depth=config["window_size"],
+        max_depth=config.get("max_depth", config["window_size"]),
         min_count=config.get("min_count", 2),
         smoothing=True,
         smoothing_alpha=config.get("smoothing_alpha", 1.0)
@@ -1283,3 +1283,4 @@ def main():
  
 if __name__ == "__main__":
     main()
+    run_batadal_max_depth_analysis(load_json_config())

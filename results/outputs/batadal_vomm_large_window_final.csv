@@ -1,2 +1,2 @@
-accuracy,precision,recall,f1_score,scenario,dataset,fold,seed,window_size,alphabet_size,min_count,smoothing_alpha,num_states,num_transitions,transition_density,selected_threshold,selected_min_context_depth,selected_min_context_count,validation_threshold_f1,selected_smooth_window
-0.21052631578947367,0.19230769230769232,1.0,0.3225806451612903,original,BATADAL,large_window_final,42,6,4,3,1.0,2111,2681,0.000601617343095347,0.005,0,0,,1
+accuracy,precision,recall,f1_score,predicted_positive_rate,actual_positive_rate,scenario,dataset,fold,seed,window_size,max_depth,alphabet_size,min_count,smoothing_alpha,num_states,num_transitions,transition_density,selected_threshold,selected_min_context_depth,selected_min_context_count,validation_threshold_f1,selected_smooth_window
+0.21052631578947367,0.19230769230769232,1.0,0.3225806451612903,0.9774436090225563,0.18796992481203006,original,BATADAL,large_window_final,42,6,6,4,3,1.0,2111,2681,0.000601617343095347,0.005,0,0,,1
