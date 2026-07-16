@@ -93,6 +93,22 @@
             2026,
             7,
             999
-        ]
+        ],
+        "alergia_merge_alpha_values": [
+            0.01,
+            0.05,
+            0.1
+        ],
+        "alergia_min_state_count_values": [
+            2,
+            5,
+            10
+        ],
+        "alergia_smoothing_alpha_values": [
+            0.1,
+            0.5,
+            1.0
+        ],
+        "alergia_max_pattern_distance": null
     }
 }
