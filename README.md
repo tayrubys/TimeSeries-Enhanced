@@ -236,3 +236,267 @@ Baseline davranışa dönmek için entropy threshold değerleri `null` yapılabi
   }
 }
 ```
+
+---
+
+## Window Size + Score Threshold Ablation
+
+Entropy-threshold branch üzerinde ek olarak `window_size` ve `score_threshold` değerlerinin performansa etkisi incelendi.
+
+Bu çalışma için ayrı bir ablation script’i kullanıldı:
+
+~~~text
+src/experiments/window_threshold_ablation.py
+~~~
+
+Bu script ile farklı `window_size` ve `score_threshold` kombinasyonları denenerek entropy-threshold mekanizmasının farklı pencere boyutlarında nasıl davrandığı gözlemlendi.
+
+### Deney Kurulumu
+
+Entropy-threshold etkisinin gerçekten ölçülebilmesi için bu branch’te `Fast predict` kapatıldı:
+
+~~~text
+Fast predict: False
+~~~
+
+Böylece modelin `predict()` fonksiyonu kullanıldı ve entropy-threshold karar mekanizmasının devreye girmesi sağlandı.
+
+Test edilen window size aralığı:
+
+~~~text
+window_size = [3, 4, 5, 6, 7]
+~~~
+
+Başlangıçta `[3, 4, 5, 6, 7, 8, 9, 10]` aralığı denenmişti. Ancak özellikle SKAB tarafında `window_size=8`, `window_size=9` ve `window_size=10` değerleri anlamlı katkı sağlamadığı ve koşu süresini uzattığı için final çalışmada aralık `[3, 4, 5, 6, 7]` ile sınırlandırıldı.
+
+Main ablation senaryoları:
+
+~~~text
+original
+gaussian_noise
+~~~
+
+Main ablation tamamlandıktan sonra `original` F1 skoruna göre en iyi 3 aday seçildi. Daha sonra yalnızca bu en iyi 3 aday için `unseen_data` değerlendirmesi yapıldı.
+
+Çıktılar şu klasör altında üretildi:
+
+~~~text
+results/outputs/window_threshold_ablation/entropy_threshold/
+~~~
+
+---
+
+### BATADAL Window Size Sonuçları
+
+BATADAL tarafında en iyi sonuç şu kombinasyonla elde edildi:
+
+~~~text
+window_size = 4
+score_threshold = 2.9957
+precision = 0.042683
+recall = 1.000000
+F1 = 0.081871
+accuracy = 0.234146
+~~~
+
+En iyi 3 aday:
+
+~~~text
+1. window_size = 4
+   score_threshold = 2.9957
+   precision = 0.042683
+   recall = 1.000000
+   F1 = 0.081871
+
+2. window_size = 4
+   score_threshold = 3.9120
+   precision = 0.042254
+   recall = 0.857143
+   F1 = 0.080537
+
+3. window_size = 4
+   score_threshold = 3.5066
+   precision = 0.041096
+   recall = 0.857143
+   F1 = 0.078431
+~~~
+
+BATADAL için `window_size=4` yine en iyi pencere boyutu olarak kaldı. Ancak entropy-threshold mekanizması aktifken bu sonuç baseline performansının oldukça altında kaldı.
+
+Karşılaştırma:
+
+~~~text
+Baseline BATADAL F1:                  0.444444
+Entropy-threshold window ablation F1: 0.081871
+~~~
+
+Bu sonuç, window size değiştirmenin BATADAL üzerinde entropy-threshold branch’ini iyileştirmediğini gösterdi.
+
+`window_size=3` düşük threshold değerlerinde recall’u artırdı, ancak precision çok düşük kaldı. Bu durum modelin çok fazla false positive ürettiğini gösterdi.
+
+`window_size=5` ve üzerindeki değerlerde ise anlamlı bir iyileşme elde edilmedi.
+
+BATADAL için genel yorum:
+
+~~~text
+Entropy-threshold branch’inde window size değişimi BATADAL performansını iyileştirmedi.
+En iyi sonuç yine window_size=4 ile elde edildi, ancak F1 skoru baseline’ın çok altında kaldı.
+~~~
+
+---
+
+### BATADAL Unseen Data Sonuçları
+
+En iyi original F1 adayının unseen-data sonucu:
+
+~~~text
+window_size = 4
+score_threshold = 2.9957
+unseen_precision = 0.083333
+unseen_recall = 1.000000
+unseen_F1 = 0.153846
+unseen_accuracy = 0.312500
+~~~
+
+Diğer adayların unseen-data sonuçları:
+
+~~~text
+window_size = 4
+score_threshold = 3.9120
+unseen_F1 = 0.333333
+
+window_size = 4
+score_threshold = 3.5066
+unseen_F1 = 0.222222
+~~~
+
+Her ne kadar `score_threshold=3.9120` unseen-data üzerinde daha yüksek F1 üretmiş olsa da, original senaryodaki performansı çok düşük kaldığı için genel aday olarak güçlü görülmedi.
+
+---
+
+### SKAB Window Size Sonuçları
+
+SKAB tarafında en iyi original F1 sonucu şu kombinasyonla elde edildi:
+
+~~~text
+window_size = 5
+score_threshold = 0.05
+precision = 0.371625
+recall = 1.000000
+F1 = 0.541434
+accuracy = 0.387431
+~~~
+
+En iyi 3 aday:
+
+~~~text
+1. window_size = 5
+   score_threshold = 0.05
+   precision = 0.371625
+   recall = 1.000000
+   F1 = 0.541434
+
+2. window_size = 4
+   score_threshold = 0.05
+   precision = 0.391427
+   recall = 0.863158
+   F1 = 0.537760
+
+3. window_size = 5
+   score_threshold = 0.00
+   precision = 0.361195
+   recall = 1.000000
+   F1 = 0.530688
+~~~
+
+SKAB tarafında düşük threshold değerleriyle original F1 skorunda artış gözlendi. Ancak bu artışın temel nedeni recall değerinin çok yükselmesidir.
+
+En iyi adayda:
+
+~~~text
+recall = 1.000000
+precision = 0.371625
+accuracy = 0.387431
+~~~
+
+Bu durum modelin anomalileri yakaladığını, fakat çok fazla false positive ürettiğini göstermektedir.
+
+Önceki referans ayar:
+
+~~~text
+window_size = 4
+score_threshold = 0.2231
+F1 ≈ 0.4911
+~~~
+
+Window ablation sonrası en iyi original sonuç:
+
+~~~text
+window_size = 5
+score_threshold = 0.05
+F1 = 0.541434
+~~~
+
+Bu nedenle SKAB original senaryoda sayısal olarak F1 artışı vardır. Ancak precision ve accuracy düşük kaldığı için bu iyileşme güçlü ve kararlı bir iyileşme olarak değerlendirilmemelidir.
+
+---
+
+### SKAB Unseen Data Sonuçları
+
+En iyi adayların unseen-data sonuçları:
+
+~~~text
+window_size = 5
+score_threshold = 0.05
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+~~~
+
+~~~text
+window_size = 4
+score_threshold = 0.05
+unseen_precision = 0.142857
+unseen_recall = 0.200000
+unseen_F1 = 0.166667
+unseen_accuracy = 0.547826
+~~~
+
+~~~text
+window_size = 5
+score_threshold = 0.00
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+~~~
+
+Unseen-data tarafında anlamlı bir iyileşme elde edilmedi. En iyi unseen F1 değeri yaklaşık `0.1667` seviyesinde kaldı.
+
+---
+
+### Window Size Ablation Genel Yorumu
+
+Window size ablation sonuçları entropy-threshold branch’i için şu tabloyu ortaya koydu:
+
+~~~text
+BATADAL:
+- En iyi window_size yine 4 oldu.
+- Ancak entropy-threshold aktifken F1 ciddi şekilde düştü.
+- Window size değişimi BATADAL performansını iyileştirmedi.
+
+SKAB:
+- En iyi original F1 window_size=5 ve threshold=0.05 ile elde edildi.
+- F1 artışı yüksek recall kaynaklıydı.
+- Precision ve accuracy düşük kaldı.
+- Unseen-data tarafında iyileşme görülmedi.
+~~~
+
+Sonuç olarak, window size ve score threshold araması entropy-threshold branch’inin genel kararını değiştirmedi.
+
+~~~text
+feature/entropy-threshold = rejected / not merged
+~~~
+
+Bu branch’te window size değişimi SKAB original senaryoda sınırlı ve recall-ağırlıklı bir artış sağladı. Ancak BATADAL’daki ciddi performans düşüşü ve unseen-data tarafındaki zayıf sonuçlar nedeniyle entropy-threshold mekanizması final model adayı olarak seçilmedi.
