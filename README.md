@@ -267,3 +267,24 @@ Beş fold’un tamamında en iyi değer `window_size=12` olarak seçilmiştir. F
 
 Bu nedenle SKAB final modelinde `window_size=12` kullanılmıştır. Window büyüdükçe pattern seviyesindeki sınıf dağılımının değiştiği de sonuçlar değerlendirilirken dikkate alınmıştır.
 
+### Interpolated (Witten-Bell) Back-off Denemesi — Güncelleme
+
+Önceki denemede tüm beta değerlerinin aynı sonucu vermesinin nedeni araştırıldı:
+`find_best_context` fonksiyonunun tek bir "en uzun context"i seçip diğerlerini
+tamamen attığı (hard back-off) tespit edildi. Bunu düzeltmek için `pst_model.py`'ye
+tüm context derinliklerini güven ağırlıklı karıştıran `predict_probability_interpolated`
+fonksiyonu eklendi (`weight = context_count / (context_count + beta)`).
+
+`beta=[0.5, 1, 2, 5, 10, 20]` validation üzerinde tarandı. Sonuç değişmedi:
+tüm beta değerlerinde validation F1 sabit kaldı (BATADAL: 0.1655, SKAB: 0.6557).
+Test setinde BATADAL F1 `0.3226 → 0.3117`'ye geriledi, SKAB'da değişmedi.
+
+| Yöntem | BATADAL F1 | SKAB F1 |
+|---|---:|---:|
+| Hard back-off (mevcut) | 0.3226 | 0.6531 |
+| Interpolated back-off | 0.3117 | 0.6531 |
+
+Bu, performans tavanının context mekanizmasından değil, seçilen threshold'ların
+(BATADAL: 0.005, SKAB: 0.5) kararı zaten doygunluğa itmesinden kaynaklandığını
+doğruluyor. Yöntem final modele dahil edilmedi.
+
