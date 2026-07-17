@@ -521,3 +521,408 @@ results/outputs/automata_skab_fold_summary.csv
 results/outputs/automata_batadal_seed_summary.csv
 results/outputs/statistical_test_results.csv
 ```
+
+---
+
+## Window Size + Score Threshold Ablation
+
+Time-decay branch üzerinde ek olarak `window_size` ve `score_threshold` değerlerinin performansa etkisi incelendi.
+
+Bu çalışma için ayrı bir ablation script’i kullanıldı:
+
+```text
+src/experiments/window_threshold_ablation.py
+```
+
+Bu script ile farklı `window_size` ve `score_threshold` kombinasyonları denenerek time-decay mekanizmasının farklı pencere boyutlarında nasıl davrandığı gözlemlendi.
+
+---
+
+### Deney Kurulumu
+
+Ablation çalışması şu branch üzerinde yürütüldü:
+
+```text
+feature/time-decay
+```
+
+Script dry-run aşamasında branch’i doğru şekilde algıladı:
+
+```text
+Branch slug: time_decay
+```
+
+Model tarafında time-decay parametreleri desteklenen model parametreleri içinde görüldü:
+
+```text
+time_decay_enabled
+time_decay_rate
+time_decay_min_weight
+```
+
+Bu nedenle mevcut `window_threshold_ablation.py` script’inin time-decay branch ile uyumlu olduğu görüldü.
+
+Kod kontrolünde time-decay mekanizmasının transition öğrenme aşamasında uygulandığı görüldü:
+
+```text
+transition_weight = self._get_time_decay_weight(age)
+```
+
+Bu nedenle `Fast predict=True` ayarının time-decay etkisini bypass etmediği değerlendirildi. Çünkü time-decay etkisi `predict()` aşamasında sonradan eklenen bir gate değil, transition ağırlıklarının öğrenilmesi sırasında uygulanmaktadır.
+
+Ablation çalışması şu ayarla yürütüldü:
+
+```text
+Fast predict: True
+```
+
+Test edilen window size aralığı:
+
+```text
+window_size = [3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+Main ablation senaryoları:
+
+```text
+original
+gaussian_noise
+```
+
+Main ablation tamamlandıktan sonra `original` F1 skoruna göre en iyi 3 aday seçildi. Daha sonra yalnızca bu en iyi 3 aday için `unseen_data` değerlendirmesi yapıldı.
+
+Çıktılar şu klasör altında üretildi:
+
+```text
+results/outputs/window_threshold_ablation/time_decay/
+```
+
+---
+
+### BATADAL Window Size Sonuçları
+
+BATADAL tarafında en iyi sonuç şu kombinasyonla elde edildi:
+
+```text
+window_size = 4
+score_threshold = 3.9120
+precision = 0.363636
+recall = 0.571429
+F1 = 0.444444
+accuracy = 0.951220
+```
+
+En iyi 3 aday:
+
+```text
+1. window_size = 4
+   score_threshold = 3.9120
+   precision = 0.363636
+   recall = 0.571429
+   F1 = 0.444444
+
+2. window_size = 4
+   score_threshold = 3.5066
+   precision = 0.148148
+   recall = 0.571429
+   F1 = 0.235294
+
+3. window_size = 4
+   score_threshold = 4.2000
+   precision = 0.500000
+   recall = 0.142857
+   F1 = 0.222222
+```
+
+BATADAL için en iyi pencere boyutu yine `window_size=4` oldu.
+
+Baseline BATADAL sonucu:
+
+```text
+Baseline BATADAL F1 = 0.444444
+```
+
+Time-decay window ablation sonrası en iyi BATADAL sonucu:
+
+```text
+Time-decay best BATADAL F1 = 0.444444
+```
+
+Bu nedenle time-decay branch, BATADAL üzerinde baseline performansını korudu. Window size ve threshold araması sonrasında BATADAL tarafında ek bir iyileşme görülmedi, ancak performans düşüşü de oluşmadı.
+
+---
+
+### BATADAL Unseen Data Sonuçları
+
+En iyi original F1 adayının unseen-data sonucu:
+
+```text
+window_size = 4
+score_threshold = 3.9120
+unseen_precision = 0.250000
+unseen_recall = 1.000000
+unseen_F1 = 0.400000
+unseen_accuracy = 0.812500
+```
+
+Diğer adayların unseen-data sonuçları:
+
+```text
+window_size = 4
+score_threshold = 3.5066
+unseen_F1 = 0.222222
+
+window_size = 4
+score_threshold = 4.2000
+unseen_F1 = 0.000000
+```
+
+Baseline BATADAL unseen F1 değeri daha önce `0.400000` seviyesindeydi. Time-decay window ablation sonucunda bu değer korunmuştur.
+
+---
+
+### BATADAL Yorumu
+
+BATADAL tarafında `window_size=4` açık şekilde en iyi sonucu verdi.
+
+`window_size=3` düşük threshold değerlerinde recall’u yükseltti, ancak precision çok düşük kaldı. Bu durum modelin çok fazla false positive ürettiğini gösterdi.
+
+`window_size=5` ve üzerindeki değerlerde ise F1 skorları genel olarak `0.0` kaldı. Bu sonuç, BATADAL için daha büyük window size değerlerinin time-decay branch’inde de işe yaramadığını gösterdi.
+
+BATADAL için genel sonuç:
+
+```text
+Time-decay branch, BATADAL üzerinde baseline performansını korudu.
+En iyi sonuç window_size=4 ve score_threshold=3.9120 ile elde edildi.
+Original F1 = 0.444444
+Unseen-data F1 = 0.400000
+```
+
+Bu sonuç, time-decay yaklaşımının BATADAL tarafında zarar vermediğini, ancak base modelin üzerine çıkamadığını göstermektedir.
+
+---
+
+### SKAB Window Size Sonuçları
+
+SKAB tarafında en iyi original F1 sonucu şu kombinasyonla elde edildi:
+
+```text
+window_size = 4
+score_threshold = 0.3567
+precision = 0.550311
+recall = 0.740352
+F1 = 0.574023
+accuracy = 0.641103
+```
+
+En iyi 3 aday:
+
+```text
+1. window_size = 4
+   score_threshold = 0.3567
+   precision = 0.550311
+   recall = 0.740352
+   F1 = 0.574023
+
+2. window_size = 5
+   score_threshold = 0.0000
+   precision = 0.361195
+   recall = 1.000000
+   F1 = 0.530688
+
+3. window_size = 5
+   score_threshold = 0.0010
+   precision = 0.361195
+   recall = 1.000000
+   F1 = 0.530688
+```
+
+Önceki referans SKAB ayarı:
+
+```text
+window_size = 4
+score_threshold = 0.2231
+F1 ≈ 0.4911
+```
+
+Window ablation sonrası en iyi SKAB original sonucu:
+
+```text
+window_size = 4
+score_threshold = 0.3567
+F1 = 0.574023
+```
+
+Bu sonuç SKAB original senaryoda anlamlı bir F1 artışı olduğunu gösterdi.
+
+Önceki bazı feature branch’lerde SKAB tarafındaki F1 artışı çoğunlukla `recall=1.0` ve düşük precision ile oluşmuştu. Time-decay branch’te ise en iyi sonuç daha dengeli bir precision/recall dağılımı sağlamıştır:
+
+```text
+precision = 0.550311
+recall = 0.740352
+accuracy = 0.641103
+```
+
+Bu nedenle time-decay branch, SKAB original senaryoda önceki feature branch’lere göre daha dengeli bir iyileşme üretmiştir.
+
+---
+
+### SKAB Unseen Data Sonuçları
+
+En iyi adayların unseen-data sonuçları:
+
+```text
+window_size = 4
+score_threshold = 0.3567
+unseen_precision = 0.142857
+unseen_recall = 0.200000
+unseen_F1 = 0.166667
+unseen_accuracy = 0.547826
+```
+
+```text
+window_size = 5
+score_threshold = 0.0000
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+```
+
+```text
+window_size = 5
+score_threshold = 0.0010
+unseen_precision = 0.141463
+unseen_recall = 0.200000
+unseen_F1 = 0.165714
+unseen_accuracy = 0.610853
+```
+
+SKAB unseen-data tarafında anlamlı bir iyileşme elde edilmedi.
+
+Baseline SKAB unseen F1 değeri yaklaşık şu seviyedeydi:
+
+```text
+Baseline/reference SKAB unseen F1 ≈ 0.166667
+```
+
+Time-decay window ablation sonucunda en iyi unseen F1 değeri:
+
+```text
+Time-decay SKAB unseen F1 = 0.166667
+```
+
+Bu nedenle SKAB original senaryodaki güçlü artış unseen-data tarafına taşınmamıştır.
+
+---
+
+### SKAB Yorumu
+
+SKAB tarafında time-decay branch, şimdiye kadarki feature branch’ler içinde en dikkat çekici original F1 artışını sağlamıştır.
+
+En önemli fark, bu artışın yalnızca recall değerinin `1.0` seviyesine çıkmasından kaynaklanmamasıdır. En iyi adayda precision, recall ve accuracy değerleri önceki recall-ağırlıklı sonuçlara göre daha dengelidir.
+
+SKAB için genel sonuç:
+
+```text
+Time-decay branch, SKAB original senaryoda güçlü ve daha dengeli bir F1 artışı sağlamıştır.
+Ancak unseen-data tarafında iyileşme sağlamamıştır.
+Bu nedenle sonuç umut verici olsa da genelleme açısından dikkatli değerlendirilmelidir.
+```
+
+---
+
+### Window Size Ablation Genel Yorumu
+
+Window size ablation sonuçları time-decay branch için şu tabloyu ortaya koydu:
+
+```text
+BATADAL:
+- En iyi window_size yine 4 oldu.
+- En iyi original F1 = 0.444444
+- Baseline performansı korundu.
+- Unseen-data F1 = 0.400000 ile baseline seviyesi korundu.
+- Büyük window size değerleri anlamlı sonuç üretmedi.
+
+SKAB:
+- En iyi original F1 window_size=4 ve threshold=0.3567 ile elde edildi.
+- En iyi original F1 = 0.574023
+- Precision, recall ve accuracy değerleri önceki feature branch’lere göre daha dengeli kaldı.
+- Unseen-data tarafında iyileşme görülmedi.
+```
+
+Bu sonuçlara göre time-decay branch, önceki feature branch’lere kıyasla daha güçlü bir adaydır. Çünkü BATADAL performansını bozmamış, SKAB original senaryoda ise belirgin ve daha dengeli bir F1 artışı üretmiştir.
+
+Ancak SKAB unseen-data üzerinde iyileşme sağlamadığı için final karar verilirken genelleme performansı ayrıca dikkate alınmalıdır.
+
+---
+
+### Önceki Feature Branch’lerle Karşılaştırma
+
+Window ablation sonuçlarına göre time-decay branch’in konumu şu şekildedir:
+
+```text
+1. time-decay
+   - BATADAL korunuyor
+   - SKAB original belirgin ve daha dengeli iyileşiyor
+   - SKAB unseen değişmiyor
+
+2. ensemble-markov
+   - BATADAL korunuyor
+   - SKAB original artıyor fakat daha recall-ağırlıklı
+   - SKAB unseen çok küçük artıyor
+
+3. dirichlet-smoothing
+   - BATADAL baseline altında veya ancak baseline seviyesinde
+   - SKAB çok sınırlı artıyor
+
+4. transition-confidence
+   - BATADAL düşüyor
+   - SKAB recall ağırlıklı artıyor
+
+5. entropy-threshold
+   - BATADAL ciddi düşüyor
+   - Genelde güçlü aday değil
+```
+
+Bu sıralamada time-decay branch, şu ana kadarki en güçlü feature adayı olarak değerlendirilebilir.
+
+---
+
+### Branch Kararı
+
+Window size ve score threshold araması time-decay branch için olumlu bir tablo ortaya koydu.
+
+```text
+feature/time-decay = güçlü aday / şu ana kadarki en iyi feature adayı
+```
+
+Daha açıklayıcı karar:
+
+```text
+Time-decay branch, BATADAL üzerinde baseline performansını korumuş, SKAB original senaryosunda ise belirgin ve daha dengeli bir F1 artışı sağlamıştır. SKAB unseen-data tarafında iyileşme görülmemiş olsa da, önceki feature branch’lerle karşılaştırıldığında en güçlü aday olarak değerlendirilmektedir.
+```
+
+Bu branch, final model değerlendirmesinde özellikle dikkate alınmalıdır.
+
+---
+
+### Üretilen Window Ablation Çıktıları
+
+Window size ve score threshold ablation çalışması sonucunda aşağıdaki dosyalar üretildi:
+
+```text
+results/outputs/window_threshold_ablation/time_decay/01_main_ablation/time_decay_batadal_main_metrics.csv
+results/outputs/window_threshold_ablation/time_decay/01_main_ablation/time_decay_batadal_main_summary.csv
+results/outputs/window_threshold_ablation/time_decay/01_main_ablation/time_decay_batadal_main_best_candidates.csv
+results/outputs/window_threshold_ablation/time_decay/02_unseen_top_candidates/time_decay_batadal_unseen_top_candidates_metrics.csv
+results/outputs/window_threshold_ablation/time_decay/02_unseen_top_candidates/time_decay_batadal_unseen_top_candidates_summary.csv
+results/outputs/window_threshold_ablation/time_decay/03_reports/time_decay_batadal_final_comparison.csv
+
+results/outputs/window_threshold_ablation/time_decay/01_main_ablation/time_decay_skab_main_metrics.csv
+results/outputs/window_threshold_ablation/time_decay/01_main_ablation/time_decay_skab_main_summary.csv
+results/outputs/window_threshold_ablation/time_decay/01_main_ablation/time_decay_skab_main_best_candidates.csv
+results/outputs/window_threshold_ablation/time_decay/02_unseen_top_candidates/time_decay_skab_unseen_top_candidates_metrics.csv
+results/outputs/window_threshold_ablation/time_decay/02_unseen_top_candidates/time_decay_skab_unseen_top_candidates_summary.csv
+results/outputs/window_threshold_ablation/time_decay/03_reports/time_decay_skab_final_comparison.csv
+```
