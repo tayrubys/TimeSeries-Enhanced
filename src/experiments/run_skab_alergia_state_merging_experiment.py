@@ -9,7 +9,7 @@ from sklearn.model_selection import GroupKFold
 
 try:
     from sklearn.model_selection import StratifiedGroupKFold
-except ImportError:  # Eski sklearn sürümleri için yedek.
+except ImportError:  #eski sklearn sürümleri için yedek.
     StratifiedGroupKFold = None
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
@@ -54,29 +54,17 @@ def load_config():
         "seeds": [int(seed) for seed in automata.get(
             "seeds", [42, 123, 2026, 7, 999]
         )],
-        "n_folds": int(
-            automata.get("skab_n_folds", deep_learning.get("n_folds", 5))
-        ),
-        "inner_n_splits": int(
-            automata.get("alergia_skab_inner_n_splits", 5)
-        ),
-        "merge_alphas": automata.get(
-            "alergia_merge_alpha_values", [0.01, 0.05, 0.1]
-        ),
-        "min_counts": automata.get(
-            "alergia_min_state_count_values", [2, 5, 10]
-        ),
-        "smoothing_alphas": automata.get(
-            "alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]
-        ),
-        "max_pattern_distance": automata.get(
-            "alergia_max_pattern_distance", None
-        ),
+        "n_folds": int(automata.get("skab_n_folds", deep_learning.get("n_folds", 5))),
+        "inner_n_splits": int(automata.get("alergia_skab_inner_n_splits", 5)),
+        "merge_alphas": automata.get("alergia_merge_alpha_values", [0.01, 0.05, 0.1]),
+        "min_counts": automata.get("alergia_min_state_count_values", [2, 5, 10]),
+        "smoothing_alphas": automata.get("alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]),
+        "max_pattern_distance": automata.get("alergia_max_pattern_distance", None),
     }
 
 
 def transform_patterns(transformer, series, window_size, train_mean, train_std):
-    # Validation ve test yalnızca ilgili train istatistikleriyle normalize edilir.
+    #validation ve test yalnızca ilgili train istatistikleriyle normalize edilir
     normalized = (np.asarray(series, dtype=float) - train_mean) / train_std
     paa = transformer.apply_paa(normalized, window_size)
     sax = transformer.convert_to_sax(paa)
@@ -84,7 +72,7 @@ def transform_patterns(transformer, series, window_size, train_mean, train_std):
 
 
 def align_labels(labels, window_size):
-    # Etiketleri önce PAA bloklarına, sonra sliding-window pattern seviyesine taşır.
+    #etiketleri önce PAA bloklarına, sonra sliding-window pattern seviyesine taşır
     labels = to_binary(labels)
     usable = (len(labels) // window_size) * window_size
 
@@ -107,7 +95,7 @@ def align_labels(labels, window_size):
 
 
 def grouped_indices(source_files):
-    # Satır sırasını koruyarak her CSV dosyasını ayrı bir sequence olarak tutar.
+    #satır sırasını koruyarak her CSV dosyasını ayrı bir sequence olarak tutar
     grouped = OrderedDict()
 
     for index, source_file in enumerate(source_files):
@@ -117,15 +105,7 @@ def grouped_indices(source_files):
         yield source_file, np.asarray(indices, dtype=int)
 
 
-def prepare_grouped_patterns(
-    values,
-    labels,
-    source_files,
-    transformer,
-    window_size,
-    train_mean,
-    train_std,
-):
+def prepare_grouped_patterns(values,labels,source_files,transformer,window_size,train_mean,train_std,):
     values = np.asarray(values, dtype=float)
     labels = to_binary(labels)
     source_files = np.asarray(source_files)
@@ -154,7 +134,7 @@ def prepare_grouped_patterns(
                 f"{len(patterns)}/{len(pattern_labels)}"
             )
 
-        # En az iki pattern yoksa transition üretilemez.
+        #en az iki pattern yoksa transition üretilemez
         if len(patterns) < 2:
             continue
 
@@ -169,12 +149,9 @@ def prepare_grouped_patterns(
 
     return grouped_data
 
-
+#aynı sınıfa ait ardısık gecıslerı sequence olarak toplar(sınıf değişiminde normal ve anomaly arasında sahte geçiş kurulmaz)
 def build_class_sequences(patterns, transition_labels):
-    """
-    Aynı sınıfa ait ardışık geçişleri sequence olarak toplar.
-    Sınıf değişiminde normal ile anomaly arasında sahte geçiş kurulmaz.
-    """
+
     transition_labels = np.asarray(transition_labels, dtype=int)
 
     if len(patterns) - 1 != len(transition_labels):
@@ -408,15 +385,7 @@ def create_inner_splitter(n_splits, seed):
     return GroupKFold(n_splits=n_splits), "GroupKFold"
 
 
-def choose_inner_split(
-    X,
-    y,
-    source_files,
-    transformer,
-    config,
-    fold_id,
-    seed,
-):
+def choose_inner_split(X,y,source_files,transformer,config,fold_id,seed,):
     unique_groups = np.unique(source_files)
     n_splits = min(config["inner_n_splits"], len(unique_groups))
 
@@ -717,7 +686,7 @@ def run_fold_seed(fold_id, seed, config, transformer):
         f"val F1={best['metrics']['f1_score']:.4f}"
     )
 
-    # Parametre seçimi bittikten sonra final model outer-train'in tamamıyla eğitilir.
+    #parametre seçimi bittikten sonra final model outer-train'in tamamıyla eğitilir
     full_train_mean = float(np.mean(X_train))
     full_train_std = float(np.std(X_train)) or 1.0
     grouped_full_train = prepare_grouped_patterns(
@@ -889,9 +858,7 @@ def create_summary(metrics_df):
 
 def create_fold_summary(metrics_df):
     columns = ["accuracy", "precision", "recall", "f1_score", "unseen_count"]
-    summary = metrics_df.groupby(["fold", "scenario"])[columns].agg(
-        ["mean", "std"]
-    )
+    summary = metrics_df.groupby(["fold", "scenario"])[columns].agg(["mean", "std"])
     summary.columns = [f"{column}_{stat}" for column, stat in summary.columns]
     return summary.reset_index()
 
@@ -924,26 +891,11 @@ def main():
     summary_df = create_summary(metrics_df)
     fold_summary_df = create_fold_summary(metrics_df)
 
-    metrics_df.to_csv(
-        os.path.join(OUTPUT_DIR, "skab_dual_alergia_fold_seed_metrics.csv"),
-        index=False,
-    )
-    validation_df.to_csv(
-        os.path.join(OUTPUT_DIR, "skab_dual_alergia_validation_search.csv"),
-        index=False,
-    )
-    best_config_df.to_csv(
-        os.path.join(OUTPUT_DIR, "skab_dual_alergia_best_configs.csv"),
-        index=False,
-    )
-    fold_summary_df.to_csv(
-        os.path.join(OUTPUT_DIR, "skab_dual_alergia_fold_summary.csv"),
-        index=False,
-    )
-    summary_df.to_csv(
-        os.path.join(OUTPUT_DIR, "skab_dual_alergia_overall_summary.csv"),
-        index=False,
-    )
+    metrics_df.to_csv(os.path.join(OUTPUT_DIR, "skab_dual_alergia_fold_seed_metrics.csv"),index=False,)
+    validation_df.to_csv(os.path.join(OUTPUT_DIR, "skab_dual_alergia_validation_search.csv"),index=False,)
+    best_config_df.to_csv(os.path.join(OUTPUT_DIR, "skab_dual_alergia_best_configs.csv"),index=False,)
+    fold_summary_df.to_csv(os.path.join(OUTPUT_DIR, "skab_dual_alergia_fold_summary.csv"),index=False,)
+    summary_df.to_csv(os.path.join(OUTPUT_DIR, "skab_dual_alergia_overall_summary.csv"),index=False,)
 
     with open(
         os.path.join(OUTPUT_DIR, "skab_dual_alergia_explainability.json"),
