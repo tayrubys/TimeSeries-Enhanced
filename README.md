@@ -47,3 +47,15 @@ Genel Sonuç
 ALERGIA-inspired state-merging yöntemi içerisinde en iyi sonuç, state’lerin sonraki tam pattern dağılımına göre karşılaştırıldığı pattern-aware sürümde elde edildi.
 
 Yöntem state sayısını azaltarak daha genel bir otomata oluşturdu ve ilk ALERGIA sürümlerine göre performansı artırdı. Ancak unseen pattern’ların belirlenmesinde yeterli başarı sağlanamadığı görüldü
+
+
+## SKAB Dual ALERGIA Denemesi
+PAA ve SAX dönüşümleri her kaynak dosya için ayrı uygulanarak farklı dosyalar arasında sahte geçiş oluşması engellendi. Deneyler 5 farklı seed ile tekrarlandı.
+
+| Senaryo | Ortalama Precision | Ortalama Recall | Ortalama F1 |
+|---|---:|---:|---:|
+| Original | 0.3554 | 0.7194 | 0.4541 |
+| Gaussian Noise | 0.3583 | 0.7180 | 0.4550 |
+| Unseen Data | 0.0000 | 0.0000 | 0.0000 |
+
+Original ve Gaussian noise sonuçlarının birbirine yakın olması, modelin eklenen gürültüden fazla etkilenmediğini gösterdi. Fold sonuçları arasında farklılık bulunduğu için modelin SKAB üzerindeki performansının dosyalara bağlı olarak değişebildiği görüldü.
