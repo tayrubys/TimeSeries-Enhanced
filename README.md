@@ -65,3 +65,7 @@ Original ve Gaussian noise sonuçlarının birbirine yakın olması, modelin ekl
 Unseen pattern eşleştirmelerini daha güvenilir hâle getirmek için Levenshtein uzaklığı surprise skoruna ceza olarak eklendi. Ceza katsayısı diğer model parametreleriyle birlikte validation seti üzerinden seçildi. Ayrıca state-merging işlemi tekrarlanabilir sonuçlar üretecek şekilde düzenlendi.
 
 Bu düzenleme sonucunda BATADAL test F1 değeri yaklaşık `0.284`, SKAB ortalama F1 değeri ise yaklaşık `0.507` olarak elde edildi.
+
+### Geçiş Güvenilirliği Denemesi
+
+Az görülen state geçişlerinin etkisini azaltmak amacıyla dual surprise skorları geçiş desteğine göre ağırlıklandırıldı. Farklı güvenilirlik katsayıları validation setinde denendi ancak en iyi sonuç ağırlıklandırmanın kapalı olduğu durumda elde edildi. Bu nedenle yöntem final modele eklenmedi.
