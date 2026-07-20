@@ -59,3 +59,9 @@ PAA ve SAX dönüşümleri her kaynak dosya için ayrı uygulanarak farklı dosy
 | Unseen Data | 0.0000 | 0.0000 | 0.0000 |
 
 Original ve Gaussian noise sonuçlarının birbirine yakın olması, modelin eklenen gürültüden fazla etkilenmediğini gösterdi. Fold sonuçları arasında farklılık bulunduğu için modelin SKAB üzerindeki performansının dosyalara bağlı olarak değişebildiği görüldü.
+
+### Levenshtein Uzaklık Cezası
+
+Unseen pattern eşleştirmelerini daha güvenilir hâle getirmek için Levenshtein uzaklığı surprise skoruna ceza olarak eklendi. Ceza katsayısı diğer model parametreleriyle birlikte validation seti üzerinden seçildi. Ayrıca state-merging işlemi tekrarlanabilir sonuçlar üretecek şekilde düzenlendi.
+
+Bu düzenleme sonucunda BATADAL test F1 değeri yaklaşık `0.284`, SKAB ortalama F1 değeri ise yaklaşık `0.507` olarak elde edildi.

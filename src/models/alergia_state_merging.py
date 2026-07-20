@@ -29,6 +29,7 @@ class AlergiaStateMergingAutomata:
         if distance_penalty < 0:
             raise ValueError("distance_penalty negatif olamaz.")        
 
+        #hiperparametrelerini kaydeder
         self.merge_alpha = merge_alpha
         self.min_state_count = min_state_count
         self.smoothing_alpha = smoothing_alpha
@@ -44,12 +45,12 @@ class AlergiaStateMergingAutomata:
         #state'ten sonra hangi tam pattern'ların geldiğini tutuyoruz
         self.next_pattern_counts = defaultdict(lambda: defaultdict(int))
 
-        #birleştirme sonrası geçişler
+        #birleştirme sonrası geçişler matrisi
         self.transitions = defaultdict(
             lambda: defaultdict(int)
         )
         self.total_exits = defaultdict(int)
-
+        #ogrenilen patternleri ve state eşleşmelerini tutan değişkenler
         self.trained_patterns = set()
         self.pattern_counts = defaultdict(int)
         self.state_mapping = {}
@@ -81,8 +82,8 @@ class AlergiaStateMergingAutomata:
                 "pattern sequence gereklidir."
             )
 
-        self._reset()
-
+        self._reset()#her eğitimden sonra eski verileri temizler
+        #eğitim verisini gezip patternleri ve frekansları kaydeder
         for sequence in valid_sequences:
             self.trained_patterns.update(sequence)
             for pattern in sequence:
@@ -104,12 +105,13 @@ class AlergiaStateMergingAutomata:
                 self.next_pattern_counts[
                 current_state
                 ][next_state] += 1
-
+        #istatistiksel olarak uyumlu olan stateleri mergeleyip grafı sadeleştirir
         self._merge_compatible_states()
         self._build_merged_transitions()
 
         return self
-
+    
+    #tüm dictionaryleri ve setleri sifirlar
     def _reset(self):
         self.raw_transitions = defaultdict(
             lambda: defaultdict(int)
@@ -128,7 +130,7 @@ class AlergiaStateMergingAutomata:
         self.state_mapping = {}
         self.merged_members = defaultdict(list)
         self.merged_states = set()
-
+ 
     def _merge_compatible_states(self):
         #cok görülen state'leri önce temsilci olarak kullan.
         ordered_states = sorted(
@@ -146,18 +148,19 @@ class AlergiaStateMergingAutomata:
             best_distance = float("inf")
 
             for representative in representatives:
+                #aralarındaki mesafe belirlenen eşikten buyukse atla
                 if not self._passes_pattern_distance(
                     state,
                     representative
                 ):
                     continue
-
+                #gelecekteki geçiş dağılımları benzemiyorsa atla
                 if not self._are_compatible(
                     [state],
                     self.merged_members[representative]
                 ):
                     continue
-
+                #dağılım farkını hesaplar
                 distribution_distance = (
                     self._distribution_distance(
                         [state],
@@ -176,7 +179,7 @@ class AlergiaStateMergingAutomata:
                     rel_tol=0.0,
                     abs_tol=1e-12,
                 )
-
+                #mesafeler esitse alfabetik sıraya bakarki her çalısmada aynı sonucu versın
                 is_better_tie = (
                     is_equal_distance
                     and (
@@ -188,18 +191,20 @@ class AlergiaStateMergingAutomata:
                 if is_better_distance or is_better_tie:
                     best_distance = distribution_distance
                     selected_representative = representative
-
+            #uygun temsilci bulunamadıysa kendı grubunu kurar
             if selected_representative is None:
                 representatives.append(state)
                 self.state_mapping[state] = state
                 self.merged_members[state].append(state)
             else:
+                #temsilci bulunduysa mevcut gruba bağlanır
                 self.state_mapping[state] = selected_representative
                 self.merged_members[selected_representative].append(state)
 
         self.merged_states = set(representatives)
 
     def _passes_pattern_distance(self, state_a, state_b):
+        #max levenshtein mesafesi sınırı
         if self.max_pattern_distance is None:
             return True
 
@@ -223,12 +228,13 @@ class AlergiaStateMergingAutomata:
         return aggregated
 
     def _are_compatible(self, members_a, members_b):
+        #hoeffding sınırını kullanarak iki state grubunun birleşmeye uygun olup olmadığını test eder
         counts_a = self._aggregate_next_pattern_counts(members_a)
         counts_b = self._aggregate_next_pattern_counts(members_b)
 
         total_a = sum(counts_a.values())
         total_b = sum(counts_b.values())
-
+        #istatistiksel karar vermek için yeterli veri yoksa birleştirme
         if (
             total_a < self.min_state_count
             or total_b < self.min_state_count
@@ -236,14 +242,14 @@ class AlergiaStateMergingAutomata:
             return False
 
         next_patterns = sorted(set(counts_a) | set(counts_b))
-
+        #guven sınırı hesaplama
         confidence_term = math.sqrt(
             0.5 * math.log(2.0 / self.merge_alpha)
         )
 
         bound = confidence_term * (
             (1.0 / math.sqrt(total_a))+ (1.0 / math.sqrt(total_b)))
-
+        #olasılıklar arası fark sınır değerinden (bound) büyükse uyumsuzdur
         for next_pattern in next_patterns:
             probability_a = (
                 counts_a.get(next_pattern, 0) / total_a
@@ -256,7 +262,8 @@ class AlergiaStateMergingAutomata:
                 return False
 
         return True
-
+    
+    #iki grubun geçiş olasılıkları arasındaki matematiksel farkı hesaplar
     def _distribution_distance(self,members_a,members_b,):
         counts_a = self._aggregate_next_pattern_counts(
             members_a
@@ -293,7 +300,8 @@ class AlergiaStateMergingAutomata:
 
         #math.fsum, kayan noktalı sayıların daha kararlı biçimde toplanmasını sağlar
         return 0.5 * math.fsum(differences)
-
+   
+    #birleştirilmiş durumlara göre yeni graf yapısını ve bağlantıları gunceller
     def _build_merged_transitions(self):
         for current_state in sorted(
             self.raw_transitions
@@ -322,6 +330,7 @@ class AlergiaStateMergingAutomata:
         current_state,
         next_state
     ):
+        #laplace smoothing
         merged_current = self._to_merged_state(current_state)
         merged_next = self._to_merged_state(next_state)
 
@@ -344,6 +353,7 @@ class AlergiaStateMergingAutomata:
         return numerator / denominator
 
     def _to_merged_state(self, pattern):
+        #verilen bir pattern'in atandığı merged state i getirir
         if pattern in self.state_mapping:
             return self.state_mapping[pattern]
 
@@ -365,7 +375,7 @@ class AlergiaStateMergingAutomata:
         current_pattern = patterns[0]
         current_status = "seen"
         current_distance = 0
-
+        #eğer eğitimde hiç görmediğimiz bir pattern gelirse, en yakın bildiğimiz patterne uyduurur
         if current_pattern not in self.trained_patterns:
             current_status = "unseen"
             current_pattern, current_distance = (
@@ -388,25 +398,25 @@ class AlergiaStateMergingAutomata:
                         incoming_pattern
                     )
                 )
-
+            #eşlenen duruma göre bu geçişin gerçekleşme ihtimalini alır
             transition_probability = (
                 self.get_transition_probability(
                     current_pattern,
                     mapped_pattern
                 )
             )
-
+            #sınırı cok dusurup tanımsızlık almayı engeller
             transition_probability = max(
                 transition_probability,
                 1e-300
             )
-
+            #geçiş ihtimali ne kadar düşükse anomali ihtimali o kadar artar
             base_surprise = -math.log(
                 transition_probability
             )
 
-            # Kaynak ve hedef pattern eşleşmelerinin uzaklıklarını
-            # pattern uzunluğuna göre normalize ediyoruz.
+            #kaynak ve hedef pattern eşleşmelerinin uzaklıklarını
+            #pattern uzunluğuna göre normalize eder
             current_length = max(len(str(current_pattern)), 1)
             incoming_length = max(len(str(incoming_pattern)), 1)
 
@@ -504,10 +514,9 @@ class AlergiaStateMergingAutomata:
                 "Model eğitilmeden unseen eşleştirme yapılamaz."
             )
 
-        # Önce en düşük Levenshtein uzaklığına bakılır.
-        # Uzaklık eşitse eğitimde daha sık görülen pattern seçilir.
-        # Frekans da eşitse sonuçların tekrarlanabilir olması için
-        # alfabetik sıra kullanılır.
+        #önce en düşük Levenshtein uzaklığına bakılır
+        #uzaklık eşitse eğitimde daha sık görülen pattern seçilir
+        #frekans da eşitse sonuçların tekrarlanabilir olması için alfabetik sıra kullanılır.
         nearest_pattern = min(
             self.trained_patterns,
             key=lambda trained_pattern: (
@@ -608,10 +617,10 @@ class AlergiaStateMergingAutomata:
             "transition_count": number_of_transitions,
             "transition_density": transition_density
         }
-
+    #hangi state in hangi merged state e atandıgını verir
     def get_state_mapping(self):
         return dict(self.state_mapping)
-
+    #herbir temsilcinin altında hangi state lerin toplandıgını gruplar halınde verır
     def get_merged_members(self):
         return {
             representative: sorted(members)

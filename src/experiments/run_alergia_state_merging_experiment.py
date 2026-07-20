@@ -15,13 +15,13 @@ from src.models.alergia_state_merging import AlergiaStateMergingAutomata
 CONFIG_PATH = "src/config/settings.json"
 OUTPUT_DIR = "results/outputs"
 
-
+#csv dosyalarını numpy dizisine cevirir
 def load_vector(path):
     if not os.path.exists(path):
         raise FileNotFoundError(f"Dosya bulunamadı: {path}")
     return pd.read_csv(path).values.flatten()
 
-
+#-999 u 0, 0 dan buyuklerı 1
 def to_binary(labels):
     labels = np.asarray(labels).flatten()
     labels = np.where(labels == -999, 0, labels)
@@ -55,7 +55,7 @@ def load_config():
         ),
     }
 
-
+#sax patternlerine cevirir
 def transform_patterns(transformer, series, window_size, train_mean, train_std):
     # Her bölümü train istatistikleriyle normalize ediyoruz.
     normalized = (np.asarray(series, dtype=float) - train_mean) / train_std
@@ -65,7 +65,7 @@ def transform_patterns(transformer, series, window_size, train_mean, train_std):
 
 
 def align_labels(labels, window_size):
-    # Ham etiketleri önce PAA bloğuna, sonra pattern seviyesine taşıyoruz.
+    #Ham etiketleri önce PAA bloğuna, sonra pattern seviyesine taşır
     labels = to_binary(labels)
     usable = (len(labels) // window_size) * window_size
 
@@ -87,7 +87,6 @@ def align_labels(labels, window_size):
 def build_class_sequences(patterns, transition_labels):
     """
     Her eğitim geçişini bağımsız iki pattern'lık sequence yapar.
-
     Bu model fit sırasında yalnızca komşu geçiş sayılarını kullandığı için
     uzun sequence kurmak ek hafıza oluşturmaz. Bağımsız çiftler ayrıca
     sınıf değişimlerinde sequence'lerin birbirine bağlanmasını engeller.
@@ -98,7 +97,7 @@ def build_class_sequences(patterns, transition_labels):
         raise ValueError(
             "Pattern ve geçiş etiketi uzunlukları uyuşmuyor."
         )
-
+    
     normal_sequences = []
     anomaly_sequences = []
 
@@ -114,13 +113,14 @@ def build_class_sequences(patterns, transition_labels):
 
 
 def score_dual(normal_model, anomaly_model, patterns):
+    #gelen veri için hem normal hem anomali modelınden supriz skoru alır
     normal_scores, normal_logs = normal_model.score_patterns(patterns)
     anomaly_scores, anomaly_logs = anomaly_model.score_patterns(patterns)
 
     if len(normal_scores) != len(anomaly_scores):
         raise ValueError("Normal ve anomaly skor sayıları farklı.")
 
-    # Yüksek değer, anomaly modelinin geçişi daha iyi açıkladığını gösterir.
+    #yüksek değer anomaly modelinin geçişi daha iyi açıkladığını gösterir
     dual_scores = normal_scores - anomaly_scores
     trained_union = normal_model.trained_patterns | anomaly_model.trained_patterns
     logs = []
@@ -163,7 +163,7 @@ def score_dual(normal_model, anomaly_model, patterns):
 
     return dual_scores, logs
 
-
+#belirli bir esik değere gore sonucların genel istatistiklerini hesaplar
 def summarize_scores(labels, scores, logs, threshold):
     labels = np.asarray(labels, dtype=int)
     scores = np.asarray(scores, dtype=float)
@@ -203,7 +203,7 @@ def summarize_scores(labels, scores, logs, threshold):
         ) if logs else 0.0,
     }
 
-
+#yeni gelen datada belirlenen en ıyı esige gore anomalı normal tahmını yapar
 def predict_dual(normal_model, anomaly_model, patterns, threshold):
     scores, logs = score_dual(normal_model, anomaly_model, patterns)
     predictions = (scores >= threshold).astype(int)
@@ -214,7 +214,7 @@ def predict_dual(normal_model, anomaly_model, patterns, threshold):
 
     return predictions, logs
 
-
+#en iyi threshold değerini arar
 def select_threshold(labels, scores):
     candidates = np.concatenate(
         ([scores.min() - 1e-12], np.unique(scores), [scores.max() + 1e-12])
@@ -240,14 +240,14 @@ def select_threshold(labels, scores):
 
     return best["threshold"], best["metrics"]
 
-
+#gurultu ekler
 def inject_noise(series, level, seed):
     rng = np.random.default_rng(seed)
     return np.asarray(series, dtype=float) + rng.normal(
         0.0, level, size=len(series)
     )
 
-
+#unseen verilerdeki performansına bakar
 def evaluate_unseen(predictions, labels, logs):
     indices = [
         index
@@ -349,7 +349,7 @@ def main():
     train_labels = align_labels(y_train, window_size)
     val_labels = align_labels(y_val, window_size)
     test_labels = align_labels(y_test, window_size)
-
+    #pattern ve etiket sayıları eslesiyor mu kontrolu yapar
     for name, patterns, labels in [
         ("Train", train_patterns, train_labels),
         ("Validation", val_patterns, val_labels),
@@ -382,7 +382,7 @@ def main():
     best = None
 
     print("\n--- VALIDATION PARAMETRE TARAMASI ---")
-
+    #hiperparametre optimizasyonu
     for merge_alpha in config["merge_alphas"]:
         for min_count in config["min_counts"]:
             for smoothing_alpha in config["smoothing_alphas"]:
@@ -458,7 +458,7 @@ def main():
                     metrics["recall"],
                     -total_states,
                 )
-
+                #yeni parametreler oncekılerden ıyıse best objesini gunceller
                 if best is None or key > best["key"]:
                     best = {
                         "key": key,
