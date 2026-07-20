@@ -49,6 +49,10 @@ def load_config():
         "max_pattern_distance": automata.get(
             "alergia_max_pattern_distance", None
         ),
+        "distance_penalties": automata.get(
+            "alergia_distance_penalty_values",
+            [0.0, 0.25, 0.5, 1.0, 2.0],
+        ),
     }
 
 
@@ -82,10 +86,13 @@ def align_labels(labels, window_size):
 
 def build_class_sequences(patterns, transition_labels):
     """
-    Ardışık aynı sınıfa ait geçişleri uzun sequence'lere ayırır.
-    Böylece ALERGIA yalnızca ikili geçişleri değil,
-    devam eden pattern davranışlarını da öğrenebilir.
+    Her eğitim geçişini bağımsız iki pattern'lık sequence yapar.
+
+    Bu model fit sırasında yalnızca komşu geçiş sayılarını kullandığı için
+    uzun sequence kurmak ek hafıza oluşturmaz. Bağımsız çiftler ayrıca
+    sınıf değişimlerinde sequence'lerin birbirine bağlanmasını engeller.
     """
+    transition_labels = np.asarray(transition_labels, dtype=int)
 
     if len(patterns) - 1 != len(transition_labels):
         raise ValueError(
@@ -95,34 +102,13 @@ def build_class_sequences(patterns, transition_labels):
     normal_sequences = []
     anomaly_sequences = []
 
-    current_label = int(transition_labels[0])
-    current_sequence = [patterns[0], patterns[1]]
+    for index, label in enumerate(transition_labels):
+        sequence = [patterns[index], patterns[index + 1]]
 
-    for index in range(1, len(transition_labels)):
-        label = int(transition_labels[index])
-
-        if label == current_label:
-            current_sequence.append(patterns[index + 1])
+        if int(label) == 1:
+            anomaly_sequences.append(sequence)
         else:
-            if len(current_sequence) >= 2:
-                if current_label == 1:
-                    anomaly_sequences.append(current_sequence)
-                else:
-                    normal_sequences.append(current_sequence)
-
-            # Sınıf değişiminde yeni sequence başlatılıyor.
-            current_label = label
-            current_sequence = [
-                patterns[index],
-                patterns[index + 1]
-            ]
-
-    # Son sequence'i de ekliyoruz.
-    if len(current_sequence) >= 2:
-        if current_label == 1:
-            anomaly_sequences.append(current_sequence)
-        else:
-            normal_sequences.append(current_sequence)
+            normal_sequences.append(sequence)
 
     return normal_sequences, anomaly_sequences
 
@@ -153,10 +139,22 @@ def score_dual(normal_model, anomaly_model, patterns):
                 "normal_probability": normal_logs[index][
                     "transition_probability"
                 ],
+                "normal_levenshtein_distance": normal_logs[index][
+                    "levenshtein_distance"
+                ],
+                "normal_mapping_penalty": normal_logs[index][
+                    "mapping_penalty"
+                ],
                 "normal_surprise": float(normal_scores[index]),
                 "anomaly_mapped_to": anomaly_logs[index]["mapped_to"],
                 "anomaly_probability": anomaly_logs[index][
                     "transition_probability"
+                ],
+                "anomaly_levenshtein_distance": anomaly_logs[index][
+                    "levenshtein_distance"
+                ],
+                "anomaly_mapping_penalty": anomaly_logs[index][
+                    "mapping_penalty"
                 ],
                 "anomaly_surprise": float(anomaly_scores[index]),
                 "dual_score": float(score),
@@ -164,6 +162,46 @@ def score_dual(normal_model, anomaly_model, patterns):
         )
 
     return dual_scores, logs
+
+
+def summarize_scores(labels, scores, logs, threshold):
+    labels = np.asarray(labels, dtype=int)
+    scores = np.asarray(scores, dtype=float)
+    predictions = (scores >= threshold).astype(int)
+    normal_scores = scores[labels == 0]
+    anomaly_scores = scores[labels == 1]
+
+    return {
+        "validation_unique_score_count": int(len(np.unique(scores))),
+        "validation_predicted_anomaly_count": int(predictions.sum()),
+        "validation_normal_score_mean": (
+            float(np.mean(normal_scores)) if len(normal_scores) else 0.0
+        ),
+        "validation_anomaly_score_mean": (
+            float(np.mean(anomaly_scores)) if len(anomaly_scores) else 0.0
+        ),
+        "validation_score_mean_gap": (
+            float(np.mean(anomaly_scores) - np.mean(normal_scores))
+            if len(normal_scores) and len(anomaly_scores)
+            else 0.0
+        ),
+        "validation_mapping_disagreement_count": int(
+            sum(
+                log["normal_mapped_to"] != log["anomaly_mapped_to"]
+                for log in logs
+            )
+        ),
+        "validation_normal_distance_mean": float(
+            np.mean(
+                [log["normal_levenshtein_distance"] for log in logs]
+            )
+        ) if logs else 0.0,
+        "validation_anomaly_distance_mean": float(
+            np.mean(
+                [log["anomaly_levenshtein_distance"] for log in logs]
+            )
+        ) if logs else 0.0,
+    }
 
 
 def predict_dual(normal_model, anomaly_model, patterns, threshold):
@@ -353,6 +391,7 @@ def main():
                     "min_state_count": int(min_count),
                     "smoothing_alpha": float(smoothing_alpha),
                     "max_pattern_distance": config["max_pattern_distance"],
+                    "distance_penalty": 0.0,
                 }
 
                 normal_model = AlergiaStateMergingAutomata(**kwargs)
@@ -361,11 +400,17 @@ def main():
                 normal_model.fit_sequences(normal_sequences)
                 anomaly_model.fit_sequences(anomaly_sequences)
 
-                val_scores, _ = score_dual(
+                val_scores, val_logs = score_dual(
                     normal_model, anomaly_model, val_patterns
                 )
                 threshold, metrics = select_threshold(
                     val_transition_labels, val_scores
+                )
+                diagnostics = summarize_scores(
+                    val_transition_labels,
+                    val_scores,
+                    val_logs,
+                    threshold,
                 )
 
                 normal_stats = normal_model.get_model_statistics()
@@ -377,6 +422,7 @@ def main():
 
                 search_rows.append(
                     {
+                        "search_stage": "state_merging",
                         **kwargs,
                         "threshold": threshold,
                         "normal_states_before": normal_stats[
@@ -392,6 +438,7 @@ def main():
                             "merged_state_count"
                         ],
                         **{f"validation_{k}": v for k, v in metrics.items()},
+                        **diagnostics,
                     }
                 )
 
@@ -427,8 +474,92 @@ def main():
                             "merge_alpha": float(merge_alpha),
                             "min_state_count": int(min_count),
                             "smoothing_alpha": float(smoothing_alpha),
+                            "distance_penalty": 0.0,
                         },
                     }
+
+    print("\n--- LEVENSHTEIN UZAKLIK CEZASI TARAMASI ---")
+
+    penalty_best = None
+    for distance_penalty in config["distance_penalties"]:
+        distance_penalty = float(distance_penalty)
+        best["normal_model"].distance_penalty = distance_penalty
+        best["anomaly_model"].distance_penalty = distance_penalty
+
+        val_scores, val_logs = score_dual(
+            best["normal_model"],
+            best["anomaly_model"],
+            val_patterns,
+        )
+        threshold, metrics = select_threshold(
+            val_transition_labels,
+            val_scores,
+        )
+        diagnostics = summarize_scores(
+            val_transition_labels,
+            val_scores,
+            val_logs,
+            threshold,
+        )
+
+        search_rows.append(
+            {
+                "search_stage": "distance_penalty",
+                "merge_alpha": best["config"]["merge_alpha"],
+                "min_state_count": best["config"]["min_state_count"],
+                "smoothing_alpha": best["config"]["smoothing_alpha"],
+                "max_pattern_distance": config["max_pattern_distance"],
+                "distance_penalty": distance_penalty,
+                "threshold": threshold,
+                "normal_states_before": best["normal_stats"][
+                    "original_state_count"
+                ],
+                "normal_states_after": best["normal_stats"][
+                    "merged_state_count"
+                ],
+                "anomaly_states_before": best["anomaly_stats"][
+                    "original_state_count"
+                ],
+                "anomaly_states_after": best["anomaly_stats"][
+                    "merged_state_count"
+                ],
+                **{f"validation_{k}": v for k, v in metrics.items()},
+                **diagnostics,
+            }
+        )
+
+        print(
+            f"distance_penalty={distance_penalty} | "
+            f"threshold={threshold:.6f} | "
+            f"F1={metrics['f1_score']:.4f} | "
+            f"score_gap={diagnostics['validation_score_mean_gap']:.4f}"
+        )
+
+        key = (
+            metrics["f1_score"],
+            metrics["precision"],
+            metrics["recall"],
+            -int((val_scores >= threshold).sum()),
+        )
+        if penalty_best is None or key > penalty_best["key"]:
+            penalty_best = {
+                "key": key,
+                "distance_penalty": distance_penalty,
+                "threshold": threshold,
+                "metrics": metrics,
+            }
+
+    best["normal_model"].distance_penalty = penalty_best[
+        "distance_penalty"
+    ]
+    best["anomaly_model"].distance_penalty = penalty_best[
+        "distance_penalty"
+    ]
+    best["threshold"] = penalty_best["threshold"]
+    best["metrics"] = penalty_best["metrics"]
+    best["config"]["distance_penalty"] = penalty_best[
+        "distance_penalty"
+    ]
 
     pd.DataFrame(search_rows).to_csv(
         os.path.join(
@@ -442,6 +573,7 @@ def main():
         f"alpha={best['config']['merge_alpha']} | "
         f"min={best['config']['min_state_count']} | "
         f"smooth={best['config']['smoothing_alpha']} | "
+        f"distance_penalty={best['config']['distance_penalty']} | "
         f"threshold={best['threshold']:.6f} | "
         f"val F1={best['metrics']['f1_score']:.4f}"
     )

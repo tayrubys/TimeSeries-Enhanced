@@ -15,7 +15,8 @@ class AlergiaStateMergingAutomata:
         merge_alpha=0.05,
         min_state_count=2,
         smoothing_alpha=1.0,
-        max_pattern_distance=None
+        max_pattern_distance=None,
+        distance_penalty=0.0,
     ):
         if not 0 < merge_alpha < 1:
             raise ValueError("merge_alpha 0 ile 1 arasında olmalıdır.")
@@ -25,11 +26,14 @@ class AlergiaStateMergingAutomata:
 
         if smoothing_alpha <= 0:
             raise ValueError("smoothing_alpha sıfırdan büyük olmalıdır.")
+        if distance_penalty < 0:
+            raise ValueError("distance_penalty negatif olamaz.")        
 
         self.merge_alpha = merge_alpha
         self.min_state_count = min_state_count
         self.smoothing_alpha = smoothing_alpha
         self.max_pattern_distance = max_pattern_distance
+        self.distance_penalty = float(distance_penalty)
 
         #birleştirme öncesindeki geçişler
         self.raw_transitions = defaultdict(
@@ -47,6 +51,7 @@ class AlergiaStateMergingAutomata:
         self.total_exits = defaultdict(int)
 
         self.trained_patterns = set()
+        self.pattern_counts = defaultdict(int)
         self.state_mapping = {}
         self.merged_members = defaultdict(list)
         self.merged_states = set()
@@ -80,6 +85,8 @@ class AlergiaStateMergingAutomata:
 
         for sequence in valid_sequences:
             self.trained_patterns.update(sequence)
+            for pattern in sequence:
+                self.pattern_counts[pattern] += 1
 
             for index in range(len(sequence) - 1):
                 current_state = sequence[index]
@@ -117,6 +124,7 @@ class AlergiaStateMergingAutomata:
         self.total_exits = defaultdict(int)
 
         self.trained_patterns = set()
+        self.pattern_counts = defaultdict(int)
         self.state_mapping = {}
         self.merged_members = defaultdict(list)
         self.merged_states = set()
@@ -157,7 +165,27 @@ class AlergiaStateMergingAutomata:
                     )
                 )
 
-                if distribution_distance < best_distance:
+                is_better_distance = (
+                    distribution_distance
+                    < best_distance - 1e-12
+                )
+
+                is_equal_distance = math.isclose(
+                    distribution_distance,
+                    best_distance,
+                    rel_tol=0.0,
+                    abs_tol=1e-12,
+                )
+
+                is_better_tie = (
+                    is_equal_distance
+                    and (
+                        selected_representative is None
+                        or representative < selected_representative
+                    )
+                )
+
+                if is_better_distance or is_better_tie:
                     best_distance = distribution_distance
                     selected_representative = representative
 
@@ -207,7 +235,7 @@ class AlergiaStateMergingAutomata:
         ):
             return False
 
-        next_patterns = set(counts_a) | set(counts_b)
+        next_patterns = sorted(set(counts_a) | set(counts_b))
 
         confidence_term = math.sqrt(
             0.5 * math.log(2.0 / self.merge_alpha)
@@ -218,10 +246,10 @@ class AlergiaStateMergingAutomata:
 
         for next_pattern in next_patterns:
             probability_a = (
-                counts_a[next_pattern] / total_a
+                counts_a.get(next_pattern, 0) / total_a
             )
             probability_b = (
-                counts_b[next_pattern] / total_b
+                counts_b.get(next_pattern, 0) / total_b
             )
 
             if abs(probability_a - probability_b) > bound:
@@ -229,12 +257,12 @@ class AlergiaStateMergingAutomata:
 
         return True
 
-    def _distribution_distance(self, members_a, members_b):
+    def _distribution_distance(self,members_a,members_b,):
         counts_a = self._aggregate_next_pattern_counts(
-        members_a
+            members_a
         )
         counts_b = self._aggregate_next_pattern_counts(
-        members_b
+            members_b
         )
 
         total_a = sum(counts_a.values())
@@ -243,32 +271,51 @@ class AlergiaStateMergingAutomata:
         if total_a == 0 or total_b == 0:
             return float("inf")
 
-        next_patterns = set(counts_a) | set(counts_b)
-        distance = 0.0
+        # Set doğrudan dolaşılmıyor.
+        # Her çalıştırmada aynı sıra kullanılıyor.
+        next_patterns = sorted(
+            set(counts_a) | set(counts_b)
+        )
+
+        differences = []
 
         for next_pattern in next_patterns:
             probability_a = (
-            counts_a[next_pattern] / total_a
+                counts_a.get(next_pattern, 0) / total_a
             )
             probability_b = (
-            counts_b[next_pattern] / total_b
+                counts_b.get(next_pattern, 0) / total_b
             )
 
-            distance += abs(
-            probability_a - probability_b
+            differences.append(
+                abs(probability_a - probability_b)
             )
 
-        return 0.5 * distance
+        #math.fsum, kayan noktalı sayıların daha kararlı biçimde toplanmasını sağlar
+        return 0.5 * math.fsum(differences)
 
     def _build_merged_transitions(self):
-        for current_state, targets in self.raw_transitions.items():
-            merged_current = self.state_mapping[current_state]
+        for current_state in sorted(
+            self.raw_transitions
+        ):
+            targets = self.raw_transitions[current_state]
+            merged_current = self.state_mapping[
+                current_state
+            ]
 
-            for next_state, count in targets.items():
-                merged_next = self.state_mapping[next_state]
+            for next_state in sorted(targets):
+                count = targets[next_state]
+                merged_next = self.state_mapping[
+                    next_state
+                ]
 
-                self.transitions[merged_current][merged_next] += count
-                self.total_exits[merged_current] += count
+                self.transitions[
+                    merged_current
+                ][merged_next] += count
+
+                self.total_exits[
+                    merged_current
+                ] += count
 
     def get_transition_probability(
         self,
@@ -354,8 +401,33 @@ class AlergiaStateMergingAutomata:
                 1e-300
             )
 
-            surprise_score = -math.log(
+            base_surprise = -math.log(
                 transition_probability
+            )
+
+            # Kaynak ve hedef pattern eşleşmelerinin uzaklıklarını
+            # pattern uzunluğuna göre normalize ediyoruz.
+            current_length = max(len(str(current_pattern)), 1)
+            incoming_length = max(len(str(incoming_pattern)), 1)
+
+            normalized_current_distance = (
+                current_distance / current_length
+            )
+
+            normalized_incoming_distance = (
+                distance / incoming_length
+            )
+
+            mapping_distance = (
+                normalized_current_distance + normalized_incoming_distance
+            )
+
+            mapping_penalty = (
+                self.distance_penalty * mapping_distance
+            )
+
+            surprise_score = (
+                base_surprise + mapping_penalty
             )
 
             cumulative_log_probability += math.log(
@@ -387,6 +459,12 @@ class AlergiaStateMergingAutomata:
                 "next_merged_state": merged_next,
                 "transition_probability": float(
                     transition_probability
+                ),
+                "base_surprise": float(base_surprise),
+                "mapping_distance": float(mapping_distance),
+                "mapping_penalty": float(mapping_penalty),
+                "distance_penalty_weight": float(
+                    self.distance_penalty
                 ),
                 "surprise_score": float(surprise_score),
                 "path_probability": float(path_probability),
@@ -426,23 +504,28 @@ class AlergiaStateMergingAutomata:
                 "Model eğitilmeden unseen eşleştirme yapılamaz."
             )
 
-        nearest_pattern = None
-        best_distance = float("inf")
+        # Önce en düşük Levenshtein uzaklığına bakılır.
+        # Uzaklık eşitse eğitimde daha sık görülen pattern seçilir.
+        # Frekans da eşitse sonuçların tekrarlanabilir olması için
+        # alfabetik sıra kullanılır.
+        nearest_pattern = min(
+            self.trained_patterns,
+            key=lambda trained_pattern: (
+                self._calculate_levenshtein(
+                    unseen_pattern,
+                    trained_pattern,
+                ),
+                -self.pattern_counts[trained_pattern],
+                trained_pattern,
+            ),
+        )
 
-        for trained_pattern in sorted(
-            self.trained_patterns
-        ):
-            distance = self._calculate_levenshtein(
-                unseen_pattern,
-                trained_pattern
-            )
+        best_distance = self._calculate_levenshtein(
+            unseen_pattern,
+            nearest_pattern,
+        )
 
-            if distance < best_distance:
-                best_distance = distance
-                nearest_pattern = trained_pattern
-
-        return nearest_pattern, best_distance
-
+        return nearest_pattern, best_distance   
     def _calculate_levenshtein(self, first, second):
         if len(first) < len(second):
             return self._calculate_levenshtein(

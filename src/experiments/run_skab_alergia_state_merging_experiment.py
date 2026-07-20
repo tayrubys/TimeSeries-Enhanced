@@ -60,6 +60,10 @@ def load_config():
         "min_counts": automata.get("alergia_min_state_count_values", [2, 5, 10]),
         "smoothing_alphas": automata.get("alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]),
         "max_pattern_distance": automata.get("alergia_max_pattern_distance", None),
+        "distance_penalties": automata.get(
+            "alergia_distance_penalty_values",
+            [0.0, 0.25, 0.5, 1.0, 2.0],
+        ),
     }
 
 
@@ -233,9 +237,21 @@ def score_dual(normal_model, anomaly_model, patterns):
                 ),
                 "normal_mapped_to": normal_logs[index]["mapped_to"],
                 "normal_probability": normal_logs[index]["transition_probability"],
+                "normal_levenshtein_distance": normal_logs[index][
+                    "levenshtein_distance"
+                ],
+                "normal_mapping_penalty": normal_logs[index][
+                    "mapping_penalty"
+                ],
                 "normal_surprise": float(normal_scores[index]),
                 "anomaly_mapped_to": anomaly_logs[index]["mapped_to"],
                 "anomaly_probability": anomaly_logs[index]["transition_probability"],
+                "anomaly_levenshtein_distance": anomaly_logs[index][
+                    "levenshtein_distance"
+                ],
+                "anomaly_mapping_penalty": anomaly_logs[index][
+                    "mapping_penalty"
+                ],
                 "anomaly_surprise": float(anomaly_scores[index]),
                 "dual_score": float(score),
             }
@@ -274,6 +290,46 @@ def score_grouped(normal_model, anomaly_model, grouped_data):
         np.asarray(all_labels, dtype=int),
         all_logs,
     )
+
+
+def summarize_scores(labels, scores, logs, threshold):
+    labels = np.asarray(labels, dtype=int)
+    scores = np.asarray(scores, dtype=float)
+    predictions = (scores >= threshold).astype(int)
+    normal_scores = scores[labels == 0]
+    anomaly_scores = scores[labels == 1]
+
+    return {
+        "validation_unique_score_count": int(len(np.unique(scores))),
+        "validation_predicted_anomaly_count": int(predictions.sum()),
+        "validation_normal_score_mean": (
+            float(np.mean(normal_scores)) if len(normal_scores) else 0.0
+        ),
+        "validation_anomaly_score_mean": (
+            float(np.mean(anomaly_scores)) if len(anomaly_scores) else 0.0
+        ),
+        "validation_score_mean_gap": (
+            float(np.mean(anomaly_scores) - np.mean(normal_scores))
+            if len(normal_scores) and len(anomaly_scores)
+            else 0.0
+        ),
+        "validation_mapping_disagreement_count": int(
+            sum(
+                log["normal_mapped_to"] != log["anomaly_mapped_to"]
+                for log in logs
+            )
+        ),
+        "validation_normal_distance_mean": float(
+            np.mean(
+                [log["normal_levenshtein_distance"] for log in logs]
+            )
+        ) if logs else 0.0,
+        "validation_anomaly_distance_mean": float(
+            np.mean(
+                [log["anomaly_levenshtein_distance"] for log in logs]
+            )
+        ) if logs else 0.0,
+    }
 
 
 def select_threshold(labels, scores):
@@ -509,6 +565,8 @@ def make_result_row(
         "merge_alpha": best["config"]["merge_alpha"],
         "min_state_count": best["config"]["min_state_count"],
         "smoothing_alpha": best["config"]["smoothing_alpha"],
+        "distance_penalty": best["config"]["distance_penalty"],
+        "final_training_scope": "inner_train_calibrated",
         "selected_threshold": best["threshold"],
         "validation_f1": best["metrics"]["f1_score"],
         "inner_splitter": split_info["splitter"],
@@ -608,6 +666,7 @@ def run_fold_seed(fold_id, seed, config, transformer):
                     "min_state_count": int(min_count),
                     "smoothing_alpha": float(smoothing_alpha),
                     "max_pattern_distance": config["max_pattern_distance"],
+                    "distance_penalty": 0.0,
                 }
 
                 normal_model, anomaly_model = fit_dual_models(
@@ -621,6 +680,12 @@ def run_fold_seed(fold_id, seed, config, transformer):
                     split_info["grouped_val"],
                 )
                 threshold, metrics = select_threshold(val_labels, val_scores)
+                diagnostics = summarize_scores(
+                    val_labels,
+                    val_scores,
+                    val_logs,
+                    threshold,
+                )
                 stats = combine_statistics(normal_model, anomaly_model)
                 val_unseen_count = sum(
                     log["overall_status"] == "unseen" for log in val_logs
@@ -629,6 +694,7 @@ def run_fold_seed(fold_id, seed, config, transformer):
                 validation_rows.append(
                     {
                         "dataset": "SKAB",
+                        "search_stage": "state_merging",
                         "fold": fold_id,
                         "seed": seed,
                         "inner_splitter": split_info["splitter"],
@@ -645,6 +711,7 @@ def run_fold_seed(fold_id, seed, config, transformer):
                             f"validation_{key}": value
                             for key, value in metrics.items()
                         },
+                        **diagnostics,
                     }
                 )
 
@@ -666,6 +733,9 @@ def run_fold_seed(fold_id, seed, config, transformer):
                 if best is None or key > best["key"]:
                     best = {
                         "key": key,
+                        "normal_model": normal_model,
+                        "anomaly_model": anomaly_model,
+                        "structure_stats": stats,
                         "threshold": threshold,
                         "metrics": metrics,
                         "config": {
@@ -674,51 +744,113 @@ def run_fold_seed(fold_id, seed, config, transformer):
                             "merge_alpha": float(merge_alpha),
                             "min_state_count": int(min_count),
                             "smoothing_alpha": float(smoothing_alpha),
+                            "distance_penalty": 0.0,
                         },
                     }
+
+    print("\n--- LEVENSHTEIN UZAKLIK CEZASI TARAMASI ---")
+
+    penalty_best = None
+    for distance_penalty in config["distance_penalties"]:
+        distance_penalty = float(distance_penalty)
+        best["normal_model"].distance_penalty = distance_penalty
+        best["anomaly_model"].distance_penalty = distance_penalty
+
+        val_scores, val_labels, val_logs = score_grouped(
+            best["normal_model"],
+            best["anomaly_model"],
+            split_info["grouped_val"],
+        )
+        threshold, metrics = select_threshold(val_labels, val_scores)
+        diagnostics = summarize_scores(
+            val_labels,
+            val_scores,
+            val_logs,
+            threshold,
+        )
+        val_unseen_count = sum(
+            log["overall_status"] == "unseen" for log in val_logs
+        )
+
+        validation_rows.append(
+            {
+                "dataset": "SKAB",
+                "search_stage": "distance_penalty",
+                "fold": fold_id,
+                "seed": seed,
+                "inner_splitter": split_info["splitter"],
+                "inner_split_id": split_info["split_id"],
+                "window_size": config["window_size"],
+                "alphabet_size": config["alphabet_size"],
+                "merge_alpha": best["config"]["merge_alpha"],
+                "min_state_count": best["config"]["min_state_count"],
+                "smoothing_alpha": best["config"]["smoothing_alpha"],
+                "max_pattern_distance": config["max_pattern_distance"],
+                "distance_penalty": distance_penalty,
+                "threshold": threshold,
+                "validation_sample_count": len(val_labels),
+                "validation_anomaly_count": int(val_labels.sum()),
+                "validation_unseen_count": val_unseen_count,
+                **best["structure_stats"],
+                **{
+                    f"validation_{key}": value
+                    for key, value in metrics.items()
+                },
+                **diagnostics,
+            }
+        )
+
+        print(
+            f"distance_penalty={distance_penalty} | "
+            f"threshold={threshold:.6f} | "
+            f"F1={metrics['f1_score']:.4f} | "
+            f"score_gap={diagnostics['validation_score_mean_gap']:.4f}"
+        )
+
+        key = (
+            metrics["f1_score"],
+            metrics["precision"],
+            metrics["recall"],
+            -int((val_scores >= threshold).sum()),
+        )
+        if penalty_best is None or key > penalty_best["key"]:
+            penalty_best = {
+                "key": key,
+                "distance_penalty": distance_penalty,
+                "threshold": threshold,
+                "metrics": metrics,
+            }
+
+    best["normal_model"].distance_penalty = penalty_best[
+        "distance_penalty"
+    ]
+    best["anomaly_model"].distance_penalty = penalty_best[
+        "distance_penalty"
+    ]
+    best["threshold"] = penalty_best["threshold"]
+    best["metrics"] = penalty_best["metrics"]
+    best["config"]["distance_penalty"] = penalty_best[
+        "distance_penalty"
+    ]
 
     print("\n--- FOLD/SEED İÇİN EN İYİ AYAR ---")
     print(
         f"alpha={best['config']['merge_alpha']} | "
         f"min={best['config']['min_state_count']} | "
         f"smooth={best['config']['smoothing_alpha']} | "
+        f"distance_penalty={best['config']['distance_penalty']} | "
         f"threshold={best['threshold']:.6f} | "
         f"val F1={best['metrics']['f1_score']:.4f}"
     )
 
-    #parametre seçimi bittikten sonra final model outer-train'in tamamıyla eğitilir
-    full_train_mean = float(np.mean(X_train))
-    full_train_std = float(np.std(X_train)) or 1.0
-    grouped_full_train = prepare_grouped_patterns(
-        X_train,
-        y_train,
-        train_source,
-        transformer,
-        config["window_size"],
-        full_train_mean,
-        full_train_std,
-    )
-    full_normal_sequences, full_anomaly_sequences = build_grouped_class_sequences(
-        grouped_full_train
-    )
-
-    if not full_normal_sequences or not full_anomaly_sequences:
-        raise RuntimeError(
-            f"Fold {fold_id} full train içinde iki sınıf için sequence oluşmadı."
-        )
-
-    final_kwargs = {
-        "merge_alpha": best["config"]["merge_alpha"],
-        "min_state_count": best["config"]["min_state_count"],
-        "smoothing_alpha": best["config"]["smoothing_alpha"],
-        "max_pattern_distance": config["max_pattern_distance"],
-    }
-    normal_model, anomaly_model = fit_dual_models(
-        full_normal_sequences,
-        full_anomaly_sequences,
-        final_kwargs,
-    )
-    structure_stats = combine_statistics(normal_model, anomaly_model)
+    # Threshold, inner-train üzerinde eğitilen bu modellerin validation
+    # skorlarına göre seçildi. Skor ölçeğini değiştirmemek için testte de
+    # aynı modeller ve aynı normalizasyon istatistikleri kullanılır.
+    normal_model = best["normal_model"]
+    anomaly_model = best["anomaly_model"]
+    structure_stats = best["structure_stats"]
+    final_train_mean = split_info["train_mean"]
+    final_train_std = split_info["train_std"]
 
     grouped_test = prepare_grouped_patterns(
         X_test,
@@ -726,8 +858,8 @@ def run_fold_seed(fold_id, seed, config, transformer):
         test_source,
         transformer,
         config["window_size"],
-        full_train_mean,
-        full_train_std,
+        final_train_mean,
+        final_train_std,
     )
     test_scores, test_labels, test_logs = score_grouped(
         normal_model,
@@ -747,8 +879,8 @@ def run_fold_seed(fold_id, seed, config, transformer):
         test_source,
         transformer,
         config["window_size"],
-        full_train_mean,
-        full_train_std,
+        final_train_mean,
+        final_train_std,
     )
     noisy_scores, noisy_labels, noisy_logs = score_grouped(
         normal_model,
@@ -810,6 +942,7 @@ def run_fold_seed(fold_id, seed, config, transformer):
         "fold": fold_id,
         "seed": seed,
         **best["config"],
+        "final_training_scope": "inner_train_calibrated",
         "selected_threshold": best["threshold"],
         **{
             f"validation_{key}": value

@@ -109,6 +109,13 @@
             0.5,
             1.0
         ],
-        "alergia_max_pattern_distance": null
+        "alergia_max_pattern_distance": null,
+        "alergia_distance_penalty_values": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+        ]
     }
 }
