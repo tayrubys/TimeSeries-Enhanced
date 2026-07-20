@@ -25,7 +25,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.008,
                 "would_be_anomaly": true
             }
@@ -64,7 +64,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -93,12 +93,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -127,12 +127,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -161,12 +161,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -200,12 +200,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.008695652173913044,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.008695652173913044,
                 "would_be_anomaly": true
             }
@@ -273,7 +273,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -307,12 +307,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -346,12 +346,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -385,12 +385,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -424,7 +424,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -458,12 +458,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -497,7 +497,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.0064516129032258064,
                 "would_be_anomaly": true
             }
@@ -531,7 +531,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.007407407407407408,
                 "would_be_anomaly": true
             }
@@ -565,7 +565,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -594,12 +594,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -633,12 +633,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -672,7 +672,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -701,12 +701,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -735,12 +735,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -769,12 +769,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -803,12 +803,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -837,12 +837,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -871,12 +871,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -910,7 +910,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.005405405405405406,
                 "would_be_anomaly": true
             }
@@ -944,7 +944,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -978,7 +978,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.005405405405405406,
                 "would_be_anomaly": true
             }
@@ -1046,7 +1046,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.0023529411764705885,
                 "would_be_anomaly": true
             }
@@ -1114,7 +1114,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -1143,12 +1143,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1182,27 +1182,27 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cbbc",
-                "distance": 1
-            },
-            {
                 "pattern": "babc",
                 "distance": 1
             },
             {
-                "pattern": "cacc",
+                "pattern": "cabb",
+                "distance": 1
+            },
+            {
+                "pattern": "cbbc",
                 "distance": 1
             }
         ]
@@ -1234,7 +1234,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.0064516129032258064,
                 "would_be_anomaly": true
             }
@@ -1263,12 +1263,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -1302,7 +1302,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -1336,12 +1336,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1375,12 +1375,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1409,12 +1409,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1443,12 +1443,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1482,12 +1482,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -1516,12 +1516,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -1560,7 +1560,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -1589,12 +1589,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1623,12 +1623,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1657,12 +1657,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1691,12 +1691,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1730,12 +1730,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -1774,22 +1774,22 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.0064516129032258064,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "aacc",
-                "distance": 1
-            },
-            {
                 "pattern": "accc",
                 "distance": 1
             },
             {
                 "pattern": "abca",
+                "distance": 1
+            },
+            {
+                "pattern": "aacc",
                 "distance": 1
             }
         ]
@@ -1826,7 +1826,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -1894,12 +1894,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -1928,12 +1928,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baaa",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -1962,12 +1962,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -1996,12 +1996,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -2035,7 +2035,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -2069,12 +2069,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2108,7 +2108,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -2137,12 +2137,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2171,12 +2171,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2210,12 +2210,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2249,7 +2249,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -2283,12 +2283,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2322,12 +2322,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -2361,7 +2361,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -2395,12 +2395,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2434,7 +2434,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.0064516129032258064,
                 "would_be_anomaly": true
             }
@@ -2468,7 +2468,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.007407407407407408,
                 "would_be_anomaly": true
             }
@@ -2502,7 +2502,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -2531,12 +2531,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2565,12 +2565,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2599,12 +2599,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2638,7 +2638,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.008695652173913044,
                 "would_be_anomaly": true
             }
@@ -2672,12 +2672,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -2716,7 +2716,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.0016260162601626016,
                 "would_be_anomaly": true
             }
@@ -2745,12 +2745,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -2784,12 +2784,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -2823,7 +2823,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -2857,12 +2857,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -2930,12 +2930,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -2969,7 +2969,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "accc",
+                "probability": 0.011764705882352941,
+                "would_be_anomaly": true
+            },
+            {
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -3003,7 +3008,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.005405405405405406,
                 "would_be_anomaly": true
             }
@@ -3037,27 +3042,27 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "aacc",
-                "distance": 1
-            },
-            {
-                "pattern": "aaba",
+                "pattern": "babc",
                 "distance": 1
             },
             {
                 "pattern": "acbc",
+                "distance": 1
+            },
+            {
+                "pattern": "aaac",
                 "distance": 1
             }
         ]
@@ -3084,27 +3089,27 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "aacc",
-                "distance": 1
-            },
-            {
                 "pattern": "accc",
                 "distance": 1
             },
             {
                 "pattern": "abca",
+                "distance": 1
+            },
+            {
+                "pattern": "aacc",
                 "distance": 1
             }
         ]
@@ -3141,7 +3146,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "cacb",
                 "probability": 0.009523809523809525,
                 "would_be_anomaly": true
             }
@@ -3175,7 +3180,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -3209,12 +3214,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -3248,7 +3253,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -3277,12 +3282,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -3316,12 +3321,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
-                "probability": 0.013333333333333334,
-                "would_be_anomaly": true
-            },
-            {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -3355,12 +3355,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.010526315789473684,
                 "would_be_anomaly": true
             }
@@ -3394,7 +3394,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -3428,12 +3428,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -3467,12 +3467,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -3540,7 +3540,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.011764705882352941,
                 "would_be_anomaly": true
             }
@@ -3569,12 +3569,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
@@ -3603,12 +3603,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "baab",
+                "pattern": "accc",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "baaa",
+                "pattern": "cacb",
                 "probability": 0.013333333333333334,
                 "would_be_anomaly": true
             }
