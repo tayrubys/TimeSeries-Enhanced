@@ -69,3 +69,18 @@ Bu düzenleme sonucunda BATADAL test F1 değeri yaklaşık `0.284`, SKAB ortalam
 ### Geçiş Güvenilirliği Denemesi
 
 Az görülen state geçişlerinin etkisini azaltmak amacıyla dual surprise skorları geçiş desteğine göre ağırlıklandırıldı. Farklı güvenilirlik katsayıları validation setinde denendi ancak en iyi sonuç ağırlıklandırmanın kapalı olduğu durumda elde edildi. Bu nedenle yöntem final modele eklenmedi.
+
+### Temporal Persistence Filter
+
+Levenshtein uzaklık cezası sonrasında modelin çok sayıda normal örneği anomaly olarak işaretlediği görüldü. Kısa süreli ve tek başına kalan anomaly tahminlerini temizlemek amacıyla Temporal Persistence Filter eklendi.
+
+Threshold ve minimum ardışık anomaly uzunluğu yalnızca validation seti üzerinden seçildi. Filtrenin gerçek anomalileri fazla silmesini önlemek için validation recall değerinin en az `0.70` olması şartı kullanıldı. En iyi ayarda `min_anomaly_run=8` seçildi.
+
+| Senaryo        | Precision | Recall |     F1 |
+| -------------- | --------: | -----: | -----: |
+| Original       |    0.2907 | 0.8929 | 0.4386 |
+| Gaussian Noise |    0.2907 | 0.8929 | 0.4386 |
+| Unseen Data    |    0.2667 | 0.4000 | 0.3077 |
+
+Bu düzenleme ile BATADAL üzerindeki yanlış anomaly tahminleri azaltılırken recall büyük ölçüde korundu. `0.4386` değeri mevcut en iyi deney sonucu olarak kaydedildi.
+
