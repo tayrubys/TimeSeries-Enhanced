@@ -92,3 +92,12 @@ Deney sonucunda SKAB ortalama F1 değeri yaklaşık `0.507` seviyesinden `0.501`
 
 Bu nedenle Temporal Persistence Filter BATADAL modelinde korunurken SKAB final modeline dahil edilmedi.
 
+### SKAB Hysteresis Thresholding Denemesi
+
+SKAB tarafında tek threshold kullanımının oluşturduğu kararsız anomaly geçişlerini azaltmak amacıyla çift eşikli Hysteresis Thresholding yöntemi denendi. Yöntem her `source_file` için ayrı uygulandı. Yüksek eşik anomaly durumunu başlatırken düşük eşik başlamış anomaly durumunun devam etmesini sağladı. Eşikler ve hysteresis delta değeri her fold ve seed için inner validation üzerinden seçildi.
+
+Bazı validation bölümlerinde iyileşme görülmesine rağmen 5-fold × 5-seed genel sonucunda ortalama F1 değeri yaklaşık `0.507` seviyesinden `0.499` seviyesine düştü. Ayrıca birçok fold ve seed için en iyi ayar `delta=0.0` olarak seçildi. Bu durum, hysteresis mekanizmasının çoğu deneyde mevcut tek-threshold yöntemine ek katkı sağlamadığını gösterdi.
+
+Bu nedenle Hysteresis Thresholding yöntemi SKAB final modeline dahil edilmedi.
+
+
