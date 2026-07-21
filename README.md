@@ -84,3 +84,11 @@ Threshold ve minimum ardışık anomaly uzunluğu yalnızca validation seti üze
 
 Bu düzenleme ile BATADAL üzerindeki yanlış anomaly tahminleri azaltılırken recall büyük ölçüde korundu. `0.4386` değeri mevcut en iyi deney sonucu olarak kaydedildi.
 
+#### SKAB Temporal Persistence Filter Denemesi
+
+BATADAL üzerinde başarılı olan Temporal Persistence Filter, SKAB veri setinde de source file sınırları korunarak denendi. Threshold ve minimum ardışık anomaly uzunluğu her fold ve seed için inner validation üzerinden seçildi. Ayrıca gerçek anomalilerin fazla silinmemesi için validation recall değerinin en az `0.70` olması şartı kullanıldı.
+
+Deney sonucunda SKAB ortalama F1 değeri yaklaşık `0.507` seviyesinden `0.501` seviyesine düştü. Precision değeri çok az artarken recall değerinin düşmesi, filtrenin SKAB üzerindeki bazı kısa veya kesintili anomaly bölgelerini kaldırdığını gösterdi.
+
+Bu nedenle Temporal Persistence Filter BATADAL modelinde korunurken SKAB final modeline dahil edilmedi.
+
