@@ -5,7 +5,8 @@
         "merge_alpha": 0.1,
         "min_state_count": 2,
         "smoothing_alpha": 0.1,
-        "distance_penalty": 2.0
+        "distance_penalty": 1.0,
+        "min_anomaly_run": 5
     },
     "threshold": -2.875462524132058,
     "normal_model": {

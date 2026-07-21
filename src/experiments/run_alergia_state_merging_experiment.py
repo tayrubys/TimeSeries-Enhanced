@@ -40,24 +40,25 @@ def load_config():
         "merge_alphas": automata.get(
             "alergia_merge_alpha_values", [0.01, 0.05, 0.1]
         ),
-        "min_counts": automata.get(
-            "alergia_min_state_count_values", [2, 5, 10]
-        ),
-        "smoothing_alphas": automata.get(
-            "alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]
-        ),
-        "max_pattern_distance": automata.get(
-            "alergia_max_pattern_distance", None
-        ),
+        "min_counts": automata.get("alergia_min_state_count_values", [2, 5, 10]),
+        "smoothing_alphas": automata.get("alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]),
+        "max_pattern_distance": automata.get("alergia_max_pattern_distance", None),
         "distance_penalties": automata.get(
             "alergia_distance_penalty_values",
             [0.0, 0.25, 0.5, 1.0, 2.0],
         ),
+        "min_anomaly_runs": [
+            int(value)
+            for value in automata.get(
+                "alergia_min_anomaly_run_values",
+                [1, 2, 3, 4, 5],
+            )
+        ],
     }
 
 #sax patternlerine cevirir
 def transform_patterns(transformer, series, window_size, train_mean, train_std):
-    # Her bölümü train istatistikleriyle normalize ediyoruz.
+    #her bölümü train istatistikleriyle normalize eder
     normalized = (np.asarray(series, dtype=float) - train_mean) / train_std
     paa = transformer.apply_paa(normalized, window_size)
     sax = transformer.convert_to_sax(paa)
@@ -65,7 +66,7 @@ def transform_patterns(transformer, series, window_size, train_mean, train_std):
 
 
 def align_labels(labels, window_size):
-    #Ham etiketleri önce PAA bloğuna, sonra pattern seviyesine taşır
+    #ham etiketleri önce PAA bloğuna, sonra pattern seviyesine taşır
     labels = to_binary(labels)
     usable = (len(labels) // window_size) * window_size
 
@@ -163,16 +164,72 @@ def score_dual(normal_model, anomaly_model, patterns):
 
     return dual_scores, logs
 
+
+def apply_temporal_persistence(predictions, min_anomaly_run):
+    """
+    Yalnızca en az min_anomaly_run uzunluğundaki ardışık anomaly
+    tahminlerini korur. Daha kısa anomaly blokları normal yapılır.
+    """
+    predictions = np.asarray(predictions, dtype=int).flatten()
+    min_anomaly_run = int(min_anomaly_run)
+
+    if min_anomaly_run < 1:
+        raise ValueError("min_anomaly_run en az 1 olmalıdır.")
+
+    if min_anomaly_run == 1 or len(predictions) == 0:
+        return predictions.copy()
+
+    filtered = np.zeros_like(predictions)
+    start = 0
+
+    while start < len(predictions):
+        if predictions[start] == 0:
+            start += 1
+            continue
+
+        end = start
+
+        while end < len(predictions) and predictions[end] == 1:
+            end += 1
+
+        if end - start >= min_anomaly_run:
+            filtered[start:end] = 1
+
+        start = end
+
+    return filtered
+
+
 #belirli bir esik değere gore sonucların genel istatistiklerini hesaplar
-def summarize_scores(labels, scores, logs, threshold):
+def summarize_scores(
+    labels,
+    scores,
+    logs,
+    threshold,
+    predictions=None,
+):
     labels = np.asarray(labels, dtype=int)
     scores = np.asarray(scores, dtype=float)
-    predictions = (scores >= threshold).astype(int)
+    raw_predictions = (scores >= threshold).astype(int)
+
+    if predictions is None:
+        predictions = raw_predictions
+    else:
+        predictions = np.asarray(predictions, dtype=int).flatten()
+
+    if len(predictions) != len(labels):
+        raise ValueError(
+            "Filtrelenmiş tahmin ve validation etiketi sayıları farklı."
+        )
+
     normal_scores = scores[labels == 0]
     anomaly_scores = scores[labels == 1]
 
     return {
         "validation_unique_score_count": int(len(np.unique(scores))),
+        "validation_raw_predicted_anomaly_count": int(
+            raw_predictions.sum()
+        ),
         "validation_predicted_anomaly_count": int(predictions.sum()),
         "validation_normal_score_mean": (
             float(np.mean(normal_scores)) if len(normal_scores) else 0.0
@@ -204,13 +261,38 @@ def summarize_scores(labels, scores, logs, threshold):
     }
 
 #yeni gelen datada belirlenen en ıyı esige gore anomalı normal tahmını yapar
-def predict_dual(normal_model, anomaly_model, patterns, threshold):
-    scores, logs = score_dual(normal_model, anomaly_model, patterns)
-    predictions = (scores >= threshold).astype(int)
+def predict_dual(
+    normal_model,
+    anomaly_model,
+    patterns,
+    threshold,
+    min_anomaly_run,
+):
+    scores, logs = score_dual(
+        normal_model,
+        anomaly_model,
+        patterns,
+    )
 
-    for prediction, log in zip(predictions, logs):
+    raw_predictions = (scores >= threshold).astype(int)
+    predictions = apply_temporal_persistence(
+        raw_predictions,
+        min_anomaly_run,
+    )
+
+    for raw_prediction, prediction, log in zip(
+        raw_predictions,
+        predictions,
+        logs,
+    ):
         log["threshold"] = float(threshold)
-        log["decision"] = "anomaly" if prediction == 1 else "normal"
+        log["min_anomaly_run"] = int(min_anomaly_run)
+        log["raw_decision"] = (
+            "anomaly" if raw_prediction == 1 else "normal"
+        )
+        log["decision"] = (
+            "anomaly" if prediction == 1 else "normal"
+        )
 
     return predictions, logs
 
@@ -239,6 +321,80 @@ def select_threshold(labels, scores):
             }
 
     return best["threshold"], best["metrics"]
+
+
+def select_threshold_with_persistence(
+    labels,
+    scores,
+    min_anomaly_runs,
+):
+    """
+    Threshold ve minimum ardışık anomaly uzunluğunu yalnızca
+    validation etiketleri üzerinden birlikte seçer
+    """
+    labels = np.asarray(labels, dtype=int).flatten()
+    scores = np.asarray(scores, dtype=float).flatten()
+
+    if len(labels) != len(scores) or len(scores) == 0:
+        raise ValueError(
+            "Validation etiket ve skorları uygun değil."
+        )
+
+    run_values = sorted(
+        set(int(value) for value in min_anomaly_runs)
+    )
+
+    if not run_values or run_values[0] < 1:
+        raise ValueError(
+            "min_anomaly_run değerleri en az 1 olmalıdır."
+        )
+
+    candidates = np.concatenate(
+        (
+            [scores.min() - 1e-12],
+            np.unique(scores),
+            [scores.max() + 1e-12],
+        )
+    )
+
+    best = None
+
+    for threshold in candidates:
+        raw_predictions = (
+            scores >= threshold
+        ).astype(int)
+
+        for min_anomaly_run in run_values:
+            filtered_predictions = apply_temporal_persistence(
+                raw_predictions,
+                min_anomaly_run,
+            )
+
+            metrics = calculate_metrics(
+                labels,
+                filtered_predictions,
+            )
+
+            key = (
+                metrics["f1_score"],
+                metrics["precision"],
+                metrics["recall"],
+                -int(filtered_predictions.sum()),
+                -int(min_anomaly_run),
+            )
+
+            if best is None or key > best["key"]:
+                best = {
+                    "key": key,
+                    "threshold": float(threshold),
+                    "min_anomaly_run": int(min_anomaly_run),
+                    "metrics": metrics,
+                    "raw_predictions": raw_predictions.copy(),
+                    "predictions": filtered_predictions.copy(),
+                }
+
+    return best
+
 
 #gurultu ekler
 def inject_noise(series, level, seed):
@@ -424,19 +580,12 @@ def main():
                     {
                         "search_stage": "state_merging",
                         **kwargs,
+                        "min_anomaly_run": 1,
                         "threshold": threshold,
-                        "normal_states_before": normal_stats[
-                            "original_state_count"
-                        ],
-                        "normal_states_after": normal_stats[
-                            "merged_state_count"
-                        ],
-                        "anomaly_states_before": anomaly_stats[
-                            "original_state_count"
-                        ],
-                        "anomaly_states_after": anomaly_stats[
-                            "merged_state_count"
-                        ],
+                        "normal_states_before": normal_stats["original_state_count"],
+                        "normal_states_after": normal_stats["merged_state_count"],
+                        "anomaly_states_before": anomaly_stats["original_state_count"],
+                        "anomaly_states_after": anomaly_stats["merged_state_count"],
                         **{f"validation_{k}": v for k, v in metrics.items()},
                         **diagnostics,
                     }
@@ -475,14 +624,19 @@ def main():
                             "min_state_count": int(min_count),
                             "smoothing_alpha": float(smoothing_alpha),
                             "distance_penalty": 0.0,
+                            "min_anomaly_run": 1,
                         },
                     }
 
-    print("\n--- LEVENSHTEIN UZAKLIK CEZASI TARAMASI ---")
+    print(
+        "\n--- DISTANCE VE TEMPORAL PERSISTENCE TARAMASI ---"
+    )
 
     penalty_best = None
+
     for distance_penalty in config["distance_penalties"]:
         distance_penalty = float(distance_penalty)
+
         best["normal_model"].distance_penalty = distance_penalty
         best["anomaly_model"].distance_penalty = distance_penalty
 
@@ -491,60 +645,71 @@ def main():
             best["anomaly_model"],
             val_patterns,
         )
-        threshold, metrics = select_threshold(
+
+        selection = select_threshold_with_persistence(
             val_transition_labels,
             val_scores,
+            config["min_anomaly_runs"],
         )
+
+        threshold = selection["threshold"]
+        min_anomaly_run = selection["min_anomaly_run"]
+        metrics = selection["metrics"]
+        filtered_predictions = selection["predictions"]
+        raw_predictions = selection["raw_predictions"]
+
         diagnostics = summarize_scores(
             val_transition_labels,
             val_scores,
             val_logs,
             threshold,
+            predictions=filtered_predictions,
         )
 
         search_rows.append(
             {
-                "search_stage": "distance_penalty",
+                "search_stage": "distance_and_temporal_persistence",
                 "merge_alpha": best["config"]["merge_alpha"],
                 "min_state_count": best["config"]["min_state_count"],
                 "smoothing_alpha": best["config"]["smoothing_alpha"],
                 "max_pattern_distance": config["max_pattern_distance"],
                 "distance_penalty": distance_penalty,
+                "min_anomaly_run": min_anomaly_run,
                 "threshold": threshold,
-                "normal_states_before": best["normal_stats"][
-                    "original_state_count"
-                ],
-                "normal_states_after": best["normal_stats"][
-                    "merged_state_count"
-                ],
-                "anomaly_states_before": best["anomaly_stats"][
-                    "original_state_count"
-                ],
-                "anomaly_states_after": best["anomaly_stats"][
-                    "merged_state_count"
-                ],
-                **{f"validation_{k}": v for k, v in metrics.items()},
+                "normal_states_before": best["normal_stats"]["original_state_count"],
+                "normal_states_after": best["normal_stats"]["merged_state_count"],
+                "anomaly_states_before": best["anomaly_stats"]["original_state_count"],
+                "anomaly_states_after": best["anomaly_stats"]["merged_state_count"],
+                **{
+                    f"validation_{key}": value
+                    for key, value in metrics.items()
+                },
                 **diagnostics,
             }
         )
 
         print(
-            f"distance_penalty={distance_penalty} | "
+            f"distance={distance_penalty} | "
+            f"min_run={min_anomaly_run} | "
             f"threshold={threshold:.6f} | "
-            f"F1={metrics['f1_score']:.4f} | "
-            f"score_gap={diagnostics['validation_score_mean_gap']:.4f}"
+            f"raw_anomaly={int(raw_predictions.sum())} | "
+            f"filtered_anomaly={int(filtered_predictions.sum())} | "
+            f"F1={metrics['f1_score']:.4f}"
         )
 
         key = (
             metrics["f1_score"],
             metrics["precision"],
             metrics["recall"],
-            -int((val_scores >= threshold).sum()),
+            -int(filtered_predictions.sum()),
+            -int(min_anomaly_run),
         )
+
         if penalty_best is None or key > penalty_best["key"]:
             penalty_best = {
                 "key": key,
                 "distance_penalty": distance_penalty,
+                "min_anomaly_run": min_anomaly_run,
                 "threshold": threshold,
                 "metrics": metrics,
             }
@@ -560,6 +725,9 @@ def main():
     best["config"]["distance_penalty"] = penalty_best[
         "distance_penalty"
     ]
+    best["config"]["min_anomaly_run"] = penalty_best[
+        "min_anomaly_run"
+    ]
 
     pd.DataFrame(search_rows).to_csv(
         os.path.join(
@@ -574,6 +742,7 @@ def main():
         f"min={best['config']['min_state_count']} | "
         f"smooth={best['config']['smoothing_alpha']} | "
         f"distance_penalty={best['config']['distance_penalty']} | "
+        f"min_anomaly_run={best['config']['min_anomaly_run']} | "
         f"threshold={best['threshold']:.6f} | "
         f"val F1={best['metrics']['f1_score']:.4f}"
     )
@@ -583,6 +752,7 @@ def main():
         best["anomaly_model"],
         test_patterns,
         best["threshold"],
+        best["config"]["min_anomaly_run"],
     )
     original_metrics = calculate_metrics(
         test_transition_labels, test_predictions
@@ -602,6 +772,7 @@ def main():
         best["anomaly_model"],
         noisy_patterns,
         best["threshold"],
+        best["config"]["min_anomaly_run"],
     )
     noise_metrics = calculate_metrics(
         test_transition_labels, noisy_predictions
@@ -691,6 +862,12 @@ def main():
             indent=4,
             ensure_ascii=False,
         )
+
+    print(
+        f"Test predicted anomaly: "
+        f"{int(test_predictions.sum())}/{len(test_predictions)} | "
+        f"actual anomaly: {int(test_transition_labels.sum())}"
+    )
 
     print("\n--- TEST SONUÇLARI ---")
     print(
