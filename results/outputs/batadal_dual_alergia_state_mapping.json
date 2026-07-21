@@ -6,9 +6,56 @@
         "min_state_count": 2,
         "smoothing_alpha": 0.1,
         "distance_penalty": 1.0,
-        "min_anomaly_run": 5
+        "min_anomaly_run": 8,
+        "min_validation_recall": 0.7
     },
     "threshold": -2.875462524132058,
+    "validation_stability": {
+        "strategy": "recall_constrained_equal_chronological_blocks",
+        "primary_selection_metric": "global_validation_f1_with_recall_constraint",
+        "minimum_validation_recall": 0.7,
+        "recall_constraint_met": true,
+        "selection_mode": "recall_constrained",
+        "block_count": 3,
+        "mean_block_f1": 0.17777777777777778,
+        "min_block_f1": 0.0,
+        "std_block_f1": 0.2514157444218835,
+        "blocks": [
+            {
+                "block": 1,
+                "start_index": 0,
+                "end_index": 67,
+                "sample_count": 68,
+                "anomaly_count": 0,
+                "predicted_anomaly_count": 21,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1_score": 0.0
+            },
+            {
+                "block": 2,
+                "start_index": 68,
+                "end_index": 135,
+                "sample_count": 68,
+                "anomaly_count": 13,
+                "predicted_anomaly_count": 32,
+                "precision": 0.375,
+                "recall": 0.9230769230769231,
+                "f1_score": 0.5333333333333333
+            },
+            {
+                "block": 3,
+                "start_index": 136,
+                "end_index": 203,
+                "sample_count": 68,
+                "anomaly_count": 0,
+                "predicted_anomaly_count": 18,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1_score": 0.0
+            }
+        ]
+    },
     "normal_model": {
         "statistics": {
             "original_state_count": 49,

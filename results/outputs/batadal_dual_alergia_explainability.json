@@ -15,7 +15,7 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": -0.8938234676592437,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -35,7 +35,7 @@
         "anomaly_surprise": 1.2475800634365417,
         "dual_score": 1.337344989448639,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -55,7 +55,7 @@
         "anomaly_surprise": 8.046057974316124,
         "dual_score": -5.933629933639981,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -75,7 +75,7 @@
         "anomaly_surprise": 7.67368812926773,
         "dual_score": -5.417204510519188,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -95,7 +95,7 @@
         "anomaly_surprise": 3.4339872044851463,
         "dual_score": -1.434252405416053,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -115,7 +115,7 @@
         "anomaly_surprise": 3.294522437723423,
         "dual_score": -2.878080270984108,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -135,7 +135,7 @@
         "anomaly_surprise": 1.2475800634365417,
         "dual_score": -0.8991703560340603,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -155,7 +155,7 @@
         "anomaly_surprise": 3.401608819643685,
         "dual_score": -1.5830255847564612,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -175,7 +175,7 @@
         "anomaly_surprise": 2.1539745935424026,
         "dual_score": -0.04154655286626019,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -195,7 +195,7 @@
         "anomaly_surprise": 7.67368812926773,
         "dual_score": -5.417204510519188,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -215,9 +215,9 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": 1.2136428673823176,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 12,
@@ -235,9 +235,9 @@
         "anomaly_surprise": 5.125197323201151,
         "dual_score": -2.875462524132058,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 13,
@@ -255,9 +255,9 @@
         "anomaly_surprise": 2.120292742652737,
         "dual_score": 3.563429260901502,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 14,
@@ -275,9 +275,9 @@
         "anomaly_surprise": 3.404223102578692,
         "dual_score": -2.780255059856562,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 15,
@@ -295,9 +295,9 @@
         "anomaly_surprise": 3.6839872044851463,
         "dual_score": -1.223138438209383,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 16,
@@ -315,9 +315,9 @@
         "anomaly_surprise": 1.5876231670925145,
         "dual_score": -0.5079687921690188,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 17,
@@ -335,9 +335,9 @@
         "anomaly_surprise": 3.651608819643685,
         "dual_score": -2.8428885490781592,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 18,
@@ -355,7 +355,7 @@
         "anomaly_surprise": 5.448497031265826,
         "dual_score": -3.58917941102648,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -375,7 +375,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -4.135176800926692,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -395,7 +395,7 @@
         "anomaly_surprise": 5.75227342804663,
         "dual_score": -4.341764808806145,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -415,7 +415,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -5.03205486452651,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -435,7 +435,7 @@
         "anomaly_surprise": 3.9339872044851463,
         "dual_score": 3.011811712573346,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -455,7 +455,7 @@
         "anomaly_surprise": 3.901608819643685,
         "dual_score": -1.5095959167483812,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -475,7 +475,7 @@
         "anomaly_surprise": 1.4358171542245106,
         "dual_score": 1.8975387665557353,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -495,7 +495,7 @@
         "anomaly_surprise": 5.375197323201151,
         "dual_score": -4.497957106198869,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -515,7 +515,7 @@
         "anomaly_surprise": 5.957110264748875,
         "dual_score": -5.511153795285974,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -535,9 +535,9 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": -0.8938234676592437,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 28,
@@ -555,9 +555,9 @@
         "anomaly_surprise": 1.993538198044568,
         "dual_score": -0.3791436459705395,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 29,
@@ -575,9 +575,9 @@
         "anomaly_surprise": 1.993538198044568,
         "dual_score": -1.8695701553224378,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 30,
@@ -595,9 +595,9 @@
         "anomaly_surprise": 0.9269210521759114,
         "dual_score": -0.7846525881483795,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 31,
@@ -615,9 +615,9 @@
         "anomaly_surprise": 0.9975800634365417,
         "dual_score": -0.6491703560340603,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 32,
@@ -635,9 +635,9 @@
         "anomaly_surprise": 0.07692813340939116,
         "dual_score": 0.6243069017522531,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 33,
@@ -655,9 +655,9 @@
         "anomaly_surprise": 3.401608819643685,
         "dual_score": -0.7590216593249015,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 34,
@@ -675,7 +675,7 @@
         "anomaly_surprise": 5.448497031265826,
         "dual_score": -3.8851768009266916,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -695,7 +695,7 @@
         "anomaly_surprise": 5.75227342804663,
         "dual_score": -4.341764808806145,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -715,7 +715,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -5.03205486452651,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -735,7 +735,7 @@
         "anomaly_surprise": 3.9339872044851463,
         "dual_score": -3.3355774970826646,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -755,7 +755,7 @@
         "anomaly_surprise": 5.75227342804663,
         "dual_score": -3.095804166954549,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -775,7 +775,7 @@
         "anomaly_surprise": 6.361467339502679,
         "dual_score": -1.9920194870356571,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -795,7 +795,7 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": 2.5812038982996985,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -815,7 +815,7 @@
         "anomaly_surprise": 2.3681311708919166,
         "dual_score": 0.13160362817717663,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -835,7 +835,7 @@
         "anomaly_surprise": 1.161625256496844,
         "dual_score": 1.3381095425722493,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -855,7 +855,7 @@
         "anomaly_surprise": 0.10789484683921562,
         "dual_score": 6.0758271567150235,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -875,7 +875,7 @@
         "anomaly_surprise": 3.960116062563422,
         "dual_score": 3.2956679975648067,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -895,7 +895,7 @@
         "anomaly_surprise": 1.5387013613423222,
         "dual_score": 0.9610334377267711,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -915,7 +915,7 @@
         "anomaly_surprise": 2.6181311708919166,
         "dual_score": 2.9742030810728943,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -935,7 +935,7 @@
         "anomaly_surprise": 6.361467339502679,
         "dual_score": -5.392066782314575,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -955,7 +955,7 @@
         "anomaly_surprise": 3.6839872044851463,
         "dual_score": -2.714586647297043,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -975,7 +975,7 @@
         "anomaly_surprise": 5.375197323201151,
         "dual_score": -4.497957106198869,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -995,7 +995,7 @@
         "anomaly_surprise": 5.957110264748875,
         "dual_score": -5.511153795285974,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1015,7 +1015,7 @@
         "anomaly_surprise": 3.6839872044851463,
         "dual_score": -1.473138438209383,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1035,7 +1035,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -4.368842656342331,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1055,7 +1055,7 @@
         "anomaly_surprise": 6.052118375377063,
         "dual_score": -3.410105472481759,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1075,7 +1075,7 @@
         "anomaly_surprise": 3.4339872044851463,
         "dual_score": 0.9354606479818752,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1095,7 +1095,7 @@
         "anomaly_surprise": 3.6839872044851463,
         "dual_score": -0.31669137449867213,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1115,7 +1115,7 @@
         "anomaly_surprise": 3.104378155248259,
         "dual_score": -0.8478945364997172,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1135,7 +1135,7 @@
         "anomaly_surprise": 3.4339872044851463,
         "dual_score": -3.017545037745831,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1155,7 +1155,7 @@
         "anomaly_surprise": 0.9975800634365417,
         "dual_score": -0.6491703560340603,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1175,7 +1175,7 @@
         "anomaly_surprise": 3.401608819643685,
         "dual_score": -1.5830255847564612,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1195,7 +1195,7 @@
         "anomaly_surprise": 0.9358171542245105,
         "dual_score": -0.46167518032012694,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1215,7 +1215,7 @@
         "anomaly_surprise": 0.612517446159836,
         "dual_score": 0.1962028244056898,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1235,7 +1235,7 @@
         "anomaly_surprise": 5.448497031265826,
         "dual_score": -3.58917941102648,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1255,7 +1255,7 @@
         "anomaly_surprise": 2.4039745935424026,
         "dual_score": -0.2915465528662602,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1275,7 +1275,7 @@
         "anomaly_surprise": 7.67368812926773,
         "dual_score": -5.417204510519188,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1295,9 +1295,9 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": 1.2136428673823176,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 66,
@@ -1315,9 +1315,9 @@
         "anomaly_surprise": 5.125197323201151,
         "dual_score": -2.875462524132058,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 67,
@@ -1335,9 +1335,9 @@
         "anomaly_surprise": 2.120292742652737,
         "dual_score": 3.563429260901502,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 68,
@@ -1355,9 +1355,9 @@
         "anomaly_surprise": 3.404223102578692,
         "dual_score": -2.780255059856562,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 69,
@@ -1375,9 +1375,9 @@
         "anomaly_surprise": 3.6839872044851463,
         "dual_score": -1.223138438209383,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 70,
@@ -1395,9 +1395,9 @@
         "anomaly_surprise": 1.5876231670925145,
         "dual_score": -0.5079687921690188,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 71,
@@ -1415,9 +1415,9 @@
         "anomaly_surprise": 3.651608819643685,
         "dual_score": -2.8428885490781592,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
-        "decision": "anomaly"
+        "decision": "normal"
     },
     {
         "time_step": 72,
@@ -1435,7 +1435,7 @@
         "anomaly_surprise": 5.448497031265826,
         "dual_score": -3.58917941102648,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1455,7 +1455,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -4.135176800926692,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1475,7 +1475,7 @@
         "anomaly_surprise": 5.75227342804663,
         "dual_score": -4.341764808806145,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1495,7 +1495,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -5.28205486452651,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1515,7 +1515,7 @@
         "anomaly_surprise": 1.2475800634365417,
         "dual_score": -0.8991703560340603,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1535,7 +1535,7 @@
         "anomaly_surprise": 3.401608819643685,
         "dual_score": 3.3657343056217073,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1555,7 +1555,7 @@
         "anomaly_surprise": 1.4462507582320256,
         "dual_score": 0.9486594377228919,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1575,7 +1575,7 @@
         "anomaly_surprise": 5.75227342804663,
         "dual_score": -3.095804166954549,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1595,7 +1595,7 @@
         "anomaly_surprise": 5.375197323201151,
         "dual_score": -1.652376635659182,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1615,7 +1615,7 @@
         "anomaly_surprise": 3.901608819643685,
         "dual_score": -2.042291199404339,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1635,7 +1635,7 @@
         "anomaly_surprise": 1.1858171542245106,
         "dual_score": -0.7116751803201271,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "normal"
     },
@@ -1655,7 +1655,7 @@
         "anomaly_surprise": 5.125197323201151,
         "dual_score": -4.247957106198869,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1675,7 +1675,7 @@
         "anomaly_surprise": 1.6962507582320256,
         "dual_score": 0.5009738191041935,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1695,7 +1695,7 @@
         "anomaly_surprise": 0.7064828824498889,
         "dual_score": 2.199986378642192,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1715,7 +1715,7 @@
         "anomaly_surprise": 2.877897583670989,
         "dual_score": 4.389445541594403,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1735,7 +1735,7 @@
         "anomaly_surprise": 1.1769210521759113,
         "dual_score": 6.018877864882581,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1755,7 +1755,7 @@
         "anomaly_surprise": 2.4935381980445683,
         "dual_score": -0.9138838231210726,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1775,7 +1775,7 @@
         "anomaly_surprise": 2.6181311708919166,
         "dual_score": 3.4578689364885333,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1795,7 +1795,7 @@
         "anomaly_surprise": 3.066944901779255,
         "dual_score": 0.550350928207219,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1815,7 +1815,7 @@
         "anomaly_surprise": 5.2757928564693595,
         "dual_score": 0.4079291470848796,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1835,7 +1835,7 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": -0.06669137449867202,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1855,7 +1855,7 @@
         "anomaly_surprise": 3.6839872044851463,
         "dual_score": -1.473138438209383,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1875,7 +1875,7 @@
         "anomaly_surprise": 5.698497031265826,
         "dual_score": -4.368842656342331,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1895,7 +1895,7 @@
         "anomaly_surprise": 6.052118375377063,
         "dual_score": -3.410105472481759,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "normal",
         "decision": "normal"
     },
@@ -1915,7 +1915,7 @@
         "anomaly_surprise": 3.4339872044851463,
         "dual_score": 0.9354606479818752,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1935,7 +1935,7 @@
         "anomaly_surprise": 3.4339872044851463,
         "dual_score": -2.464586647297043,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1955,7 +1955,7 @@
         "anomaly_surprise": 3.4339872044851463,
         "dual_score": -1.0390770085302288,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1975,7 +1975,7 @@
         "anomaly_surprise": 2.854378155248259,
         "dual_score": -0.5978945364997172,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     },
@@ -1995,7 +1995,7 @@
         "anomaly_surprise": 1.0360919316867756,
         "dual_score": 4.6476300718674635,
         "threshold": -2.875462524132058,
-        "min_anomaly_run": 5,
+        "min_anomaly_run": 8,
         "raw_decision": "anomaly",
         "decision": "anomaly"
     }

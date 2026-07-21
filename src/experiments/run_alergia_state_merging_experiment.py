@@ -40,9 +40,15 @@ def load_config():
         "merge_alphas": automata.get(
             "alergia_merge_alpha_values", [0.01, 0.05, 0.1]
         ),
-        "min_counts": automata.get("alergia_min_state_count_values", [2, 5, 10]),
-        "smoothing_alphas": automata.get("alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]),
-        "max_pattern_distance": automata.get("alergia_max_pattern_distance", None),
+        "min_counts": automata.get(
+            "alergia_min_state_count_values", [2, 5, 10]
+        ),
+        "smoothing_alphas": automata.get(
+            "alergia_smoothing_alpha_values", [0.1, 0.5, 1.0]
+        ),
+        "max_pattern_distance": automata.get(
+            "alergia_max_pattern_distance", None
+        ),
         "distance_penalties": automata.get(
             "alergia_distance_penalty_values",
             [0.0, 0.25, 0.5, 1.0, 2.0],
@@ -51,14 +57,26 @@ def load_config():
             int(value)
             for value in automata.get(
                 "alergia_min_anomaly_run_values",
-                [1, 2, 3, 4, 5],
+                [1, 2, 3, 4, 5, 6, 7, 8, 10, 12],
             )
         ],
+        "validation_block_count": int(
+            automata.get(
+                "alergia_validation_block_count",
+                3,
+            )
+        ),
+        "min_validation_recall": float(
+            automata.get(
+                "alergia_min_validation_recall",
+                0.70,
+            )
+        ),
     }
 
 #sax patternlerine cevirir
 def transform_patterns(transformer, series, window_size, train_mean, train_std):
-    #her bölümü train istatistikleriyle normalize eder
+    # Her bölümü train istatistikleriyle normalize ediyoruz.
     normalized = (np.asarray(series, dtype=float) - train_mean) / train_std
     paa = transformer.apply_paa(normalized, window_size)
     sax = transformer.convert_to_sax(paa)
@@ -66,7 +84,7 @@ def transform_patterns(transformer, series, window_size, train_mean, train_std):
 
 
 def align_labels(labels, window_size):
-    #ham etiketleri önce PAA bloğuna, sonra pattern seviyesine taşır
+    #Ham etiketleri önce PAA bloğuna, sonra pattern seviyesine taşır
     labels = to_binary(labels)
     usable = (len(labels) // window_size) * window_size
 
@@ -323,21 +341,152 @@ def select_threshold(labels, scores):
     return best["threshold"], best["metrics"]
 
 
+def build_validation_blocks(labels, requested_block_count):
+    """
+    Validation verisini etiketlere bakmadan eşit kronolojik bloklara ayırır.
+
+    Blok sınırları yalnızca örnek sırasına ve toplam örnek sayısına göre
+    belirlenir. Böylece anomaly etiketleri validation yapısını şekillendirmez.
+    """
+    labels = np.asarray(labels, dtype=int).flatten()
+
+    if len(labels) == 0:
+        raise ValueError("Validation etiketleri boş olamaz.")
+
+    requested_block_count = int(requested_block_count)
+
+    if requested_block_count < 2:
+        raise ValueError(
+            "validation_block_count en az 2 olmalıdır."
+        )
+
+    effective_count = min(
+        requested_block_count,
+        len(labels),
+    )
+
+    return [
+        np.asarray(block, dtype=int)
+        for block in np.array_split(
+            np.arange(len(labels)),
+            effective_count,
+        )
+        if len(block) > 0
+    ]
+
+
+def calculate_block_stability(
+    labels,
+    predictions,
+    block_count,
+):
+    labels = np.asarray(labels, dtype=int).flatten()
+    predictions = np.asarray(
+        predictions,
+        dtype=int,
+    ).flatten()
+
+    if len(labels) != len(predictions):
+        raise ValueError(
+            "Validation etiketi ve tahmin sayıları farklı."
+        )
+
+    blocks = build_validation_blocks(
+        labels,
+        block_count,
+    )
+
+    block_rows = []
+    block_f1_values = []
+
+    for block_id, indices in enumerate(blocks, start=1):
+        block_labels = labels[indices]
+        block_predictions = predictions[indices]
+
+        block_metrics = calculate_metrics(
+            block_labels,
+            block_predictions,
+        )
+
+        block_f1 = float(
+            block_metrics["f1_score"]
+        )
+        block_f1_values.append(block_f1)
+
+        block_rows.append(
+            {
+                "block": block_id,
+                "start_index": int(indices[0]),
+                "end_index": int(indices[-1]),
+                "sample_count": int(len(indices)),
+                "anomaly_count": int(
+                    block_labels.sum()
+                ),
+                "predicted_anomaly_count": int(
+                    block_predictions.sum()
+                ),
+                "precision": float(
+                    block_metrics["precision"]
+                ),
+                "recall": float(
+                    block_metrics["recall"]
+                ),
+                "f1_score": block_f1,
+            }
+        )
+
+    block_f1_values = np.asarray(
+        block_f1_values,
+        dtype=float,
+    )
+
+    return {
+        "block_rows": block_rows,
+        "block_count": int(len(block_rows)),
+        "block_f1_values": block_f1_values,
+        "mean_block_f1": float(
+            np.mean(block_f1_values)
+        ),
+        "min_block_f1": float(
+            np.min(block_f1_values)
+        ),
+        "std_block_f1": float(
+            np.std(block_f1_values)
+        ),
+    }
+
+
 def select_threshold_with_persistence(
     labels,
     scores,
     min_anomaly_runs,
+    validation_block_count,
+    min_validation_recall,
 ):
     """
-    Threshold ve minimum ardışık anomaly uzunluğunu yalnızca
-    validation etiketleri üzerinden birlikte seçer
+    Threshold ve minimum ardışık anomaly uzunluğunu yalnızca validation
+    üzerinde birlikte seçer.
+
+    Önce validation recall değeri belirlenen alt sınırı sağlayan ayarlar
+    tutulur. Bu ayarlar arasında global validation F1 değeri en yüksek
+    olan seçilir. Kronolojik blok metrikleri yalnızca eşitlik bozucu
+    olarak kullanılır.
+
+    Hiçbir ayar recall sınırını sağlayamazsa en yüksek recall değerine
+    sahip ayar güvenli fallback olarak seçilir.
     """
     labels = np.asarray(labels, dtype=int).flatten()
     scores = np.asarray(scores, dtype=float).flatten()
+    min_validation_recall = float(min_validation_recall)
 
     if len(labels) != len(scores) or len(scores) == 0:
         raise ValueError(
             "Validation etiket ve skorları uygun değil."
+        )
+
+    if not 0.0 <= min_validation_recall <= 1.0:
+        raise ValueError(
+            "min_validation_recall 0 ile 1 arasında olmalıdır."
         )
 
     run_values = sorted(
@@ -357,7 +506,8 @@ def select_threshold_with_persistence(
         )
     )
 
-    best = None
+    best_eligible = None
+    best_fallback = None
 
     for threshold in candidates:
         raw_predictions = (
@@ -375,25 +525,79 @@ def select_threshold_with_persistence(
                 filtered_predictions,
             )
 
-            key = (
+            stability = calculate_block_stability(
+                labels,
+                filtered_predictions,
+                validation_block_count,
+            )
+
+            candidate = {
+                "threshold": float(threshold),
+                "min_anomaly_run": int(min_anomaly_run),
+                "metrics": metrics,
+                "stability": stability,
+                "raw_predictions": raw_predictions.copy(),
+                "predictions": filtered_predictions.copy(),
+            }
+
+            eligible = (
+                metrics["recall"]
+                >= min_validation_recall
+            )
+
+            if eligible:
+                eligible_key = (
+                    metrics["f1_score"],
+                    metrics["precision"],
+                    metrics["recall"],
+                    stability["min_block_f1"],
+                    stability["mean_block_f1"],
+                    -stability["std_block_f1"],
+                    -int(filtered_predictions.sum()),
+                    -int(min_anomaly_run),
+                )
+
+                if (
+                    best_eligible is None
+                    or eligible_key > best_eligible["key"]
+                ):
+                    best_eligible = {
+                        **candidate,
+                        "key": eligible_key,
+                        "recall_constraint_met": True,
+                        "selection_mode": (
+                            "recall_constrained"
+                        ),
+                    }
+
+            fallback_key = (
+                metrics["recall"],
                 metrics["f1_score"],
                 metrics["precision"],
-                metrics["recall"],
+                stability["min_block_f1"],
+                stability["mean_block_f1"],
+                -stability["std_block_f1"],
                 -int(filtered_predictions.sum()),
                 -int(min_anomaly_run),
             )
 
-            if best is None or key > best["key"]:
-                best = {
-                    "key": key,
-                    "threshold": float(threshold),
-                    "min_anomaly_run": int(min_anomaly_run),
-                    "metrics": metrics,
-                    "raw_predictions": raw_predictions.copy(),
-                    "predictions": filtered_predictions.copy(),
+            if (
+                best_fallback is None
+                or fallback_key > best_fallback["key"]
+            ):
+                best_fallback = {
+                    **candidate,
+                    "key": fallback_key,
+                    "recall_constraint_met": eligible,
+                    "selection_mode": (
+                        "fallback_highest_recall"
+                    ),
                 }
 
-    return best
+    if best_eligible is not None:
+        return best_eligible
+
+    return best_fallback
 
 
 #gurultu ekler
@@ -448,6 +652,29 @@ def make_result(
         **best["config"],
         "selected_threshold": best["threshold"],
         "validation_f1": best["metrics"]["f1_score"],
+        "validation_strategy": (
+            "recall_constrained_equal_chronological_blocks"
+        ),
+        "validation_selection_mode": best.get(
+            "selection_mode",
+            "",
+        ),
+        "validation_recall_constraint_met": best.get(
+            "recall_constraint_met",
+            False,
+        ),
+        "validation_mean_block_f1": best.get(
+            "stability",
+            {},
+        ).get("mean_block_f1", 0.0),
+        "validation_min_block_f1": best.get(
+            "stability",
+            {},
+        ).get("min_block_f1", 0.0),
+        "validation_std_block_f1": best.get(
+            "stability",
+            {},
+        ).get("std_block_f1", 0.0),
         "normal_states_before": best["normal_stats"]["original_state_count"],
         "normal_states_after": best["normal_stats"]["merged_state_count"],
         "anomaly_states_before": best["anomaly_stats"]["original_state_count"],
@@ -582,10 +809,18 @@ def main():
                         **kwargs,
                         "min_anomaly_run": 1,
                         "threshold": threshold,
-                        "normal_states_before": normal_stats["original_state_count"],
-                        "normal_states_after": normal_stats["merged_state_count"],
-                        "anomaly_states_before": anomaly_stats["original_state_count"],
-                        "anomaly_states_after": anomaly_stats["merged_state_count"],
+                        "normal_states_before": normal_stats[
+                            "original_state_count"
+                        ],
+                        "normal_states_after": normal_stats[
+                            "merged_state_count"
+                        ],
+                        "anomaly_states_before": anomaly_stats[
+                            "original_state_count"
+                        ],
+                        "anomaly_states_after": anomaly_stats[
+                            "merged_state_count"
+                        ],
                         **{f"validation_{k}": v for k, v in metrics.items()},
                         **diagnostics,
                     }
@@ -629,7 +864,7 @@ def main():
                     }
 
     print(
-        "\n--- DISTANCE VE TEMPORAL PERSISTENCE TARAMASI ---"
+        "\n--- RECALL KISITLI TEMPORAL PERSISTENCE TARAMASI ---"
     )
 
     penalty_best = None
@@ -650,11 +885,18 @@ def main():
             val_transition_labels,
             val_scores,
             config["min_anomaly_runs"],
+            config["validation_block_count"],
+            config["min_validation_recall"],
         )
 
         threshold = selection["threshold"]
         min_anomaly_run = selection["min_anomaly_run"]
         metrics = selection["metrics"]
+        stability = selection["stability"]
+        recall_constraint_met = selection[
+            "recall_constraint_met"
+        ]
+        selection_mode = selection["selection_mode"]
         filtered_predictions = selection["predictions"]
         raw_predictions = selection["raw_predictions"]
 
@@ -666,9 +908,16 @@ def main():
             predictions=filtered_predictions,
         )
 
+        block_f1_text = "|".join(
+            f"{value:.6f}"
+            for value in stability["block_f1_values"]
+        )
+
         search_rows.append(
             {
-                "search_stage": "distance_and_temporal_persistence",
+                "search_stage": (
+                    "recall_constrained_temporal_persistence"
+                ),
                 "merge_alpha": best["config"]["merge_alpha"],
                 "min_state_count": best["config"]["min_state_count"],
                 "smoothing_alpha": best["config"]["smoothing_alpha"],
@@ -676,10 +925,42 @@ def main():
                 "distance_penalty": distance_penalty,
                 "min_anomaly_run": min_anomaly_run,
                 "threshold": threshold,
-                "normal_states_before": best["normal_stats"]["original_state_count"],
-                "normal_states_after": best["normal_stats"]["merged_state_count"],
-                "anomaly_states_before": best["anomaly_stats"]["original_state_count"],
-                "anomaly_states_after": best["anomaly_stats"]["merged_state_count"],
+                "min_validation_recall": config[
+                    "min_validation_recall"
+                ],
+                "recall_constraint_met": (
+                    recall_constraint_met
+                ),
+                "selection_mode": selection_mode,
+                "validation_block_count": stability[
+                    "block_count"
+                ],
+                "validation_mean_block_f1": stability[
+                    "mean_block_f1"
+                ],
+                "validation_min_block_f1": stability[
+                    "min_block_f1"
+                ],
+                "validation_std_block_f1": stability[
+                    "std_block_f1"
+                ],
+                "validation_block_f1_values": block_f1_text,
+                "validation_block_details": json.dumps(
+                    stability["block_rows"],
+                    ensure_ascii=False,
+                ),
+                "normal_states_before": best["normal_stats"][
+                    "original_state_count"
+                ],
+                "normal_states_after": best["normal_stats"][
+                    "merged_state_count"
+                ],
+                "anomaly_states_before": best["anomaly_stats"][
+                    "original_state_count"
+                ],
+                "anomaly_states_after": best["anomaly_stats"][
+                    "merged_state_count"
+                ],
                 **{
                     f"validation_{key}": value
                     for key, value in metrics.items()
@@ -694,13 +975,24 @@ def main():
             f"threshold={threshold:.6f} | "
             f"raw_anomaly={int(raw_predictions.sum())} | "
             f"filtered_anomaly={int(filtered_predictions.sum())} | "
-            f"F1={metrics['f1_score']:.4f}"
+            f"global_F1={metrics['f1_score']:.4f} | "
+            f"recall={metrics['recall']:.4f} | "
+            f"constraint_met={recall_constraint_met} | "
+            f"min_block_F1="
+            f"{stability['min_block_f1']:.4f} | "
+            f"mean_block_F1="
+            f"{stability['mean_block_f1']:.4f} | "
+            f"blocks={block_f1_text}"
         )
 
         key = (
+            int(recall_constraint_met),
             metrics["f1_score"],
             metrics["precision"],
             metrics["recall"],
+            stability["min_block_f1"],
+            stability["mean_block_f1"],
+            -stability["std_block_f1"],
             -int(filtered_predictions.sum()),
             -int(min_anomaly_run),
         )
@@ -712,6 +1004,11 @@ def main():
                 "min_anomaly_run": min_anomaly_run,
                 "threshold": threshold,
                 "metrics": metrics,
+                "stability": stability,
+                "recall_constraint_met": (
+                    recall_constraint_met
+                ),
+                "selection_mode": selection_mode,
             }
 
     best["normal_model"].distance_penalty = penalty_best[
@@ -722,6 +1019,16 @@ def main():
     ]
     best["threshold"] = penalty_best["threshold"]
     best["metrics"] = penalty_best["metrics"]
+    best["stability"] = penalty_best["stability"]
+    best["recall_constraint_met"] = penalty_best[
+        "recall_constraint_met"
+    ]
+    best["selection_mode"] = penalty_best[
+        "selection_mode"
+    ]
+    best["config"]["min_validation_recall"] = config[
+        "min_validation_recall"
+    ]
     best["config"]["distance_penalty"] = penalty_best[
         "distance_penalty"
     ]
@@ -744,7 +1051,14 @@ def main():
         f"distance_penalty={best['config']['distance_penalty']} | "
         f"min_anomaly_run={best['config']['min_anomaly_run']} | "
         f"threshold={best['threshold']:.6f} | "
-        f"val F1={best['metrics']['f1_score']:.4f}"
+        f"val F1={best['metrics']['f1_score']:.4f} | "
+        f"val recall={best['metrics']['recall']:.4f} | "
+        f"recall_constraint_met="
+        f"{best['recall_constraint_met']} | "
+        f"mean_block_F1="
+        f"{best['stability']['mean_block_f1']:.4f} | "
+        f"min_block_F1="
+        f"{best['stability']['min_block_f1']:.4f}"
     )
 
     test_predictions, test_logs = predict_dual(
@@ -839,6 +1153,38 @@ def main():
             {
                 "best_config": best["config"],
                 "threshold": best["threshold"],
+                "validation_stability": {
+                    "strategy": (
+                        "recall_constrained_equal_chronological_blocks"
+                    ),
+                    "primary_selection_metric": (
+                        "global_validation_f1_with_recall_constraint"
+                    ),
+                    "minimum_validation_recall": best[
+                        "config"
+                    ]["min_validation_recall"],
+                    "recall_constraint_met": best[
+                        "recall_constraint_met"
+                    ],
+                    "selection_mode": best[
+                        "selection_mode"
+                    ],
+                    "block_count": best["stability"][
+                        "block_count"
+                    ],
+                    "mean_block_f1": best["stability"][
+                        "mean_block_f1"
+                    ],
+                    "min_block_f1": best["stability"][
+                        "min_block_f1"
+                    ],
+                    "std_block_f1": best["stability"][
+                        "std_block_f1"
+                    ],
+                    "blocks": best["stability"][
+                        "block_rows"
+                    ],
+                },
                 "normal_model": {
                     "statistics": best["normal_stats"],
                     "state_mapping": best[
