@@ -11,7 +11,7 @@ from src.experiments.evaluator import evaluate_binary_classification
 from src.config import get_dl_config
 
 
-def load_batadal_sequence_data(processed_dir="data/processed",balancing_method="class_weight", model_type="GRU"):
+def load_batadal_sequence_data(processed_dir="data2/processed/robust_adasyn",balancing_method="class_weight", model_type="GRU"):
     X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
     y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
     X_val   = np.load(f"{processed_dir}/batadal_X_val_seq.npy").astype("float32")
@@ -135,7 +135,72 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
     }
     print("Validation sonucu:", val_metrics)
     print("Test sonucu:", result)
-    return result
+    # Ensemble için sınıf etiketlerini değil, ham olasılıkları döndürüyoruz.
+    # Böylece her seed'in olasılığı örnek bazında ortalanabilir.
+    return (
+        result,
+        y_val_pred_prob.ravel(),
+        y_test_pred_prob.ravel(),
+        y_val.astype(int).ravel(),
+        y_test.astype(int).ravel(),
+    )
+
+
+def evaluate_seed_ensemble(
+    model_type,
+    balancing_method,
+    seeds,
+    val_probabilities,
+    test_probabilities,
+    y_val,
+    y_test,
+):
+    """Seed modellerinin olasılıklarını ortalayıp tek final tahmin üretir."""
+    val_probability_matrix = np.stack(val_probabilities, axis=0)
+    test_probability_matrix = np.stack(test_probabilities, axis=0)
+
+    ensemble_val_prob = val_probability_matrix.mean(axis=0)
+    ensemble_test_prob = test_probability_matrix.mean(axis=0)
+
+    # Threshold yalnızca validation verisinden seçilir.
+    best_threshold, val_metrics = find_best_threshold(y_val, ensemble_val_prob)
+    ensemble_test_pred = (ensemble_test_prob >= best_threshold).astype(int)
+    test_metrics = evaluate_binary_classification(
+        y_true=y_test,
+        y_pred=ensemble_test_pred,
+    )
+
+    result = {
+        "dataset": "BATADAL",
+        "model": model_type,
+        "balancing_method": balancing_method,
+        "ensemble_size": len(seeds),
+        "seeds": ",".join(map(str, seeds)),
+        "threshold": best_threshold,
+        "val_f1": val_metrics["f1"],
+        "accuracy": test_metrics["accuracy"],
+        "precision": test_metrics["precision"],
+        "recall": test_metrics["recall"],
+        "f1": test_metrics["f1"],
+    }
+
+    probability_df = pd.DataFrame({
+        "y_true": y_test,
+        **{
+            f"seed_{seed}_prob": test_probability_matrix[index]
+            for index, seed in enumerate(seeds)
+        },
+        "ensemble_prob": ensemble_test_prob,
+        "ensemble_pred": ensemble_test_pred,
+    })
+
+    print("\n==============================")
+    print(f"{len(seeds)}-Seed {model_type} Ensemble Sonucu")
+    print("==============================")
+    print("Validation sonucu:", val_metrics)
+    print("Test sonucu:", result)
+
+    return result, probability_df
 
 
 def summarize_results(results_df):
@@ -158,32 +223,81 @@ def summarize_results(results_df):
 def main():
     cfg = get_dl_config()
     all_results = []
+    ensemble_results = []
+    ensemble_probability_outputs = []
 
     balancing_methods = ["adasyn"]
 
-    for model_type in ["GRU", "LSTM"]:
+    for model_type in [ "LSTM","GRU"]:
         for balancing_method in balancing_methods:
+            val_probabilities = []
+            test_probabilities = []
+            ensemble_y_val = None
+            ensemble_y_test = None
+
             for seed in cfg["seeds"]:
-                result = train_one_batadal_experiment(
+                result, val_prob, test_prob, y_val, y_test = train_one_batadal_experiment(
                     model_type=model_type,
                     seed=seed,
                     balancing_method=balancing_method
                 )
                 all_results.append(result)
+                val_probabilities.append(val_prob)
+                test_probabilities.append(test_prob)
+
+                if ensemble_y_val is None:
+                    ensemble_y_val = y_val
+                    ensemble_y_test = y_test
+                else:
+                    if not np.array_equal(ensemble_y_val, y_val):
+                        raise ValueError("Seed'ler arasında validation etiketleri değişti.")
+                    if not np.array_equal(ensemble_y_test, y_test):
+                        raise ValueError("Seed'ler arasında test etiketleri değişti.")
+
+            ensemble_result, probability_df = evaluate_seed_ensemble(
+                model_type=model_type,
+                balancing_method=balancing_method,
+                seeds=cfg["seeds"],
+                val_probabilities=val_probabilities,
+                test_probabilities=test_probabilities,
+                y_val=ensemble_y_val,
+                y_test=ensemble_y_test,
+            )
+            ensemble_results.append(ensemble_result)
+            probability_df.insert(0, "balancing_method", balancing_method)
+            probability_df.insert(0, "model", model_type)
+            ensemble_probability_outputs.append(probability_df)
 
     output_dir = Path("results/outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     results_df = pd.DataFrame(all_results)
-    results_df.to_csv(output_dir / "batadal_deep_learning_seed_results.csv", index=False)
+    results_df.to_csv(output_dir / "batadal_ensemble_deep_learning_seed_results.csv", index=False)
 
     summary_df = summarize_results(results_df)
-    summary_df.to_csv(output_dir / "batadal_deep_learning_seed_summary.csv", index=False)
+    summary_df.to_csv(output_dir / "batadal_ensemble_deep_learning_seed_summary.csv", index=False)
+
+    ensemble_results_df = pd.DataFrame(ensemble_results)
+    ensemble_results_df.to_csv(
+        output_dir / "batadal_ensemble_deep_learning_seed_ensemble_results.csv",
+        index=False,
+    )
+
+    ensemble_probabilities_df = pd.concat(
+        ensemble_probability_outputs,
+        ignore_index=True,
+    )
+    ensemble_probabilities_df.to_csv(
+        output_dir / "batadal_ensemble_deep_learning_seed_ensemble_probabilities.csv",
+        index=False,
+    )
 
     print("\nBATADAL seed bazlı sonuçlar:")
     print(results_df)
     print("\nBATADAL mean/std özet:")
     print(summary_df)
+    print("\nBATADAL seed ensemble sonucu:")
+    print(ensemble_results_df)
 
 
 if __name__ == "__main__":
