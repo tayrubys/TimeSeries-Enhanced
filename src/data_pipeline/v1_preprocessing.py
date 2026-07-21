@@ -8,7 +8,7 @@ from imblearn.over_sampling import ADASYN
 from sklearn.preprocessing import RobustScaler
 
 
-DATA2_PROCESSED_DIR = Path("data2/processed")
+DATA2_PROCESSED_DIR = Path("data4/processed")
 
 
 def normalize_batadal_labels(

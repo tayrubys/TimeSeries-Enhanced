@@ -52,23 +52,23 @@ def build_sequences_from_csv(X_path, y_path, window_size=20):
 
 #batadal train/validation/test scaled csv dosylarından lstm ve gru ıcın sequence verileri uretıp .npy olarak kaydetme
 def build_and_save_batadal_sequences(
-    processed_dir="data2/processed/robust_adasyn",
+    processed_dir="data/processed",
     window_size=20,
 ):
     processed_dir = Path(processed_dir)
 
     datasets = {
         "train": (
-            processed_dir / "X_train_adasyn.csv",
-            processed_dir / "y_train_adasyn.csv",
+            processed_dir / "batadal_X_train_adasyn.csv",
+            processed_dir / "batadal_y_train_adasyn.csv",
         ),
         "val": (
-            processed_dir / "X_val_scaled.csv",
-            processed_dir / "y_val.csv",
+            processed_dir / "batadal_X_val_scaled.csv",
+            processed_dir / "batadal_y_val.csv",
         ),
         "test": (
-            processed_dir / "X_test_scaled.csv",
-            processed_dir / "y_test.csv",
+            processed_dir / "batadal_X_test_scaled.csv",
+            processed_dir / "batadal_y_test.csv",
         ),
     }
 

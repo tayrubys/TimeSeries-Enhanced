@@ -11,7 +11,7 @@ from src.experiments.evaluator import evaluate_binary_classification
 from src.config import get_dl_config
 
 
-def load_batadal_sequence_data(processed_dir="data2/processed/robust_adasyn"):
+def load_batadal_sequence_data(processed_dir="data/processed",balancing_method="class_weight", model_type="GRU"):
     X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
     y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
     X_val   = np.load(f"{processed_dir}/batadal_X_val_seq.npy").astype("float32")
@@ -92,7 +92,8 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
         batch_size=cfg["batch_size"],
         callbacks=[early_stopping],
         class_weight=class_weights,
-        verbose=1
+        verbose=1,
+
     )
 
     y_val_pred_prob = model.predict(X_val)
@@ -160,7 +161,7 @@ def main():
 
     balancing_methods = ["adasyn"]
 
-    for model_type in ["LSTM"]:
+    for model_type in ["GRU", "LSTM"]:
         for balancing_method in balancing_methods:
             for seed in cfg["seeds"]:
                 result = train_one_batadal_experiment(
@@ -174,10 +175,10 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     results_df = pd.DataFrame(all_results)
-    results_df.to_csv(output_dir / "batadal2_deep_learning_seed_results.csv", index=False)
+    results_df.to_csv(output_dir / "batadal_deep_learning_seed_results.csv", index=False)
 
     summary_df = summarize_results(results_df)
-    summary_df.to_csv(output_dir / "batadal2_deep_learning_seed_summary.csv", index=False)
+    summary_df.to_csv(output_dir / "batadal_deep_learning_seed_summary.csv", index=False)
 
     print("\nBATADAL seed bazlı sonuçlar:")
     print(results_df)

@@ -1,11 +1,9 @@
-# src/data_pipeline/run_data2_preprocessing.py
-
 from src.data_pipeline.data_loader import (
     load_config,
     load_batadal_training_2
 )
 
-from src.data_pipeline.new_preprocessing import (
+from src.data_pipeline.v1_preprocessing import (
     process_batadal_data2
 )
 

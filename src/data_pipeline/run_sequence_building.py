@@ -19,7 +19,7 @@ N_FOLDS = DL_CONFIG["n_folds"]
 
 
 build_and_save_batadal_sequences(
-    processed_dir="data2/processed/robust_adasyn",
+    processed_dir="data/processed",
     window_size=WINDOW_SIZE
 )
 
