@@ -764,277 +764,387 @@ def main():
     search_rows = []
     best = None
 
-    print("\n--- VALIDATION PARAMETRE TARAMASI ---")
-    #hiperparametre optimizasyonu
+    print(
+        "\n--- TAM ORTAK VALIDATION PARAMETRE TARAMASI ---"
+    )
+
+    total_combination_count = (
+        len(config["merge_alphas"])
+        * len(config["min_counts"])
+        * len(config["smoothing_alphas"])
+        * len(config["distance_penalties"])
+    )
+    completed_combination_count = 0
+
+    # State-merging parametreleri ile distance penalty,
+    # threshold ve Temporal Persistence birlikte seçilir.
     for merge_alpha in config["merge_alphas"]:
         for min_count in config["min_counts"]:
-            for smoothing_alpha in config["smoothing_alphas"]:
+            for smoothing_alpha in config[
+                "smoothing_alphas"
+            ]:
                 kwargs = {
-                    "merge_alpha": float(merge_alpha),
-                    "min_state_count": int(min_count),
-                    "smoothing_alpha": float(smoothing_alpha),
-                    "max_pattern_distance": config["max_pattern_distance"],
+                    "merge_alpha": float(
+                        merge_alpha
+                    ),
+                    "min_state_count": int(
+                        min_count
+                    ),
+                    "smoothing_alpha": float(
+                        smoothing_alpha
+                    ),
+                    "max_pattern_distance": config[
+                        "max_pattern_distance"
+                    ],
                     "distance_penalty": 0.0,
                 }
 
-                normal_model = AlergiaStateMergingAutomata(**kwargs)
-                anomaly_model = AlergiaStateMergingAutomata(**kwargs)
-
-                normal_model.fit_sequences(normal_sequences)
-                anomaly_model.fit_sequences(anomaly_sequences)
-
-                val_scores, val_logs = score_dual(
-                    normal_model, anomaly_model, val_patterns
+                normal_model = (
+                    AlergiaStateMergingAutomata(
+                        **kwargs
+                    )
                 )
-                threshold, metrics = select_threshold(
-                    val_transition_labels, val_scores
-                )
-                diagnostics = summarize_scores(
-                    val_transition_labels,
-                    val_scores,
-                    val_logs,
-                    threshold,
+                anomaly_model = (
+                    AlergiaStateMergingAutomata(
+                        **kwargs
+                    )
                 )
 
-                normal_stats = normal_model.get_model_statistics()
-                anomaly_stats = anomaly_model.get_model_statistics()
+                normal_model.fit_sequences(
+                    normal_sequences
+                )
+                anomaly_model.fit_sequences(
+                    anomaly_sequences
+                )
+
+                normal_stats = (
+                    normal_model
+                    .get_model_statistics()
+                )
+                anomaly_stats = (
+                    anomaly_model
+                    .get_model_statistics()
+                )
+
                 total_states = (
-                    normal_stats["merged_state_count"]
-                    + anomaly_stats["merged_state_count"]
+                    normal_stats[
+                        "merged_state_count"
+                    ]
+                    + anomaly_stats[
+                        "merged_state_count"
+                    ]
                 )
 
-                search_rows.append(
-                    {
-                        "search_stage": "state_merging",
-                        **kwargs,
-                        "min_anomaly_run": 1,
-                        "threshold": threshold,
-                        "normal_states_before": normal_stats[
-                            "original_state_count"
-                        ],
-                        "normal_states_after": normal_stats[
-                            "merged_state_count"
-                        ],
-                        "anomaly_states_before": anomaly_stats[
-                            "original_state_count"
-                        ],
-                        "anomaly_states_after": anomaly_stats[
-                            "merged_state_count"
-                        ],
-                        **{f"validation_{k}": v for k, v in metrics.items()},
-                        **diagnostics,
-                    }
-                )
+                for distance_penalty in config[
+                    "distance_penalties"
+                ]:
+                    distance_penalty = float(
+                        distance_penalty
+                    )
 
-                print(
-                    f"alpha={merge_alpha} | min={min_count} | "
-                    f"smooth={smoothing_alpha} | "
-                    f"normal={normal_stats['original_state_count']}"
-                    f"->{normal_stats['merged_state_count']} | "
-                    f"anomaly={anomaly_stats['original_state_count']}"
-                    f"->{anomaly_stats['merged_state_count']} | "
-                    f"F1={metrics['f1_score']:.4f}"
-                )
+                    normal_model.distance_penalty = (
+                        distance_penalty
+                    )
+                    anomaly_model.distance_penalty = (
+                        distance_penalty
+                    )
 
-                key = (
-                    metrics["f1_score"],
-                    metrics["precision"],
-                    metrics["recall"],
-                    -total_states,
-                )
-                #yeni parametreler oncekılerden ıyıse best objesini gunceller
-                if best is None or key > best["key"]:
-                    best = {
-                        "key": key,
-                        "normal_model": normal_model,
-                        "anomaly_model": anomaly_model,
-                        "threshold": threshold,
-                        "metrics": metrics,
-                        "normal_stats": normal_stats,
-                        "anomaly_stats": anomaly_stats,
-                        "config": {
-                            "window_size": config["window_size"],
-                            "alphabet_size": config["alphabet_size"],
-                            "merge_alpha": float(merge_alpha),
-                            "min_state_count": int(min_count),
-                            "smoothing_alpha": float(smoothing_alpha),
-                            "distance_penalty": 0.0,
-                            "min_anomaly_run": 1,
-                        },
-                    }
+                    val_scores, val_logs = score_dual(
+                        normal_model,
+                        anomaly_model,
+                        val_patterns,
+                    )
 
-    print(
-        "\n--- RECALL KISITLI TEMPORAL PERSISTENCE TARAMASI ---"
+                    selection = (
+                        select_threshold_with_persistence(
+                            val_transition_labels,
+                            val_scores,
+                            config[
+                                "min_anomaly_runs"
+                            ],
+                            config[
+                                "validation_block_count"
+                            ],
+                            config[
+                                "min_validation_recall"
+                            ],
+                        )
+                    )
+
+                    threshold = selection[
+                        "threshold"
+                    ]
+                    min_anomaly_run = selection[
+                        "min_anomaly_run"
+                    ]
+                    metrics = selection[
+                        "metrics"
+                    ]
+                    stability = selection[
+                        "stability"
+                    ]
+                    recall_constraint_met = (
+                        selection[
+                            "recall_constraint_met"
+                        ]
+                    )
+                    selection_mode = selection[
+                        "selection_mode"
+                    ]
+                    filtered_predictions = (
+                        selection["predictions"]
+                    )
+                    raw_predictions = selection[
+                        "raw_predictions"
+                    ]
+
+                    diagnostics = summarize_scores(
+                        val_transition_labels,
+                        val_scores,
+                        val_logs,
+                        threshold,
+                        predictions=(
+                            filtered_predictions
+                        ),
+                    )
+
+                    block_f1_text = "|".join(
+                        f"{value:.6f}"
+                        for value in stability[
+                            "block_f1_values"
+                        ]
+                    )
+
+                    completed_combination_count += 1
+
+                    search_rows.append(
+                        {
+                            "search_stage": (
+                                "joint_state_merging_"
+                                "distance_persistence"
+                            ),
+                            "merge_alpha": float(
+                                merge_alpha
+                            ),
+                            "min_state_count": int(
+                                min_count
+                            ),
+                            "smoothing_alpha": float(
+                                smoothing_alpha
+                            ),
+                            "max_pattern_distance": (
+                                config[
+                                    "max_pattern_distance"
+                                ]
+                            ),
+                            "distance_penalty": (
+                                distance_penalty
+                            ),
+                            "min_anomaly_run": (
+                                min_anomaly_run
+                            ),
+                            "threshold": threshold,
+                            "min_validation_recall": (
+                                config[
+                                    "min_validation_recall"
+                                ]
+                            ),
+                            "recall_constraint_met": (
+                                recall_constraint_met
+                            ),
+                            "selection_mode": (
+                                selection_mode
+                            ),
+                            "validation_block_count": (
+                                stability[
+                                    "block_count"
+                                ]
+                            ),
+                            "validation_mean_block_f1": (
+                                stability[
+                                    "mean_block_f1"
+                                ]
+                            ),
+                            "validation_min_block_f1": (
+                                stability[
+                                    "min_block_f1"
+                                ]
+                            ),
+                            "validation_std_block_f1": (
+                                stability[
+                                    "std_block_f1"
+                                ]
+                            ),
+                            "validation_block_f1_values": (
+                                block_f1_text
+                            ),
+                            "validation_block_details": (
+                                json.dumps(
+                                    stability[
+                                        "block_rows"
+                                    ],
+                                    ensure_ascii=False,
+                                )
+                            ),
+                            "normal_states_before": (
+                                normal_stats[
+                                    "original_state_count"
+                                ]
+                            ),
+                            "normal_states_after": (
+                                normal_stats[
+                                    "merged_state_count"
+                                ]
+                            ),
+                            "anomaly_states_before": (
+                                anomaly_stats[
+                                    "original_state_count"
+                                ]
+                            ),
+                            "anomaly_states_after": (
+                                anomaly_stats[
+                                    "merged_state_count"
+                                ]
+                            ),
+                            **{
+                                f"validation_{key}": value
+                                for key, value
+                                in metrics.items()
+                            },
+                            **diagnostics,
+                        }
+                    )
+
+                    print(
+                        f"{completed_combination_count}/"
+                        f"{total_combination_count} | "
+                        f"alpha={merge_alpha} | "
+                        f"min={min_count} | "
+                        f"smooth={smoothing_alpha} | "
+                        f"distance="
+                        f"{distance_penalty} | "
+                        f"min_run="
+                        f"{min_anomaly_run} | "
+                        f"threshold="
+                        f"{threshold:.6f} | "
+                        f"raw_anomaly="
+                        f"{int(raw_predictions.sum())} | "
+                        f"filtered_anomaly="
+                        f"{int(filtered_predictions.sum())} | "
+                        f"Precision="
+                        f"{metrics['precision']:.4f} | "
+                        f"Recall="
+                        f"{metrics['recall']:.4f} | "
+                        f"F1="
+                        f"{metrics['f1_score']:.4f} | "
+                        f"constraint="
+                        f"{recall_constraint_met}"
+                    )
+
+                    candidate_key = (
+                        int(
+                            recall_constraint_met
+                        ),
+                        metrics["f1_score"],
+                        metrics["precision"],
+                        metrics["recall"],
+                        stability[
+                            "min_block_f1"
+                        ],
+                        stability[
+                            "mean_block_f1"
+                        ],
+                        -stability[
+                            "std_block_f1"
+                        ],
+                        -int(
+                            filtered_predictions.sum()
+                        ),
+                        -int(min_anomaly_run),
+                        -total_states,
+                    )
+
+                    if (
+                        best is None
+                        or candidate_key
+                        > best["key"]
+                    ):
+                        best = {
+                            "key": candidate_key,
+                            "normal_model": (
+                                normal_model
+                            ),
+                            "anomaly_model": (
+                                anomaly_model
+                            ),
+                            "threshold": threshold,
+                            "metrics": metrics,
+                            "stability": stability,
+                            "recall_constraint_met": (
+                                recall_constraint_met
+                            ),
+                            "selection_mode": (
+                                selection_mode
+                            ),
+                            "normal_stats": (
+                                normal_stats
+                            ),
+                            "anomaly_stats": (
+                                anomaly_stats
+                            ),
+                            "config": {
+                                "window_size": config[
+                                    "window_size"
+                                ],
+                                "alphabet_size": (
+                                    config[
+                                        "alphabet_size"
+                                    ]
+                                ),
+                                "merge_alpha": float(
+                                    merge_alpha
+                                ),
+                                "min_state_count": int(
+                                    min_count
+                                ),
+                                "smoothing_alpha": (
+                                    float(
+                                        smoothing_alpha
+                                    )
+                                ),
+                                "max_pattern_distance": (
+                                    config[
+                                        "max_pattern_distance"
+                                    ]
+                                ),
+                                "distance_penalty": (
+                                    distance_penalty
+                                ),
+                                "min_anomaly_run": (
+                                    min_anomaly_run
+                                ),
+                                "min_validation_recall": (
+                                    config[
+                                        "min_validation_recall"
+                                    ]
+                                ),
+                            },
+                        }
+
+    if best is None:
+        raise RuntimeError(
+            "Validation taramasında uygun "
+            "bir model seçilemedi."
+        )
+
+    # Döngü sırasında model nesnesinin distance değeri
+    # değişebileceği için seçilen değeri tekrar atıyoruz.
+    best["normal_model"].distance_penalty = (
+        best["config"]["distance_penalty"]
     )
-
-    penalty_best = None
-
-    for distance_penalty in config["distance_penalties"]:
-        distance_penalty = float(distance_penalty)
-
-        best["normal_model"].distance_penalty = distance_penalty
-        best["anomaly_model"].distance_penalty = distance_penalty
-
-        val_scores, val_logs = score_dual(
-            best["normal_model"],
-            best["anomaly_model"],
-            val_patterns,
-        )
-
-        selection = select_threshold_with_persistence(
-            val_transition_labels,
-            val_scores,
-            config["min_anomaly_runs"],
-            config["validation_block_count"],
-            config["min_validation_recall"],
-        )
-
-        threshold = selection["threshold"]
-        min_anomaly_run = selection["min_anomaly_run"]
-        metrics = selection["metrics"]
-        stability = selection["stability"]
-        recall_constraint_met = selection[
-            "recall_constraint_met"
-        ]
-        selection_mode = selection["selection_mode"]
-        filtered_predictions = selection["predictions"]
-        raw_predictions = selection["raw_predictions"]
-
-        diagnostics = summarize_scores(
-            val_transition_labels,
-            val_scores,
-            val_logs,
-            threshold,
-            predictions=filtered_predictions,
-        )
-
-        block_f1_text = "|".join(
-            f"{value:.6f}"
-            for value in stability["block_f1_values"]
-        )
-
-        search_rows.append(
-            {
-                "search_stage": (
-                    "recall_constrained_temporal_persistence"
-                ),
-                "merge_alpha": best["config"]["merge_alpha"],
-                "min_state_count": best["config"]["min_state_count"],
-                "smoothing_alpha": best["config"]["smoothing_alpha"],
-                "max_pattern_distance": config["max_pattern_distance"],
-                "distance_penalty": distance_penalty,
-                "min_anomaly_run": min_anomaly_run,
-                "threshold": threshold,
-                "min_validation_recall": config[
-                    "min_validation_recall"
-                ],
-                "recall_constraint_met": (
-                    recall_constraint_met
-                ),
-                "selection_mode": selection_mode,
-                "validation_block_count": stability[
-                    "block_count"
-                ],
-                "validation_mean_block_f1": stability[
-                    "mean_block_f1"
-                ],
-                "validation_min_block_f1": stability[
-                    "min_block_f1"
-                ],
-                "validation_std_block_f1": stability[
-                    "std_block_f1"
-                ],
-                "validation_block_f1_values": block_f1_text,
-                "validation_block_details": json.dumps(
-                    stability["block_rows"],
-                    ensure_ascii=False,
-                ),
-                "normal_states_before": best["normal_stats"][
-                    "original_state_count"
-                ],
-                "normal_states_after": best["normal_stats"][
-                    "merged_state_count"
-                ],
-                "anomaly_states_before": best["anomaly_stats"][
-                    "original_state_count"
-                ],
-                "anomaly_states_after": best["anomaly_stats"][
-                    "merged_state_count"
-                ],
-                **{
-                    f"validation_{key}": value
-                    for key, value in metrics.items()
-                },
-                **diagnostics,
-            }
-        )
-
-        print(
-            f"distance={distance_penalty} | "
-            f"min_run={min_anomaly_run} | "
-            f"threshold={threshold:.6f} | "
-            f"raw_anomaly={int(raw_predictions.sum())} | "
-            f"filtered_anomaly={int(filtered_predictions.sum())} | "
-            f"global_F1={metrics['f1_score']:.4f} | "
-            f"recall={metrics['recall']:.4f} | "
-            f"constraint_met={recall_constraint_met} | "
-            f"min_block_F1="
-            f"{stability['min_block_f1']:.4f} | "
-            f"mean_block_F1="
-            f"{stability['mean_block_f1']:.4f} | "
-            f"blocks={block_f1_text}"
-        )
-
-        key = (
-            int(recall_constraint_met),
-            metrics["f1_score"],
-            metrics["precision"],
-            metrics["recall"],
-            stability["min_block_f1"],
-            stability["mean_block_f1"],
-            -stability["std_block_f1"],
-            -int(filtered_predictions.sum()),
-            -int(min_anomaly_run),
-        )
-
-        if penalty_best is None or key > penalty_best["key"]:
-            penalty_best = {
-                "key": key,
-                "distance_penalty": distance_penalty,
-                "min_anomaly_run": min_anomaly_run,
-                "threshold": threshold,
-                "metrics": metrics,
-                "stability": stability,
-                "recall_constraint_met": (
-                    recall_constraint_met
-                ),
-                "selection_mode": selection_mode,
-            }
-
-    best["normal_model"].distance_penalty = penalty_best[
-        "distance_penalty"
-    ]
-    best["anomaly_model"].distance_penalty = penalty_best[
-        "distance_penalty"
-    ]
-    best["threshold"] = penalty_best["threshold"]
-    best["metrics"] = penalty_best["metrics"]
-    best["stability"] = penalty_best["stability"]
-    best["recall_constraint_met"] = penalty_best[
-        "recall_constraint_met"
-    ]
-    best["selection_mode"] = penalty_best[
-        "selection_mode"
-    ]
-    best["config"]["min_validation_recall"] = config[
-        "min_validation_recall"
-    ]
-    best["config"]["distance_penalty"] = penalty_best[
-        "distance_penalty"
-    ]
-    best["config"]["min_anomaly_run"] = penalty_best[
-        "min_anomaly_run"
-    ]
+    best["anomaly_model"].distance_penalty = (
+        best["config"]["distance_penalty"]
+    )
 
     pd.DataFrame(search_rows).to_csv(
         os.path.join(
