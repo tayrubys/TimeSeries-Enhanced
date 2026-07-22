@@ -100,4 +100,13 @@ Bazı validation bölümlerinde iyileşme görülmesine rağmen 5-fold × 5-seed
 
 Bu nedenle Hysteresis Thresholding yöntemi SKAB final modeline dahil edilmedi.
 
+### One-Class ALERGIA Denemesi
+
+BATADAL üzerinde Dual ALERGIA yapısına alternatif olarak yalnızca normal geçişleri öğrenen One-Class ALERGIA yöntemi denendi. Bu yöntemde anomaly geçişler otomatanın eğitiminde kullanılmadı ve geçişlerin normal modele göre surprise değerleri anomaly skoru olarak değerlendirildi.
+
+İlk deneyde yüksek surprise değerleri anomaly olarak kabul edildi. Ancak validation sonuçlarında anomalili geçişlerin ortalama surprise değerinin normal geçişlerden daha düşük olduğu görüldü. Bu nedenle ikinci aşamada threshold yönü de validation üzerinden seçilecek şekilde hem yüksek hem düşük skor yönleri denendi.
+
+Çift yönlü threshold seçimi validation sonucunu bir miktar artırsa da test sonucunda Precision `0.1176`, Recall `0.1429` ve F1-score `0.1290` olarak elde edildi. Bu sonuç mevcut Dual ALERGIA tabanlı modelin gerisinde kaldığı için One-Class ALERGIA final modele dahil edilmedi.
+
+
 
