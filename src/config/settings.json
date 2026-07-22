@@ -76,10 +76,7 @@
         ],
         "seeds": [
             42,
-            123,
-            2026,
-            7,
-            999
+            123
         ],
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20
