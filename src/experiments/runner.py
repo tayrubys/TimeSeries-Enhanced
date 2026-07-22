@@ -25,10 +25,29 @@ def load_json_config(config_path="src/config/settings.json"):
         "batadal_train_ratio": 0.60,
         "batadal_val_ratio": 0.20,
 
-        # Probabilistic Suffix Tree parametreleri
+        # Genel PST ayarları
         "suffix_max_order": 3,
         "suffix_min_context_count": 2,
         "suffix_smoothing_alpha": 1.0,
+
+        # Grid search için PST listeleri
+        "suffix_max_orders": [2, 3, 4],
+        "suffix_min_context_counts": [1, 2, 3],
+        "suffix_smoothing_alphas": [0.1, 0.5, 1.0],
+
+        # BATADAL özel PST ayarları
+        "batadal_window_size": 4,
+        "batadal_alphabet_size": 3,
+        "batadal_suffix_max_order": 3,
+        "batadal_suffix_min_context_count": 2,
+        "batadal_suffix_smoothing_alpha": 1.0,
+
+        # SKAB özel PST ayarları
+        "skab_window_size": 4,
+        "skab_alphabet_size": 4,
+        "skab_suffix_max_order": 3,
+        "skab_suffix_min_context_count": 2,
+        "skab_suffix_smoothing_alpha": 1.0,
     }
 
     if os.path.exists(config_path):
@@ -38,76 +57,15 @@ def load_json_config(config_path="src/config/settings.json"):
 
             automata_config = user_config.get("automata", {})
 
-            return {
-                "window_size": automata_config.get(
-                    "window_size",
-                    default_config["window_size"],
-                ),
-                "alphabet_size": automata_config.get(
-                    "alphabet_size",
-                    default_config["alphabet_size"],
-                ),
-                "window_sizes": automata_config.get(
-                    "window_sizes",
-                    default_config["window_sizes"],
-                ),
-                "alphabet_sizes": automata_config.get(
-                    "alphabet_sizes",
-                    default_config["alphabet_sizes"],
-                ),
-                "anomaly_threshold": automata_config.get(
-                    "anomaly_threshold",
-                    default_config["anomaly_threshold"],
-                ),
-                "skab_anomaly_threshold": automata_config.get(
-                    "skab_anomaly_threshold",
-                    default_config["skab_anomaly_threshold"],
-                ),
-                "batadal_anomaly_threshold": automata_config.get(
-                    "batadal_anomaly_threshold",
-                    default_config["batadal_anomaly_threshold"],
-                ),
-                "noise_level": automata_config.get(
-                    "noise_level",
-                    default_config["noise_level"],
-                ),
-                "seeds": automata_config.get(
-                    "seeds",
-                    default_config["seeds"],
-                ),
-                "batadal_train_ratio": automata_config.get(
-                    "batadal_train_ratio",
-                    default_config["batadal_train_ratio"],
-                ),
-                "batadal_val_ratio": automata_config.get(
-                    "batadal_val_ratio",
-                    default_config["batadal_val_ratio"],
-                ),
+            config = default_config.copy()
 
-                "suffix_max_order": automata_config.get(
-                    "suffix_max_order",
-                    automata_config.get(
-                        "max_order",
-                        default_config["suffix_max_order"],
-                    ),
-                ),
-                "suffix_min_context_count": automata_config.get(
-                    "suffix_min_context_count",
-                    automata_config.get(
-                        "min_context_count",
-                        default_config["suffix_min_context_count"],
-                    ),
-                ),
-                "suffix_smoothing_alpha": automata_config.get(
-                    "suffix_smoothing_alpha",
-                    automata_config.get(
-                        "smoothing_alpha",
-                        default_config["suffix_smoothing_alpha"],
-                    ),
-                ),
-            }
+            for key, value in automata_config.items():
+                config[key] = value
 
-        except Exception:
+            return config
+
+        except Exception as e:
+            print(f"[WARN] Config okunamadı, varsayılan ayarlar kullanılacak: {str(e)}")
             return default_config
 
     return default_config
@@ -127,6 +85,50 @@ def build_suffix_automata(config):
         min_context_count=config.get("suffix_min_context_count", 2),
         smoothing_alpha=config.get("suffix_smoothing_alpha", 1.0),
     )
+
+def get_dataset_specific_config(config, dataset_name):
+    """
+    Her veri seti için ayrı PST/SAX/threshold ayarlarını üretir.
+
+    dataset_name:
+        "BATADAL" veya "SKAB"
+    """
+
+    dataset_key = dataset_name.lower()
+
+    dataset_config = config.copy()
+
+    dataset_config["window_size"] = config.get(
+        f"{dataset_key}_window_size",
+        config.get("window_size", 4),
+    )
+
+    dataset_config["alphabet_size"] = config.get(
+        f"{dataset_key}_alphabet_size",
+        config.get("alphabet_size", 3),
+    )
+
+    dataset_config["suffix_max_order"] = config.get(
+        f"{dataset_key}_suffix_max_order",
+        config.get("suffix_max_order", 3),
+    )
+
+    dataset_config["suffix_min_context_count"] = config.get(
+        f"{dataset_key}_suffix_min_context_count",
+        config.get("suffix_min_context_count", 2),
+    )
+
+    dataset_config["suffix_smoothing_alpha"] = config.get(
+        f"{dataset_key}_suffix_smoothing_alpha",
+        config.get("suffix_smoothing_alpha", 1.0),
+    )
+
+    dataset_config["anomaly_threshold"] = config.get(
+        f"{dataset_key}_anomaly_threshold",
+        config.get("anomaly_threshold", 0.05),
+    )
+
+    return dataset_config
 
 
 def get_model_complexity_fields(model):
@@ -424,11 +426,29 @@ def main():
         "korumak adına GroupKFold mimarisi aktiftir."
     )
 
+    config_batadal_preview = get_dataset_specific_config(config, "BATADAL")
+    config_skab_preview = get_dataset_specific_config(config, "SKAB")
+
     print("\n[INFO] Probabilistic Suffix Tree ayarları:")
+
     print(
-        f"-> suffix_max_order={config.get('suffix_max_order', 3)}, "
-        f"suffix_min_context_count={config.get('suffix_min_context_count', 2)}, "
-        f"suffix_smoothing_alpha={config.get('suffix_smoothing_alpha', 1.0)}"
+        "-> BATADAL: "
+        f"window={config_batadal_preview['window_size']}, "
+        f"alphabet={config_batadal_preview['alphabet_size']}, "
+        f"suffix_max_order={config_batadal_preview['suffix_max_order']}, "
+        f"min_context_count={config_batadal_preview['suffix_min_context_count']}, "
+        f"smoothing_alpha={config_batadal_preview['suffix_smoothing_alpha']}, "
+        f"threshold={config_batadal_preview['anomaly_threshold']}"
+    )
+
+    print(
+        "-> SKAB: "
+        f"window={config_skab_preview['window_size']}, "
+        f"alphabet={config_skab_preview['alphabet_size']}, "
+        f"suffix_max_order={config_skab_preview['suffix_max_order']}, "
+        f"min_context_count={config_skab_preview['suffix_min_context_count']}, "
+        f"smoothing_alpha={config_skab_preview['suffix_smoothing_alpha']}, "
+        f"threshold={config_skab_preview['anomaly_threshold']}"
     )
 
     if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
@@ -447,10 +467,7 @@ def main():
         ).values.flatten()
         y_test = np.where(y_test == -999, 0, y_test)
 
-        config_batadal = {
-            **config,
-            "anomaly_threshold": config.get("batadal_anomaly_threshold", 0.05),
-        }
+        config_batadal = get_dataset_specific_config(config, "BATADAL")
 
         batadal_logs = None
 
@@ -487,10 +504,7 @@ def main():
             ) as f:
                 json.dump(batadal_logs[:100], f, indent=4)
 
-    config_skab = {
-        **config,
-        "anomaly_threshold": config.get("skab_anomaly_threshold", 0.90),
-    }
+    config_skab = get_dataset_specific_config(config, "SKAB")
 
     for fold in range(1, 6):
         train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
