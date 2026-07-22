@@ -274,7 +274,7 @@ def run_experiment_pipeline(
 
 
 def run_parameter_sensitivity_analysis(config):
-    print("\n--- PARAMETRE DUYARLILIK ANALİZİ (GRID SEARCH) BAŞLATILIYOR ---")
+    print("\n--- PST PARAMETRE + THRESHOLD TARAMASI BAŞLATILIYOR ---")
 
     window_sizes = config.get("window_sizes", [3, 4, 5, 6])
     alphabet_sizes = config.get("alphabet_sizes", [3, 4, 5, 6])
@@ -283,13 +283,95 @@ def run_parameter_sensitivity_analysis(config):
         "suffix_max_orders",
         [config.get("suffix_max_order", 3)],
     )
+
     suffix_min_context_counts = config.get(
         "suffix_min_context_counts",
         [config.get("suffix_min_context_count", 2)],
     )
 
+    suffix_smoothing_alphas = config.get(
+        "suffix_smoothing_alphas",
+        [config.get("suffix_smoothing_alpha", 1.0)],
+    )
+
+    batadal_thresholds = config.get(
+        "batadal_thresholds",
+        [0.001, 0.005, 0.01, 0.02, 0.05, 0.10, 0.20],
+    )
+
+    skab_thresholds = config.get(
+        "skab_thresholds",
+        [0.05, 0.10, 0.20, 0.35, 0.50, 0.70, 0.90],
+    )
+
     sensitivity_results = []
 
+    def run_grid_for_dataset(
+        dataset_name,
+        X_train,
+        X_test,
+        y_test,
+        thresholds,
+        fold_name="param_search",
+    ):
+        dataset_results = []
+
+        print(f"\n>> {dataset_name} PST Parametre + Threshold Taraması...")
+
+        for w in window_sizes:
+            for a in alphabet_sizes:
+                for max_order in suffix_max_orders:
+                    for min_context_count in suffix_min_context_counts:
+                        for smoothing_alpha in suffix_smoothing_alphas:
+                            for threshold in thresholds:
+                                cc = {
+                                    **config,
+                                    "window_size": w,
+                                    "alphabet_size": a,
+                                    "suffix_max_order": max_order,
+                                    "suffix_min_context_count": min_context_count,
+                                    "suffix_smoothing_alpha": smoothing_alpha,
+                                    "anomaly_threshold": threshold,
+                                    "noise_level": config["noise_level"],
+                                }
+
+                                res, _ = run_experiment_pipeline(
+                                    X_train,
+                                    X_test,
+                                    y_test,
+                                    cc,
+                                    dataset_name,
+                                    fold_name,
+                                    seed=config["seeds"][0],
+                                )
+
+                                for row in res:
+                                    row["tuning_type"] = "pst_threshold_grid"
+                                    row["threshold"] = threshold
+                                    row["suffix_smoothing_alpha"] = smoothing_alpha
+                                    dataset_results.append(row)
+                                    sensitivity_results.append(row)
+
+                                orig_res = [
+                                    r for r in res if r["scenario"] == "original"
+                                ][0]
+
+                                print(
+                                    f"{dataset_name} -> "
+                                    f"W={w}, A={a}, "
+                                    f"Order={max_order}, "
+                                    f"MinCtx={min_context_count}, "
+                                    f"Alpha={smoothing_alpha}, "
+                                    f"Thr={threshold} | "
+                                    f"F1={orig_res['f1_score']:.4f}, "
+                                    f"P={orig_res['precision']:.4f}, "
+                                    f"R={orig_res['recall']:.4f}, "
+                                    f"Density={orig_res['transition_density']:.4f}"
+                                )
+
+        return dataset_results
+
+    # BATADAL
     if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
         X_train_b = pd.read_csv(
             "data/processed/batadal_X_train_adasyn_pc1.csv"
@@ -302,51 +384,16 @@ def run_parameter_sensitivity_analysis(config):
         ).values.flatten()
         y_test_b = np.where(y_test_b == -999, 0, y_test_b)
 
-        print("\n>> BATADAL (ADASYN) Parametre Taraması...")
+        run_grid_for_dataset(
+            dataset_name="BATADAL",
+            X_train=X_train_b,
+            X_test=X_test_b,
+            y_test=y_test_b,
+            thresholds=batadal_thresholds,
+            fold_name="param_search",
+        )
 
-        for w in window_sizes:
-            for a in alphabet_sizes:
-                for max_order in suffix_max_orders:
-                    for min_context_count in suffix_min_context_counts:
-                        cc = {
-                            **config,
-                            "window_size": w,
-                            "alphabet_size": a,
-                            "anomaly_threshold": config.get(
-                                "batadal_anomaly_threshold",
-                                0.05,
-                            ),
-                            "noise_level": config["noise_level"],
-                            "suffix_max_order": max_order,
-                            "suffix_min_context_count": min_context_count,
-                        }
-
-                        res, _ = run_experiment_pipeline(
-                            X_train_b,
-                            X_test_b,
-                            y_test_b,
-                            cc,
-                            "BATADAL",
-                            "param_search",
-                            seed=config["seeds"][0],
-                        )
-
-                        orig_res = [
-                            r for r in res if r["scenario"] == "original"
-                        ][0]
-                        sensitivity_results.append(orig_res)
-
-                        print(
-                            "BATADAL -> "
-                            f"Window Size: {w}, "
-                            f"Alphabet Size: {a}, "
-                            f"Suffix Max Order: {max_order}, "
-                            f"Min Context Count: {min_context_count} | "
-                            f"Contexts: {orig_res['num_contexts']}, "
-                            f"Density: {orig_res['transition_density']:.4f}, "
-                            f"F1: {orig_res['f1_score']:.4f}"
-                        )
-
+    # SKAB için fold1 hızlı tarama
     skab_train_path = "data/processed/skab_fold1_X_train_pc1.csv"
     skab_test_path = "data/processed/skab_fold1_X_test_pc1.csv"
     skab_y_path = "data/processed/skab_fold1_y_test.csv"
@@ -360,56 +407,124 @@ def run_parameter_sensitivity_analysis(config):
         X_test_s = pd.read_csv(skab_test_path).values.flatten()
         y_test_s = pd.read_csv(skab_y_path).values.flatten()
 
-        print("\n>> SKAB Parametre Taraması...")
-
-        for w in window_sizes:
-            for a in alphabet_sizes:
-                for max_order in suffix_max_orders:
-                    for min_context_count in suffix_min_context_counts:
-                        cc = {
-                            **config,
-                            "window_size": w,
-                            "alphabet_size": a,
-                            "anomaly_threshold": config.get(
-                                "skab_anomaly_threshold",
-                                0.90,
-                            ),
-                            "noise_level": config["noise_level"],
-                            "suffix_max_order": max_order,
-                            "suffix_min_context_count": min_context_count,
-                        }
-
-                        res, _ = run_experiment_pipeline(
-                            X_train_s,
-                            X_test_s,
-                            y_test_s,
-                            cc,
-                            "SKAB",
-                            "param_search",
-                            seed=config["seeds"][0],
-                        )
-
-                        orig_res = [
-                            r for r in res if r["scenario"] == "original"
-                        ][0]
-                        sensitivity_results.append(orig_res)
-
-                        print(
-                            "SKAB -> "
-                            f"Window Size: {w}, "
-                            f"Alphabet Size: {a}, "
-                            f"Suffix Max Order: {max_order}, "
-                            f"Min Context Count: {min_context_count} | "
-                            f"Contexts: {orig_res['num_contexts']}, "
-                            f"Density: {orig_res['transition_density']:.4f}, "
-                            f"F1: {orig_res['f1_score']:.4f}"
-                        )
-
-    if sensitivity_results:
-        pd.DataFrame(sensitivity_results).to_csv(
-            "results/outputs/automata_param_sensitivity_metrics.csv",
-            index=False,
+        run_grid_for_dataset(
+            dataset_name="SKAB",
+            X_train=X_train_s,
+            X_test=X_test_s,
+            y_test=y_test_s,
+            thresholds=skab_thresholds,
+            fold_name="fold1_param_search",
         )
+
+    if not sensitivity_results:
+        print("[WARN] Parametre taraması için uygun veri bulunamadı.")
+        return
+
+    df_sensitivity = pd.DataFrame(sensitivity_results)
+
+    os.makedirs("results/outputs/pst_ablation", exist_ok=True)
+
+    all_candidates_path = "results/outputs/pst_ablation/pst_all_candidates.csv"
+    best_original_path = "results/outputs/pst_ablation/pst_best_original_by_dataset.csv"
+    best_stable_path = "results/outputs/pst_ablation/pst_best_stable_by_dataset.csv"
+
+    df_sensitivity.to_csv(all_candidates_path, index=False)
+
+    # Eski dosya adıyla da kaydedelim ki mevcut akış bozulmasın.
+    df_sensitivity.to_csv(
+        "results/outputs/automata_param_sensitivity_metrics.csv",
+        index=False,
+    )
+
+    df_original = df_sensitivity[df_sensitivity["scenario"] == "original"].copy()
+
+    if not df_original.empty:
+        best_original = (
+            df_original.sort_values(
+                ["dataset", "f1_score", "recall", "precision"],
+                ascending=[True, False, False, False],
+            )
+            .groupby("dataset")
+            .head(10)
+            .reset_index(drop=True)
+        )
+
+        best_original.to_csv(best_original_path, index=False)
+
+        print("\n--- DATASET BAZLI EN İYİ ORIGINAL F1 ADAYLARI ---")
+
+        for dataset_name in best_original["dataset"].unique():
+            print(f"\n{dataset_name} top candidates:")
+
+            cols = [
+                "dataset",
+                "scenario",
+                "window_size",
+                "alphabet_size",
+                "suffix_max_order",
+                "suffix_min_context_count",
+                "suffix_smoothing_alpha",
+                "threshold",
+                "accuracy",
+                "precision",
+                "recall",
+                "f1_score",
+                "num_contexts",
+                "transition_density",
+            ]
+
+            print(best_original[best_original["dataset"] == dataset_name][cols].head(5))
+
+    # Stabil aday seçimi:
+    # original + gaussian_noise birlikte iyi olsun diye ortalama F1 hesaplıyoruz.
+    df_stability = (
+        df_sensitivity[df_sensitivity["scenario"].isin(["original", "gaussian_noise"])]
+        .groupby(
+            [
+                "dataset",
+                "window_size",
+                "alphabet_size",
+                "suffix_max_order",
+                "suffix_min_context_count",
+                "suffix_smoothing_alpha",
+                "threshold",
+            ]
+        )
+        .agg(
+            stability_f1_mean=("f1_score", "mean"),
+            stability_f1_min=("f1_score", "min"),
+            accuracy_mean=("accuracy", "mean"),
+            precision_mean=("precision", "mean"),
+            recall_mean=("recall", "mean"),
+            num_contexts_mean=("num_contexts", "mean"),
+            transition_density_mean=("transition_density", "mean"),
+        )
+        .reset_index()
+    )
+
+    if not df_stability.empty:
+        best_stable = (
+            df_stability.sort_values(
+                ["dataset", "stability_f1_mean", "stability_f1_min", "recall_mean"],
+                ascending=[True, False, False, False],
+            )
+            .groupby("dataset")
+            .head(10)
+            .reset_index(drop=True)
+        )
+
+        best_stable.to_csv(best_stable_path, index=False)
+
+        print("\n--- DATASET BAZLI EN STABİL PST ADAYLARI ---")
+
+        for dataset_name in best_stable["dataset"].unique():
+            print(f"\n{dataset_name} stable candidates:")
+            print(best_stable[best_stable["dataset"] == dataset_name].head(5))
+
+    print("\nPST tarama dosyaları kaydedildi:")
+    print(f"- {all_candidates_path}")
+    print(f"- {best_original_path}")
+    print(f"- {best_stable_path}")
 
 
 def main():
