@@ -108,5 +108,15 @@ BATADAL üzerinde Dual ALERGIA yapısına alternatif olarak yalnızca normal ge�
 
 Çift yönlü threshold seçimi validation sonucunu bir miktar artırsa da test sonucunda Precision `0.1176`, Recall `0.1429` ve F1-score `0.1290` olarak elde edildi. Bu sonuç mevcut Dual ALERGIA tabanlı modelin gerisinde kaldığı için One-Class ALERGIA final modele dahil edilmedi.
 
+### Class-Specific Dual ALERGIA Denemesi
+
+BATADAL üzerinde normal ve anomaly otomatalarının farklı davranış yapılarına sahip olabileceği düşünülerek Class-Specific Dual ALERGIA yöntemi denendi. Mevcut Dual ALERGIA yapısında iki otomata aynı state-merging parametrelerini kullanırken bu deneyde `merge_alpha`, `min_state_count` ve `smoothing_alpha` değerleri normal ve anomaly modelleri için ayrı ayrı seçildi.
+
+Toplam 27 normal ve 27 anomaly model eğitildi. Eğitilen modellerin bütün kombinasyonları kullanılarak `27 × 27 = 729` model çifti validation seti üzerinde değerlendirildi. Seçilen model çifti üzerinde normal ve anomaly Levenshtein cezaları, threshold ve Temporal Persistence parametreleri ayrıca validation üzerinden tarandı. Parametre seçiminde validation recall değerinin en az `0.70` olması şartı korundu.
+
+Validation sonucunda normal model için `merge_alpha=0.01`, `min_state_count=10`, `smoothing_alpha=0.5`; anomaly model için ise `merge_alpha=0.1`, `min_state_count=5`, `smoothing_alpha=1.0` seçildi. Final deneyde her iki model için distance penalty `2.0`, minimum anomaly run değeri `6` olarak belirlendi.
+
+Test sonucunda Precision `0.1827`, Recall `0.6786` ve F1-score `0.2879` olarak elde edildi. Bu sonuç mevcut Dual ALERGIA + Levenshtein + Temporal Persistence sonucunun gerisinde kaldığı için Class-Specific Dual ALERGIA final modele dahil edilmedi.
+
 
 
