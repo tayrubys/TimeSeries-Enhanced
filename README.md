@@ -118,5 +118,15 @@ Validation sonucunda normal model için `merge_alpha=0.01`, `min_state_count=10`
 
 Test sonucunda Precision `0.1827`, Recall `0.6786` ve F1-score `0.2879` olarak elde edildi. Bu sonuç mevcut Dual ALERGIA + Levenshtein + Temporal Persistence sonucunun gerisinde kaldığı için Class-Specific Dual ALERGIA final modele dahil edilmedi.
 
+### Soft Top-k Levenshtein Mapping Denemesi
+
+BATADAL üzerinde unseen SAX pattern’larının yalnızca tek bir en yakın train pattern’ına eşlenmesi yerine, en yakın birkaç pattern’ın geçiş olasılıklarını ağırlıklı olarak kullanan Soft Top-k Levenshtein Mapping yöntemi denendi.
+
+Deneyde mevcut en iyi Dual ALERGIA state-merging yapısı sabit tutuldu. `top_k=[1,3,5]` ve `gamma=[0.5,1.0,2.0]` değerleri farklı Levenshtein distance penalty, threshold ve Temporal Persistence ayarlarıyla validation seti üzerinde değerlendirildi.
+
+`top_k=3` kullanıldığında validation recall değeri `1.0` seviyesine yükseldi ancak yanlış pozitif tahminlerin artması nedeniyle precision düştü. `top_k=5` kullanımında ise sınıflar arasındaki ayrım daha fazla azaldı. Validation sonucunda en iyi ayar tekrar `top_k=1` olarak seçildi.
+
+Test sonucunda Precision `0.2907`, Recall `0.8929` ve F1-score `0.4386` olarak elde edildi. Sonuç mevcut tek-komşu Levenshtein eşleme yöntemiyle aynı kaldığı için Soft Top-k yaklaşımı final modele dahil edilmedi.
+
 
 
