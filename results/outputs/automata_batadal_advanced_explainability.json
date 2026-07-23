@@ -18,12 +18,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -66,7 +66,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.012658227848101266,
                 "would_be_anomaly": true
             }
@@ -106,7 +106,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014084507042253521,
                 "would_be_anomaly": true
             }
@@ -152,7 +152,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -194,7 +194,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -229,12 +229,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -270,12 +270,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -317,12 +317,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbcc",
-                "probability": 0.014285714285714285,
-                "would_be_anomaly": true
-            },
-            {
-                "pattern": "ccab",
+                "pattern": "cacc",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             }
@@ -405,7 +400,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -447,7 +442,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -487,12 +482,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -532,12 +527,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -577,7 +572,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -660,7 +655,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
@@ -700,7 +695,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -741,7 +736,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -783,7 +778,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -829,7 +824,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -869,7 +864,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -909,7 +904,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -992,7 +987,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1027,12 +1022,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1067,12 +1062,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1108,12 +1103,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1155,7 +1150,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.012987012987012988,
                 "would_be_anomaly": true
             }
@@ -1197,7 +1192,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1239,7 +1234,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.012987012987012988,
                 "would_be_anomaly": true
             }
@@ -1323,7 +1318,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbcc",
+                "pattern": "cacc",
                 "probability": 0.009900990099009901,
                 "would_be_anomaly": true
             }
@@ -1407,7 +1402,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1449,7 +1444,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1489,27 +1484,27 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
+                "pattern": "cacc",
+                "distance": 1
+            },
+            {
                 "pattern": "babc",
                 "distance": 1
             },
             {
-                "pattern": "cbbc",
-                "distance": 1
-            },
-            {
-                "pattern": "ccbc",
+                "pattern": "cabb",
                 "distance": 1
             }
         ],
@@ -1548,7 +1543,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
@@ -1583,12 +1578,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1629,7 +1624,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1671,7 +1666,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1711,7 +1706,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -1746,12 +1741,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1786,12 +1781,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1832,12 +1827,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1874,12 +1869,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -1925,7 +1920,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2010,7 +2005,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2045,12 +2040,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2085,12 +2080,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2131,12 +2126,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2183,14 +2178,14 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbcc",
+                "pattern": "cbcc",
                 "distance": 1
             },
             {
@@ -2241,7 +2236,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2276,12 +2271,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccbc",
+                "pattern": "ccbb",
                 "probability": 0.029411764705882353,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "ccbb",
+                "pattern": "ccbc",
                 "probability": 0.029411764705882353,
                 "would_be_anomaly": true
             }
@@ -2321,12 +2316,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2361,12 +2356,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2401,12 +2396,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2442,12 +2437,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2489,7 +2484,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -2572,7 +2567,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2655,7 +2650,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2695,7 +2690,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2735,7 +2730,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -2776,12 +2771,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -2821,12 +2816,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -2866,7 +2861,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -2949,7 +2944,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013513513513513514,
                 "would_be_anomaly": true
             }
@@ -2989,7 +2984,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -3030,7 +3025,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -3072,7 +3067,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3113,7 +3108,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.013888888888888888,
                 "would_be_anomaly": true
             }
@@ -3148,12 +3143,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             }
@@ -3194,7 +3189,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014285714285714285,
                 "would_be_anomaly": true
             }
@@ -3236,12 +3231,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbcc",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "ccab",
+                "pattern": "bbbc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -3288,7 +3283,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.008333333333333333,
                 "would_be_anomaly": true
             }
@@ -3323,12 +3318,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3368,12 +3363,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3414,7 +3409,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -3454,12 +3449,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3495,12 +3490,12 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccbc",
+                "pattern": "ccbb",
                 "probability": 0.029411764705882353,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "ccbb",
+                "pattern": "ccbc",
                 "probability": 0.029411764705882353,
                 "would_be_anomaly": true
             }
@@ -3540,12 +3535,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3585,12 +3580,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3630,7 +3625,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.012987012987012988,
                 "would_be_anomaly": true
             }
@@ -3670,27 +3665,27 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "babc",
-                "distance": 1
-            },
-            {
                 "pattern": "aaac",
                 "distance": 1
             },
             {
-                "pattern": "aabb",
+                "pattern": "aaba",
+                "distance": 1
+            },
+            {
+                "pattern": "babc",
                 "distance": 1
             }
         ],
@@ -3724,19 +3719,19 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbcc",
+                "pattern": "cbcc",
                 "distance": 1
             },
             {
@@ -3787,7 +3782,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -3828,7 +3823,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -3868,12 +3863,12 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -3914,7 +3909,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -3993,17 +3988,17 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "acca",
-                "probability": 0.029850746268656716,
-                "would_be_anomaly": true
-            },
-            {
                 "pattern": "accb",
                 "probability": 0.029850746268656716,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "acca",
+                "probability": 0.029850746268656716,
+                "would_be_anomaly": true
+            },
+            {
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -4043,12 +4038,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014705882352941176,
                 "would_be_anomaly": true
             }
@@ -4088,7 +4083,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -4128,7 +4123,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }
@@ -4168,12 +4163,12 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbcc",
+                "pattern": "bbbc",
                 "probability": 0.014492753623188406,
                 "would_be_anomaly": true
             }
@@ -4253,7 +4248,7 @@
                 "would_be_anomaly": true
             },
             {
-                "pattern": "bbbb",
+                "pattern": "cacc",
                 "probability": 0.014925373134328358,
                 "would_be_anomaly": true
             }

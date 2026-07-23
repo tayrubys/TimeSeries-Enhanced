@@ -526,6 +526,190 @@ def run_parameter_sensitivity_analysis(config):
     print(f"- {best_original_path}")
     print(f"- {best_stable_path}")
 
+def validate_top_skab_candidates(config):
+    """
+    PST için en iyi SKAB adaylarını 5 fold x 5 seed üzerinde doğrular.
+
+    Bu aşama, fold1_param_search sonucuna göre seçilen adayların
+    tüm SKAB fold'larında genellenip genellenmediğini kontrol eder.
+    """
+
+    print("\n--- PST TOP SKAB ADAYLARI FULL DOĞRULAMA BAŞLATILIYOR ---")
+
+    top_skab_candidates = [
+        {
+            "candidate_name": "skab_pst_best_balanced",
+            "window_size": 3,
+            "alphabet_size": 3,
+            "suffix_max_order": 4,
+            "suffix_min_context_count": 2,
+            "suffix_smoothing_alpha": 0.5,
+            "anomaly_threshold": 0.90,
+        },
+        {
+            "candidate_name": "skab_pst_simpler_context",
+            "window_size": 3,
+            "alphabet_size": 3,
+            "suffix_max_order": 3,
+            "suffix_min_context_count": 2,
+            "suffix_smoothing_alpha": 0.5,
+            "anomaly_threshold": 0.90,
+        },
+        {
+            "candidate_name": "skab_pst_high_recall",
+            "window_size": 5,
+            "alphabet_size": 5,
+            "suffix_max_order": 4,
+            "suffix_min_context_count": 2,
+            "suffix_smoothing_alpha": 0.5,
+            "anomaly_threshold": 0.70,
+        },
+    ]
+
+    validation_results = []
+
+    for candidate in top_skab_candidates:
+        candidate_name = candidate["candidate_name"]
+
+        print("\n" + "=" * 60)
+        print(f"[SKAB PST VALIDATION] Aday: {candidate_name}")
+        print(
+            f"window={candidate['window_size']}, "
+            f"alphabet={candidate['alphabet_size']}, "
+            f"suffix_max_order={candidate['suffix_max_order']}, "
+            f"min_context_count={candidate['suffix_min_context_count']}, "
+            f"alpha={candidate['suffix_smoothing_alpha']}, "
+            f"threshold={candidate['anomaly_threshold']}"
+        )
+        print("=" * 60)
+
+        for fold in range(1, 6):
+            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+            if not (
+                os.path.exists(train_file)
+                and os.path.exists(test_file)
+                and os.path.exists(y_test_file)
+            ):
+                print(f"[WARN] SKAB fold {fold} dosyaları bulunamadı, atlandı.")
+                continue
+
+            X_train = pd.read_csv(train_file).values.flatten()
+            X_test = pd.read_csv(test_file).values.flatten()
+            y_test = pd.read_csv(y_test_file).values.flatten()
+
+            for seed in config["seeds"]:
+                candidate_config = {
+                    **config,
+                    **candidate,
+                }
+
+                print(
+                    f"{candidate_name} -> "
+                    f"fold={fold}, seed={seed} çalışıyor..."
+                )
+
+                fold_res, _ = run_experiment_pipeline(
+                    X_train,
+                    X_test,
+                    y_test,
+                    candidate_config,
+                    "SKAB",
+                    f"fold_{fold}",
+                    seed=seed,
+                )
+
+                for row in fold_res:
+                    row["candidate_name"] = candidate_name
+                    row["validation_type"] = "top_skab_candidate_full_validation"
+                    validation_results.append(row)
+
+    if not validation_results:
+        print("[WARN] SKAB aday doğrulama sonucu üretilemedi.")
+        return
+
+    os.makedirs("results/outputs/pst_ablation", exist_ok=True)
+
+    df_validation = pd.DataFrame(validation_results)
+
+    validation_path = (
+        "results/outputs/pst_ablation/"
+        "pst_top_skab_candidates_full_validation.csv"
+    )
+
+    summary_path = (
+        "results/outputs/pst_ablation/"
+        "pst_top_skab_candidates_summary.csv"
+    )
+
+    df_validation.to_csv(validation_path, index=False)
+
+    summary_df = (
+        df_validation
+        .groupby(["candidate_name", "scenario"])
+        .agg(
+            accuracy_mean=("accuracy", "mean"),
+            accuracy_std=("accuracy", "std"),
+            precision_mean=("precision", "mean"),
+            precision_std=("precision", "std"),
+            recall_mean=("recall", "mean"),
+            recall_std=("recall", "std"),
+            f1_score_mean=("f1_score", "mean"),
+            f1_score_std=("f1_score", "std"),
+            num_contexts_mean=("num_contexts", "mean"),
+            transition_density_mean=("transition_density", "mean"),
+        )
+        .reset_index()
+    )
+
+    summary_df.to_csv(summary_path, index=False)
+
+    print("\n--- PST TOP SKAB ADAYLARI FULL DOĞRULAMA ÖZETİ ---")
+    print(summary_df)
+
+    original_summary = summary_df[summary_df["scenario"] == "original"].copy()
+
+    if not original_summary.empty:
+        best_original = original_summary.sort_values(
+            ["f1_score_mean", "recall_mean", "precision_mean"],
+            ascending=[False, False, False],
+        ).head(1)
+
+        print("\n--- FULL VALIDATION SONUCUNA GÖRE EN İYİ SKAB PST ADAYI ---")
+        print(best_original)
+
+    stability_df = (
+        df_validation[df_validation["scenario"].isin(["original", "gaussian_noise"])]
+        .groupby("candidate_name")
+        .agg(
+            stability_f1_mean=("f1_score", "mean"),
+            stability_f1_min=("f1_score", "min"),
+            precision_mean=("precision", "mean"),
+            recall_mean=("recall", "mean"),
+        )
+        .reset_index()
+        .sort_values(
+            ["stability_f1_mean", "stability_f1_min", "recall_mean"],
+            ascending=[False, False, False],
+        )
+    )
+
+    stability_path = (
+        "results/outputs/pst_ablation/"
+        "pst_top_skab_candidates_stability.csv"
+    )
+
+    stability_df.to_csv(stability_path, index=False)
+
+    print("\n--- PST TOP SKAB ADAYLARI STABİLİTE SIRALAMASI ---")
+    print(stability_df)
+
+    print("\nSKAB PST aday doğrulama dosyaları kaydedildi:")
+    print(f"- {validation_path}")
+    print(f"- {summary_path}")
+    print(f"- {stability_path}")
 
 def main():
     config = load_json_config()
@@ -715,7 +899,9 @@ def main():
         print("\nBATADAL PST Otomata Özet (5 seed):")
         print(batadal_summary)
 
-    run_parameter_sensitivity_analysis(config)
+    #run_parameter_sensitivity_analysis(config)
+    
+    validate_top_skab_candidates(config)
 
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
