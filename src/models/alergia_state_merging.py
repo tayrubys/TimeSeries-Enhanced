@@ -17,6 +17,8 @@ class AlergiaStateMergingAutomata:
         smoothing_alpha=1.0,
         max_pattern_distance=None,
         distance_penalty=0.0,
+        mapping_top_k=1,
+        mapping_gamma=1.0,
     ):
         if not 0 < merge_alpha < 1:
             raise ValueError("merge_alpha 0 ile 1 arasında olmalıdır.")
@@ -27,7 +29,21 @@ class AlergiaStateMergingAutomata:
         if smoothing_alpha <= 0:
             raise ValueError("smoothing_alpha sıfırdan büyük olmalıdır.")
         if distance_penalty < 0:
-            raise ValueError("distance_penalty negatif olamaz.")        
+            raise ValueError("distance_penalty negatif olamaz.")
+
+        if (
+            isinstance(mapping_top_k, bool)
+            or int(mapping_top_k) != mapping_top_k
+            or int(mapping_top_k) < 1
+        ):
+            raise ValueError(
+                "mapping_top_k pozitif bir tam sayı olmalıdır."
+            )
+
+        if mapping_gamma <= 0:
+            raise ValueError(
+                "mapping_gamma sıfırdan büyük olmalıdır."
+            )
 
         #hiperparametrelerini kaydeder
         self.merge_alpha = merge_alpha
@@ -35,6 +51,8 @@ class AlergiaStateMergingAutomata:
         self.smoothing_alpha = smoothing_alpha
         self.max_pattern_distance = max_pattern_distance
         self.distance_penalty = float(distance_penalty)
+        self.mapping_top_k = int(mapping_top_k)
+        self.mapping_gamma = float(mapping_gamma)
 
         #birleştirme öncesindeki geçişler
         self.raw_transitions = defaultdict(
@@ -372,119 +390,212 @@ class AlergiaStateMergingAutomata:
         scores = []
         logs = []
 
-        current_pattern = patterns[0]
-        current_status = "seen"
-        current_distance = 0
-        #eğer eğitimde hiç görmediğimiz bir pattern gelirse, en yakın bildiğimiz patterne uyduurur
-        if current_pattern not in self.trained_patterns:
-            current_status = "unseen"
-            current_pattern, current_distance = (
-                self._find_nearest_pattern(current_pattern)
-            )
+        current_input_pattern = patterns[0]
+        current_status = (
+            "seen"
+            if current_input_pattern in self.trained_patterns
+            else "unseen"
+        )
+        current_candidates = self._get_mapping_candidates(
+            current_input_pattern
+        )
 
         cumulative_log_probability = 0.0
 
         for time_step in range(1, len(patterns)):
             incoming_pattern = patterns[time_step]
+            status = (
+                "seen"
+                if incoming_pattern in self.trained_patterns
+                else "unseen"
+            )
+            incoming_candidates = self._get_mapping_candidates(
+                incoming_pattern
+            )
 
-            status = "seen"
-            mapped_pattern = incoming_pattern
-            distance = 0
-
-            if incoming_pattern not in self.trained_patterns:
-                status = "unseen"
-                mapped_pattern, distance = (
-                    self._find_nearest_pattern(
-                        incoming_pattern
-                    )
-                )
-            #eşlenen duruma göre bu geçişin gerçekleşme ihtimalini alır
+            # Current ve incoming adaylarının bütün geçişlerini
+            # Levenshtein ağırlıklarıyla birlikte kullanır.
             transition_probability = (
-                self.get_transition_probability(
-                    current_pattern,
-                    mapped_pattern
+                self._get_soft_transition_probability(
+                    current_candidates,
+                    incoming_candidates,
                 )
             )
-            #sınırı cok dusurup tanımsızlık almayı engeller
             transition_probability = max(
                 transition_probability,
-                1e-300
+                1e-300,
             )
-            #geçiş ihtimali ne kadar düşükse anomali ihtimali o kadar artar
+
             base_surprise = -math.log(
                 transition_probability
             )
 
-            #kaynak ve hedef pattern eşleşmelerinin uzaklıklarını
-            #pattern uzunluğuna göre normalize eder
-            current_length = max(len(str(current_pattern)), 1)
-            incoming_length = max(len(str(incoming_pattern)), 1)
-
-            normalized_current_distance = (
-                current_distance / current_length
+            # Önceki sert eşlemedeki distance penalty korunur.
+            # Tek uzaklık yerine adayların ağırlıklı beklenen
+            # normalize uzaklıkları kullanılır.
+            expected_current_distance = math.fsum(
+                candidate["weight"]
+                * (
+                    candidate["distance"]
+                    / max(
+                        len(str(candidate["pattern"])),
+                        1,
+                    )
+                )
+                for candidate in current_candidates
             )
-
-            normalized_incoming_distance = (
-                distance / incoming_length
+            expected_incoming_distance = math.fsum(
+                candidate["weight"]
+                * (
+                    candidate["distance"]
+                    / max(len(str(incoming_pattern)), 1)
+                )
+                for candidate in incoming_candidates
             )
 
             mapping_distance = (
-                normalized_current_distance + normalized_incoming_distance
+                expected_current_distance
+                + expected_incoming_distance
             )
-
             mapping_penalty = (
-                self.distance_penalty * mapping_distance
+                self.distance_penalty
+                * mapping_distance
             )
-
             surprise_score = (
-                base_surprise + mapping_penalty
+                base_surprise
+                + mapping_penalty
             )
 
             cumulative_log_probability += math.log(
                 transition_probability
             )
-
-            #cok küçük olasılıklarda sıfıra taşmayı sınırla
             path_probability = math.exp(
                 max(cumulative_log_probability, -745.0)
             )
 
+            # Eski log alanları korunur. mapped_to alanında
+            # en yüksek ağırlıklı ilk aday gösterilir.
+            current_primary = current_candidates[0]
+            incoming_primary = incoming_candidates[0]
+
             merged_current = self._to_merged_state(
-                current_pattern
+                current_primary["pattern"]
             )
             merged_next = self._to_merged_state(
-                mapped_pattern
+                incoming_primary["pattern"]
             )
 
             scores.append(surprise_score)
 
-            logs.append({
-                "time_step": time_step,
-                "previous_pattern": current_pattern,
-                "incoming_pattern": incoming_pattern,
-                "status": status,
-                "mapped_to": mapped_pattern,
-                "levenshtein_distance": distance,
-                "previous_merged_state": merged_current,
-                "next_merged_state": merged_next,
-                "transition_probability": float(
-                    transition_probability
-                ),
-                "base_surprise": float(base_surprise),
-                "mapping_distance": float(mapping_distance),
-                "mapping_penalty": float(mapping_penalty),
-                "distance_penalty_weight": float(
-                    self.distance_penalty
-                ),
-                "surprise_score": float(surprise_score),
-                "path_probability": float(path_probability),
-                "current_pattern_status": current_status,
-                "current_pattern_distance": current_distance
-            })
+            logs.append(
+                {
+                    "time_step": time_step,
+                    "previous_pattern": current_primary[
+                        "pattern"
+                    ],
+                    "incoming_pattern": incoming_pattern,
+                    "status": status,
+                    "mapped_to": incoming_primary[
+                        "pattern"
+                    ],
+                    "levenshtein_distance": int(
+                        incoming_primary["distance"]
+                    ),
+                    "previous_merged_state": (
+                        merged_current
+                    ),
+                    "next_merged_state": merged_next,
+                    "transition_probability": float(
+                        transition_probability
+                    ),
+                    "base_surprise": float(
+                        base_surprise
+                    ),
+                    "mapping_distance": float(
+                        mapping_distance
+                    ),
+                    "mapping_penalty": float(
+                        mapping_penalty
+                    ),
+                    "distance_penalty_weight": float(
+                        self.distance_penalty
+                    ),
+                    "surprise_score": float(
+                        surprise_score
+                    ),
+                    "path_probability": float(
+                        path_probability
+                    ),
+                    "current_pattern_status": (
+                        current_status
+                    ),
+                    "current_pattern_distance": int(
+                        current_primary["distance"]
+                    ),
+                    "mapping_top_k": int(
+                        self.mapping_top_k
+                    ),
+                    "mapping_gamma": float(
+                        self.mapping_gamma
+                    ),
+                    "soft_mapping_used": bool(
+                        len(current_candidates) > 1
+                        or len(incoming_candidates) > 1
+                    ),
+                    "current_expected_distance": float(
+                        expected_current_distance
+                    ),
+                    "incoming_expected_distance": float(
+                        expected_incoming_distance
+                    ),
+                    "current_candidates": [
+                        {
+                            "pattern": candidate[
+                                "pattern"
+                            ],
+                            "distance": int(
+                                candidate["distance"]
+                            ),
+                            "normalized_distance": (
+                                float(
+                                    candidate[
+                                        "normalized_distance"
+                                    ]
+                                )
+                            ),
+                            "weight": float(
+                                candidate["weight"]
+                            ),
+                        }
+                        for candidate in current_candidates
+                    ],
+                    "incoming_candidates": [
+                        {
+                            "pattern": candidate[
+                                "pattern"
+                            ],
+                            "distance": int(
+                                candidate["distance"]
+                            ),
+                            "normalized_distance": (
+                                float(
+                                    candidate[
+                                        "normalized_distance"
+                                    ]
+                                )
+                            ),
+                            "weight": float(
+                                candidate["weight"]
+                            ),
+                        }
+                        for candidate in incoming_candidates
+                    ],
+                }
+            )
 
-            current_pattern = mapped_pattern
+            current_input_pattern = incoming_pattern
+            current_candidates = incoming_candidates
             current_status = status
-            current_distance = distance
 
         return np.asarray(scores), logs
 
@@ -507,34 +618,151 @@ class AlergiaStateMergingAutomata:
             )
 
         return predictions, logs
+    #seen pattern için kendısını dondurur, unseen icin en yakın mapping top k train patternının levenshtein tabanlı ağrlıklarıyla dondurur
+    def _get_mapping_candidates(self, pattern):
+        if pattern in self.trained_patterns:
+            return [
+                {
+                    "pattern": pattern,
+                    "distance": 0,
+                    "normalized_distance": 0.0,
+                    "weight": 1.0,
+                }
+            ]
 
-    def _find_nearest_pattern(self, unseen_pattern):
+        return self._find_nearest_patterns(
+            pattern,
+            top_k=self.mapping_top_k,
+        )
+    #current ve next adaylarının geçiş olasılıklarını aday ağırlıklarının çarpımıyla birleştirir
+    def _get_soft_transition_probability(
+        self,
+        current_candidates,
+        next_candidates,
+    ):
+        weighted_probabilities = []
+
+        for current_candidate in current_candidates:
+            for next_candidate in next_candidates:
+                pair_weight = (
+                    current_candidate["weight"]
+                    * next_candidate["weight"]
+                )
+                pair_probability = (
+                    self.get_transition_probability(
+                        current_candidate["pattern"],
+                        next_candidate["pattern"],
+                    )
+                )
+                weighted_probabilities.append(
+                    pair_weight * pair_probability
+                )
+
+        return math.fsum(weighted_probabilities)
+    #unseen pattern a en yakın k train pattern ını bulur
+    def _find_nearest_patterns(
+        self,
+        unseen_pattern,
+        top_k=None,
+    ):
+        """
+        Ağırlık:exp(-mapping_gamma * normalized_distance)
+        """
         if not self.trained_patterns:
             raise RuntimeError(
                 "Model eğitilmeden unseen eşleştirme yapılamaz."
             )
 
-        #önce en düşük Levenshtein uzaklığına bakılır
-        #uzaklık eşitse eğitimde daha sık görülen pattern seçilir
-        #frekans da eşitse sonuçların tekrarlanabilir olması için alfabetik sıra kullanılır.
-        nearest_pattern = min(
-            self.trained_patterns,
-            key=lambda trained_pattern: (
-                self._calculate_levenshtein(
-                    unseen_pattern,
-                    trained_pattern,
-                ),
-                -self.pattern_counts[trained_pattern],
-                trained_pattern,
+        candidate_count = (
+            self.mapping_top_k
+            if top_k is None
+            else int(top_k)
+        )
+        candidate_count = max(
+            1,
+            min(
+                candidate_count,
+                len(self.trained_patterns),
             ),
         )
 
-        best_distance = self._calculate_levenshtein(
-            unseen_pattern,
-            nearest_pattern,
+        ranked_candidates = []
+
+        for trained_pattern in self.trained_patterns:
+            distance = self._calculate_levenshtein(
+                unseen_pattern,
+                trained_pattern,
+            )
+            ranked_candidates.append(
+                (
+                    distance,
+                    -self.pattern_counts[
+                        trained_pattern
+                    ],
+                    trained_pattern,
+                )
+            )
+
+        ranked_candidates.sort()
+        selected = ranked_candidates[
+            :candidate_count
+        ]
+
+        unseen_length = max(
+            len(str(unseen_pattern)),
+            1,
         )
 
-        return nearest_pattern, best_distance   
+        raw_weights = [
+            math.exp(
+                -self.mapping_gamma
+                * (distance / unseen_length)
+            )
+            for distance, _, _ in selected
+        ]
+        weight_sum = math.fsum(raw_weights)
+
+        if weight_sum <= 0.0:
+            normalized_weights = [
+                1.0 / len(selected)
+                for _ in selected
+            ]
+        else:
+            normalized_weights = [
+                weight / weight_sum
+                for weight in raw_weights
+            ]
+
+        return [
+            {
+                "pattern": trained_pattern,
+                "distance": int(distance),
+                "normalized_distance": float(
+                    distance / unseen_length
+                ),
+                "weight": float(weight),
+            }
+            for (
+                distance,
+                _,
+                trained_pattern,
+            ), weight in zip(
+                selected,
+                normalized_weights,
+            )
+        ]
+    #tek komsu api sini korur
+    def _find_nearest_pattern(self, unseen_pattern):
+        candidate = self._find_nearest_patterns(
+            unseen_pattern,
+            top_k=1,
+        )[0]
+
+        return (
+            candidate["pattern"],
+            candidate["distance"],
+        )
+
     def _calculate_levenshtein(self, first, second):
         if len(first) < len(second):
             return self._calculate_levenshtein(
@@ -615,7 +843,9 @@ class AlergiaStateMergingAutomata:
                 - number_of_merged_states
             ),
             "transition_count": number_of_transitions,
-            "transition_density": transition_density
+            "transition_density": transition_density,
+            "mapping_top_k": int(self.mapping_top_k),
+            "mapping_gamma": float(self.mapping_gamma),
         }
     #hangi state in hangi merged state e atandıgını verir
     def get_state_mapping(self):

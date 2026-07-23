@@ -5,7 +5,6 @@
         "merge_alpha": 0.1,
         "min_state_count": 2,
         "smoothing_alpha": 0.1,
-        "max_pattern_distance": null,
         "distance_penalty": 1.0,
         "min_anomaly_run": 8,
         "min_validation_recall": 0.7
@@ -62,8 +61,10 @@
             "original_state_count": 49,
             "merged_state_count": 19,
             "merged_state_reduction": 30,
-            "transition_count": 48,
-            "transition_density": 0.1329639889196676
+            "transition_count": 61,
+            "transition_density": 0.16897506925207756,
+            "mapping_top_k": 1,
+            "mapping_gamma": 1.0
         },
         "state_mapping": {
             "bbbb": "bbbb",
@@ -211,8 +212,10 @@
             "original_state_count": 42,
             "merged_state_count": 21,
             "merged_state_reduction": 21,
-            "transition_count": 46,
-            "transition_density": 0.10430839002267574
+            "transition_count": 79,
+            "transition_density": 0.17913832199546487,
+            "mapping_top_k": 1,
+            "mapping_gamma": 1.0
         },
         "state_mapping": {
             "bbbb": "bbbb",
