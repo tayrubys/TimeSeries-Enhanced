@@ -37,17 +37,19 @@ def load_json_config(config_path="src/config/settings.json"):
 
         # BATADAL özel PST ayarları
         "batadal_window_size": 4,
-        "batadal_alphabet_size": 3,
-        "batadal_suffix_max_order": 3,
+        "batadal_alphabet_size": 5,
+        "batadal_suffix_max_order": 2,
         "batadal_suffix_min_context_count": 2,
-        "batadal_suffix_smoothing_alpha": 1.0,
+        "batadal_suffix_smoothing_alpha": 0.1,
+        "batadal_anomaly_threshold": 0.001,
 
         # SKAB özel PST ayarları
-        "skab_window_size": 4,
-        "skab_alphabet_size": 4,
-        "skab_suffix_max_order": 3,
-        "skab_suffix_min_context_count": 2,
-        "skab_suffix_smoothing_alpha": 1.0,
+        "skab_window_size": 5,
+        "skab_alphabet_size": 5,
+        "skab_suffix_max_order": 2,
+        "skab_suffix_min_context_count": 1,
+        "skab_suffix_smoothing_alpha": 0.1,
+        "skab_anomaly_threshold": 0.90,
     }
 
     if os.path.exists(config_path):
@@ -185,6 +187,7 @@ def run_experiment_pipeline(
         "suffix_max_order": config.get("suffix_max_order", 3),
         "suffix_min_context_count": config.get("suffix_min_context_count", 2),
         "suffix_smoothing_alpha": config.get("suffix_smoothing_alpha", 1.0),
+        "anomaly_threshold": config.get("anomaly_threshold"),
         **complexity_fields,
     }
 
@@ -711,6 +714,241 @@ def validate_top_skab_candidates(config):
     print(f"- {summary_path}")
     print(f"- {stability_path}")
 
+def run_skab_fold_aware_refined_search(config):
+    """
+    SKAB için tüm fold'ları dikkate alan daraltılmış PST parametre araması.
+
+    Amaç:
+        - Fold1'e özel iyi görünen parametrelerin yanıltıcı olmasını engellemek.
+        - 5 fold üzerinde ortalama performansı güçlü olan adayları bulmak.
+        - Daha sonra en iyi birkaç adayı 5 fold x 5 seed ile doğrulamak.
+    """
+
+    print("\n--- SKAB PST FOLD-AWARE REFINED SEARCH BAŞLATILIYOR ---")
+
+    # Önceki deneylerden umut veren ama çok büyümeyen parametre alanı.
+    candidate_grid = []
+
+    window_sizes = [3, 4, 5]
+    alphabet_sizes = [3, 4, 5]
+    suffix_max_orders = [2, 3, 4]
+    suffix_min_context_counts = [1, 2]
+    suffix_smoothing_alphas = [0.1, 0.5]
+    thresholds = [0.5, 0.7, 0.9]
+
+    for w in window_sizes:
+        for a in alphabet_sizes:
+            for order in suffix_max_orders:
+                for min_ctx in suffix_min_context_counts:
+                    for alpha in suffix_smoothing_alphas:
+                        for threshold in thresholds:
+                            candidate_grid.append(
+                                {
+                                    "window_size": w,
+                                    "alphabet_size": a,
+                                    "suffix_max_order": order,
+                                    "suffix_min_context_count": min_ctx,
+                                    "suffix_smoothing_alpha": alpha,
+                                    "anomaly_threshold": threshold,
+                                }
+                            )
+
+    print(f"[INFO] Toplam aday sayısı: {len(candidate_grid)}")
+    print("[INFO] Her aday 5 fold x 1 seed ile test edilecek.")
+
+    refined_results = []
+
+    # Hızlı fold-aware arama için sadece ilk seed.
+    search_seed = config["seeds"][0]
+
+    for idx, candidate in enumerate(candidate_grid, start=1):
+        print(
+            "\n"
+            f"[{idx}/{len(candidate_grid)}] "
+            f"W={candidate['window_size']}, "
+            f"A={candidate['alphabet_size']}, "
+            f"Order={candidate['suffix_max_order']}, "
+            f"MinCtx={candidate['suffix_min_context_count']}, "
+            f"Alpha={candidate['suffix_smoothing_alpha']}, "
+            f"Thr={candidate['anomaly_threshold']}"
+        )
+
+        for fold in range(1, 6):
+            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+            if not (
+                os.path.exists(train_file)
+                and os.path.exists(test_file)
+                and os.path.exists(y_test_file)
+            ):
+                print(f"[WARN] SKAB fold {fold} dosyaları bulunamadı, atlandı.")
+                continue
+
+            X_train = pd.read_csv(train_file).values.flatten()
+            X_test = pd.read_csv(test_file).values.flatten()
+            y_test = pd.read_csv(y_test_file).values.flatten()
+
+            candidate_config = {
+                **config,
+                **candidate,
+            }
+
+            fold_res, _ = run_experiment_pipeline(
+                X_train,
+                X_test,
+                y_test,
+                candidate_config,
+                "SKAB",
+                f"fold_{fold}",
+                seed=search_seed,
+            )
+
+            for row in fold_res:
+                row["search_type"] = "skab_fold_aware_refined_search"
+                row["candidate_id"] = idx
+                refined_results.append(row)
+
+        # Aday bazlı hızlı original F1 özeti
+        candidate_df = pd.DataFrame(
+            [
+                r for r in refined_results
+                if r.get("candidate_id") == idx and r.get("scenario") == "original"
+            ]
+        )
+
+        if not candidate_df.empty:
+            print(
+                "  -> Original F1 mean="
+                f"{candidate_df['f1_score'].mean():.4f}, "
+                "min="
+                f"{candidate_df['f1_score'].min():.4f}, "
+                "precision mean="
+                f"{candidate_df['precision'].mean():.4f}, "
+                "recall mean="
+                f"{candidate_df['recall'].mean():.4f}"
+            )
+
+    if not refined_results:
+        print("[WARN] SKAB fold-aware refined search sonucu üretilemedi.")
+        return
+
+    os.makedirs("results/outputs/pst_ablation", exist_ok=True)
+
+    df_refined = pd.DataFrame(refined_results)
+
+    refined_path = (
+        "results/outputs/pst_ablation/"
+        "pst_skab_fold_aware_refined_search.csv"
+    )
+
+    summary_path = (
+        "results/outputs/pst_ablation/"
+        "pst_skab_fold_aware_refined_summary.csv"
+    )
+
+    best_path = (
+        "results/outputs/pst_ablation/"
+        "pst_skab_fold_aware_refined_best_candidates.csv"
+    )
+
+    stability_path = (
+        "results/outputs/pst_ablation/"
+        "pst_skab_fold_aware_refined_stability.csv"
+    )
+
+    df_refined.to_csv(refined_path, index=False)
+
+    group_cols = [
+        "candidate_id",
+        "window_size",
+        "alphabet_size",
+        "suffix_max_order",
+        "suffix_min_context_count",
+        "suffix_smoothing_alpha",
+        "anomaly_threshold",
+        "scenario",
+    ]
+
+    summary_df = (
+        df_refined
+        .groupby(group_cols)
+        .agg(
+            accuracy_mean=("accuracy", "mean"),
+            accuracy_std=("accuracy", "std"),
+            precision_mean=("precision", "mean"),
+            precision_std=("precision", "std"),
+            recall_mean=("recall", "mean"),
+            recall_std=("recall", "std"),
+            f1_score_mean=("f1_score", "mean"),
+            f1_score_std=("f1_score", "std"),
+            f1_score_min=("f1_score", "min"),
+            num_contexts_mean=("num_contexts", "mean"),
+            transition_density_mean=("transition_density", "mean"),
+        )
+        .reset_index()
+    )
+
+    summary_df.to_csv(summary_path, index=False)
+
+    original_summary = summary_df[summary_df["scenario"] == "original"].copy()
+
+    best_original = (
+        original_summary
+        .sort_values(
+            ["f1_score_mean", "f1_score_min", "recall_mean", "precision_mean"],
+            ascending=[False, False, False, False],
+        )
+        .head(20)
+        .reset_index(drop=True)
+    )
+
+    best_original.to_csv(best_path, index=False)
+
+    stability_df = (
+        df_refined[df_refined["scenario"].isin(["original", "gaussian_noise"])]
+        .groupby(
+            [
+                "candidate_id",
+                "window_size",
+                "alphabet_size",
+                "suffix_max_order",
+                "suffix_min_context_count",
+                "suffix_smoothing_alpha",
+                "anomaly_threshold",
+            ]
+        )
+        .agg(
+            stability_f1_mean=("f1_score", "mean"),
+            stability_f1_min=("f1_score", "min"),
+            accuracy_mean=("accuracy", "mean"),
+            precision_mean=("precision", "mean"),
+            recall_mean=("recall", "mean"),
+            num_contexts_mean=("num_contexts", "mean"),
+            transition_density_mean=("transition_density", "mean"),
+        )
+        .reset_index()
+        .sort_values(
+            ["stability_f1_mean", "stability_f1_min", "recall_mean", "precision_mean"],
+            ascending=[False, False, False, False],
+        )
+    )
+
+    stability_df.to_csv(stability_path, index=False)
+
+    print("\n--- SKAB FOLD-AWARE REFINED SEARCH EN İYİ ORIGINAL ADAYLAR ---")
+    print(best_original.head(10))
+
+    print("\n--- SKAB FOLD-AWARE REFINED SEARCH STABİLİTE SIRALAMASI ---")
+    print(stability_df.head(10))
+
+    print("\nSKAB fold-aware refined search dosyaları kaydedildi:")
+    print(f"- {refined_path}")
+    print(f"- {summary_path}")
+    print(f"- {best_path}")
+    print(f"- {stability_path}")
+
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -900,9 +1138,8 @@ def main():
         print(batadal_summary)
 
     #run_parameter_sensitivity_analysis(config)
-    
-    validate_top_skab_candidates(config)
-
+    #validate_top_skab_candidates(config)
+    #run_skab_fold_aware_refined_search(config)
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
 

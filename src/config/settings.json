@@ -72,9 +72,12 @@
         "window_size": 4,
         "alphabet_size": 3,
         "anomaly_threshold": 0.05,
+
         "skab_anomaly_threshold": 0.90,
-        "batadal_anomaly_threshold": 0.05,
+        "batadal_anomaly_threshold": 0.001,
+
         "noise_level": 0.1,
+
         "window_sizes": [
             3,
             4,
@@ -87,6 +90,39 @@
             5,
             6
         ],
+
+        "suffix_max_order": 3,
+        "suffix_min_context_count": 2,
+        "suffix_smoothing_alpha": 1.0,
+
+        "suffix_max_orders": [
+            2,
+            3,
+            4
+        ],
+        "suffix_min_context_counts": [
+            1,
+            2,
+            3
+        ],
+        "suffix_smoothing_alphas": [
+            0.1,
+            0.5,
+            1.0
+        ],
+
+        "batadal_window_size": 4,
+        "batadal_alphabet_size": 5,
+        "batadal_suffix_max_order": 2,
+        "batadal_suffix_min_context_count": 2,
+        "batadal_suffix_smoothing_alpha": 0.1,
+
+        "skab_window_size": 5,
+        "skab_alphabet_size": 5,
+        "skab_suffix_max_order": 2,
+        "skab_suffix_min_context_count": 1,
+        "skab_suffix_smoothing_alpha": 0.1,
+
         "seeds": [
             42,
             123,
