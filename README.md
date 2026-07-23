@@ -128,5 +128,15 @@ Deneyde mevcut en iyi Dual ALERGIA state-merging yapısı sabit tutuldu. `top_k=
 
 Test sonucunda Precision `0.2907`, Recall `0.8929` ve F1-score `0.4386` olarak elde edildi. Sonuç mevcut tek-komşu Levenshtein eşleme yöntemiyle aynı kaldığı için Soft Top-k yaklaşımı final modele dahil edilmedi.
 
+### Support-Aware Dual ALERGIA Denemesi
+
+BATADAL üzerinde düşük geçiş sayısına sahip tahminlerin daha temkinli değerlendirilmesi amacıyla Support-Aware Dual ALERGIA yöntemi denendi. Bu yöntemde normal ve anomaly otomatalarındaki geçiş sayıları kullanılarak her geçiş için bir support güven değeri hesaplandı. Eğitimde az görülen geçişlerin anomaly skorunu azaltmak için farklı `support_weight` ve `tau` değerleri validation seti üzerinde tarandı.
+
+Deney sırasında mevcut en iyi Dual ALERGIA yapısı sabit tutuldu. `support_weight=[0.0,0.25,0.5,1.0,2.0]` ve `tau=[1,2,5,10]` değerleri, threshold ve Temporal Persistence parametreleriyle birlikte validation üzerinden değerlendirildi. Validation recall değerinin en az `0.70` olması şartı korundu.
+
+Analiz sonucunda normal geçişlerin ortalama support değeri `17.4974`, anomaly geçişlerin ortalama support değeri ise `9.3846` olarak bulundu. Anomaly geçişlerinin doğal olarak daha düşük desteğe sahip olması nedeniyle support cezası gerçek anomalilerin skorlarını da düşürdü. Support cezası kullanılan ayarlarda validation F1-score yaklaşık `0.136` seviyesinde kaldı.
+
+Validation sonucunda en iyi ayar tekrar `support_weight=0.0` olarak seçildi. Test sonucunda Precision `0.2907`, Recall `0.8929` ve F1-score `0.4386` olarak elde edildi. Sonuç mevcut Dual ALERGIA modeliyle aynı kaldığı için Support-Aware yaklaşım final modele dahil edilmedi.
+
 
 
