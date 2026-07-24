@@ -152,4 +152,14 @@ Mevcut başarılı Dual ALERGIA yapısı sabit tutulmuş ve yalnızca `support_w
 
 Support kullanılan ayarlar mevcut `0.2857` validation F1 değerini geçememiştir. Validation tekrar `support_weight=0.0` değerini seçmiş ve test F1 `0.4386` olarak değişmeden kalmıştır. Bu nedenle yöntem final modele dahil edilmemiş ve deney kodları kaldırılmıştır.
 
+### Dual-Threshold Hysteresis Denemesi
+
+False positive anomaly bloklarını azaltmak amacıyla anomaly durumunu başlatmak ve devam ettirmek için iki farklı eşik kullanan Dual-Threshold Hysteresis yaklaşımı denenmiştir. Mevcut Dual ALERGIA model yapısı sabit tutulmuş; `high_threshold`, `low_threshold` ve `min_anomaly_run` değerleri validation üzerinden seçilmiştir.
+
+Yöntem validation F1 değerini `0.2857` seviyesinden `0.3333` seviyesine yükseltmiştir. Ancak test sonucunda recall değeri `0.8929` seviyesinden `0.7143` seviyesine düşmüş ve test F1 değeri `0.4386` yerine `0.4082` olarak elde edilmiştir.
+
+Yapılan tanı analizinde hysteresis yönteminin validation üzerinde 17 false positive tahmini kaldırırken yalnızca 1 true positive tahmini kaybettiği görülmüştür. Test üzerinde ise 11 false positive kaldırılmış, ancak 5 true positive kaybedilmiş ve iki gerçek anomaly bloğundan biri tamamen kaçırılmıştır. Validation verisinde yalnızca bir anomaly bloğu bulunduğu için seçilen hysteresis yapısının testteki farklı anomaly davranışına genelleşmediği değerlendirilmiştir.
+
+Bu nedenle yöntem final modele dahil edilmemiş ve mevcut `0.4386` test F1 sonucuna sahip Dual ALERGIA modeli korunmuştur.
+
 
