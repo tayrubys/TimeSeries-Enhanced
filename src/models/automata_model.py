@@ -11,11 +11,15 @@ class ProbabilisticAutomata:
         max_order=3,
         min_context_count=2,
         smoothing_alpha=1.0,
+        scoring_mode="probability",
+        nll_epsilon=1e-12,
     ):
         self.smoothing = smoothing
         self.max_order = max_order
         self.min_context_count = min_context_count
         self.smoothing_alpha = smoothing_alpha
+        self.scoring_mode = scoring_mode
+        self.nll_epsilon = nll_epsilon
 
         # context -> next_state -> count
         # context tuple olarak tutulur:
@@ -64,12 +68,10 @@ class ProbabilisticAutomata:
                 self.total_exits[context] += 1.0
 
     def get_transition_probability(self, current_state, next_state):
-        
         context = (current_state,)
         return self._get_context_probability(context, next_state)
 
     def _get_context_probability(self, context, next_state):
-
         vocab_size = max(len(self.trained_patterns), 1)
         total_output = self.total_exits[context]
         transition_count = self.transitions[context][next_state]
@@ -85,8 +87,39 @@ class ProbabilisticAutomata:
 
         return transition_count / total_output
 
-    def _select_best_suffix_context(self, transition_history):
+    def _get_transition_score(self, probability):
+        """
+        Seçilen scoring moduna göre transition score üretir.
 
+        probability:
+            P(next_pattern | selected_context)
+
+        scoring_mode="probability":
+            Score doğrudan olasılıktır.
+            Düşük olasılık anomaly kabul edilir.
+
+        scoring_mode="negative_log":
+            Score = -log(probability)
+            Yüksek score anomaly kabul edilir.
+        """
+
+        if self.scoring_mode == "negative_log":
+            return float(-np.log(max(probability, self.nll_epsilon)))
+
+        return float(probability)
+
+    def _is_anomaly(self, probability, threshold):
+        """
+        Scoring moduna göre anomaly kararı üretir.
+        """
+
+        if self.scoring_mode == "negative_log":
+            transition_score = self._get_transition_score(probability)
+            return transition_score > threshold
+
+        return probability < threshold
+
+    def _select_best_suffix_context(self, transition_history):
         max_available_order = min(self.max_order, len(transition_history))
 
         for order in range(max_available_order, 0, -1):
@@ -140,7 +173,6 @@ class ProbabilisticAutomata:
         return " -> ".join(map(str, context))
 
     def predict(self, test_patterns, anomaly_threshold=0.05):
-
         if len(test_patterns) < 2:
             return [], []
 
@@ -186,11 +218,15 @@ class ProbabilisticAutomata:
             )
 
             prob = self._get_context_probability(selected_context, mapped_to)
+            transition_score = self._get_transition_score(prob)
 
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
 
-            decision = "anomaly" if prob < anomaly_threshold else "normal"
+            is_anomaly = self._is_anomaly(prob, anomaly_threshold)
+            decision = "anomaly" if is_anomaly else "normal"
+
+            # Açıklanabilirlikte güven skoru olarak olasılığı koruyoruz.
             confidence_score = float(prob)
 
             counterfactuals = []
@@ -208,16 +244,15 @@ class ProbabilisticAutomata:
 
                 for alt_pattern, alt_prob in possible_transitions[:3]:
                     if alt_pattern != mapped_to:
-                        alt_decision = (
-                            "normal"
-                            if alt_prob >= anomaly_threshold
-                            else "anomaly"
-                        )
+                        alt_score = self._get_transition_score(alt_prob)
+                        alt_is_anomaly = self._is_anomaly(alt_prob, anomaly_threshold)
+                        alt_decision = "anomaly" if alt_is_anomaly else "normal"
 
                         counterfactuals.append(
                             {
                                 "pattern": alt_pattern,
                                 "probability": float(alt_prob),
+                                "transition_score": float(alt_score),
                                 "would_be_anomaly": alt_decision == "anomaly",
                             }
                         )
@@ -249,6 +284,10 @@ class ProbabilisticAutomata:
                 log_entry["selected_order"] = int(selected_order)
                 log_entry["selected_context_count"] = float(selected_context_count)
                 log_entry["model_variant"] = "probabilistic_suffix_tree"
+                log_entry["scoring_mode"] = self.scoring_mode
+                log_entry["transition_probability"] = float(prob)
+                log_entry["transition_score"] = float(transition_score)
+                log_entry["anomaly_threshold"] = float(anomaly_threshold)
 
             explainability_logs.append(log_entry)
             predictions.append(1 if decision == "anomaly" else 0)

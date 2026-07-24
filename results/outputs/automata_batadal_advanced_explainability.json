@@ -20,37 +20,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "ccdb",
-                "distance": 1
-            },
-            {
                 "pattern": "cddb",
                 "distance": 1
             },
             {
-                "pattern": "bddb",
+                "pattern": "ccdb",
+                "distance": 1
+            },
+            {
+                "pattern": "ccdd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.294292885735301,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 2,
@@ -74,22 +80,25 @@
             {
                 "pattern": "cdbc",
                 "probability": 0.19431279620853079,
+                "transition_score": 1.6382860667717587,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "cdbb",
                 "probability": 0.05213270142180095,
+                "transition_score": 2.953962860677696,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "cdbd",
                 "probability": 0.05213270142180095,
+                "transition_score": 2.953962860677696,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bdbd",
+                "pattern": "cdbd",
                 "distance": 1
             },
             {
@@ -97,7 +106,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdbd",
+                "pattern": "bdbd",
                 "distance": 1
             }
         ],
@@ -106,7 +115,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 6.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.351858133476067,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 3,
@@ -131,16 +143,19 @@
             {
                 "pattern": "dbdd",
                 "probability": 0.17127071823204418,
+                "transition_score": 1.7645098267806796,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             }
         ],
@@ -154,7 +169,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bbdc",
+                "pattern": "dbcc",
                 "distance": 2
             }
         ],
@@ -163,7 +178,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 3.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.198497031265826,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 4,
@@ -189,11 +207,13 @@
             {
                 "pattern": "bdcc",
                 "probability": 0.19431279620853079,
+                "transition_score": 1.6382860667717587,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004739336492890996,
+                "transition_score": 5.351858133476067,
                 "would_be_anomaly": false
             }
         ],
@@ -207,7 +227,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bbab",
+                "pattern": "bcdb",
                 "distance": 2
             }
         ],
@@ -216,7 +236,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 6.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.3073356957526436,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 5,
@@ -242,16 +265,19 @@
             {
                 "pattern": "dcbb",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "dcbc",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -261,11 +287,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "ddbc",
                 "distance": 1
             },
             {
-                "pattern": "ddbc",
+                "pattern": "dcbc",
                 "distance": 1
             }
         ],
@@ -275,7 +301,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 6,
@@ -299,27 +328,29 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "edcc",
-                "distance": 1
-            },
-            {
-                "pattern": "bbcc",
-                "distance": 1
-            },
-            {
                 "pattern": "dbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "edcc",
                 "distance": 1
             }
         ],
@@ -328,7 +359,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.5387013613423222,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 7,
@@ -352,13 +386,15 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
@@ -369,7 +405,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.5387013613423222,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 8,
@@ -395,11 +434,13 @@
             {
                 "pattern": "ccdc",
                 "probability": 0.19431279620853079,
+                "transition_score": 1.6382860667717587,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "dccd",
                 "probability": 0.004739336492890996,
+                "transition_score": 5.351858133476067,
                 "would_be_anomaly": false
             }
         ],
@@ -410,7 +451,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 6.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.3073356957526436,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 9,
@@ -434,13 +478,15 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "cddc",
+                "pattern": "cddb",
                 "probability": 0.0995260663507109,
+                "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cddb",
+                "pattern": "cddc",
                 "probability": 0.0995260663507109,
+                "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
             }
         ],
@@ -451,7 +497,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 6.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.3073356957526436,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 10,
@@ -477,11 +526,13 @@
             {
                 "pattern": "dddd",
                 "probability": 0.22077922077922074,
+                "transition_score": 1.510592077797468,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "dddc",
                 "probability": 0.04761904761904762,
+                "transition_score": 3.044522437723423,
                 "would_be_anomaly": false
             }
         ],
@@ -492,7 +543,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 8.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.3978952727983707,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 11,
@@ -516,18 +570,21 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ddbb",
+                "pattern": "ddbc",
                 "probability": 0.1044776119402985,
+                "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ddbc",
+                "pattern": "ddbb",
                 "probability": 0.1044776119402985,
+                "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "ddbd",
                 "probability": 0.05472636815920398,
+                "transition_score": 2.905409635260705,
                 "would_be_anomaly": false
             }
         ],
@@ -537,7 +594,7 @@
                 "distance": 1
             },
             {
-                "pattern": "ddbb",
+                "pattern": "daba",
                 "distance": 1
             },
             {
@@ -551,7 +608,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.303304908059076,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 12,
@@ -577,16 +637,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -596,18 +659,21 @@
                 "distance": 1
             },
             {
-                "pattern": "ddac",
+                "pattern": "dbcc",
                 "distance": 1
             },
             {
-                "pattern": "dcac",
+                "pattern": "ddac",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 6.3606443121851886,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 13,
@@ -633,30 +699,33 @@
             {
                 "pattern": "bacc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
+            {
+                "pattern": "bcca",
+                "distance": 1
+            },
             {
                 "pattern": "bacc",
                 "distance": 1
             },
             {
                 "pattern": "bdca",
-                "distance": 1
-            },
-            {
-                "pattern": "baaa",
                 "distance": 1
             }
         ],
@@ -665,7 +734,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 14,
@@ -691,30 +763,33 @@
             {
                 "pattern": "aaaa",
                 "probability": 0.25373134328358204,
+                "transition_score": 1.3714792753347502,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
-                "distance": 1
-            },
-            {
-                "pattern": "dcac",
+                "pattern": "accc",
                 "distance": 1
             },
             {
                 "pattern": "abac",
+                "distance": 1
+            },
+            {
+                "pattern": "dcac",
                 "distance": 1
             }
         ],
@@ -723,7 +798,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.303304908059076,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 15,
@@ -749,30 +827,33 @@
             {
                 "pattern": "bacc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cacc",
-                "distance": 1
-            },
-            {
                 "pattern": "cacd",
                 "distance": 1
             },
             {
-                "pattern": "ceee",
+                "pattern": "cacc",
+                "distance": 1
+            },
+            {
+                "pattern": "babe",
                 "distance": 2
             }
         ],
@@ -781,7 +862,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 16,
@@ -807,37 +891,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "accd",
-                "distance": 1
-            },
-            {
                 "pattern": "acdd",
                 "distance": 1
             },
             {
-                "pattern": "acbc",
+                "pattern": "accd",
+                "distance": 1
+            },
+            {
+                "pattern": "ccdd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 17,
@@ -863,22 +953,25 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "ccdd",
                 "distance": 1
             },
             {
@@ -886,14 +979,17 @@
                 "distance": 1
             },
             {
-                "pattern": "ccdd",
+                "pattern": "cddd",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.294292885735301,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 18,
@@ -919,22 +1015,25 @@
             {
                 "pattern": "bddb",
                 "probability": 0.14691943127962084,
+                "transition_score": 1.9178709289909204,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bddc",
                 "probability": 0.14691943127962084,
+                "transition_score": 1.9178709289909204,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004739336492890996,
+                "transition_score": 5.351858133476067,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "dddd",
                 "distance": 1
             },
             {
@@ -942,7 +1041,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dddd",
+                "pattern": "cddd",
                 "distance": 1
             }
         ],
@@ -951,7 +1050,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 6.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.351858133476067,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 19,
@@ -975,32 +1077,35 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dddc",
-                "probability": 0.06432748538011696,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dddd",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "dddc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "dddc",
-                "distance": 1
-            },
-            {
                 "pattern": "dddd",
                 "distance": 1
             },
             {
-                "pattern": "bdda",
+                "pattern": "dddb",
+                "distance": 1
+            },
+            {
+                "pattern": "cdda",
                 "distance": 1
             }
         ],
@@ -1009,7 +1114,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 20,
@@ -1035,16 +1143,19 @@
             {
                 "pattern": "ddac",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "ddab",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -1054,11 +1165,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dddd",
+                "pattern": "ddcd",
                 "distance": 1
             },
             {
-                "pattern": "ddac",
+                "pattern": "dddd",
                 "distance": 1
             }
         ],
@@ -1067,7 +1178,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 21,
@@ -1093,16 +1207,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1112,18 +1229,21 @@
                 "distance": 1
             },
             {
-                "pattern": "cdad",
+                "pattern": "babe",
                 "distance": 2
             },
             {
-                "pattern": "dddc",
+                "pattern": "dbdc",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 22,
@@ -1149,22 +1269,25 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "acdd",
                 "distance": 2
             },
             {
@@ -1172,14 +1295,17 @@
                 "distance": 2
             },
             {
-                "pattern": "bddd",
+                "pattern": "cdbd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 23,
@@ -1205,16 +1331,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1228,14 +1357,17 @@
                 "distance": 1
             },
             {
-                "pattern": "dadd",
+                "pattern": "dbdd",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 24,
@@ -1261,22 +1393,25 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddc",
+                "pattern": "edcc",
                 "distance": 1
             },
             {
@@ -1291,7 +1426,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.1424868728672966,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 25,
@@ -1317,30 +1455,33 @@
             {
                 "pattern": "ddcd",
                 "probability": 0.14027149321266968,
+                "transition_score": 1.9641754970326066,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "ddcc",
                 "probability": 0.09502262443438914,
+                "transition_score": 2.35364026379433,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ddcb",
+                "pattern": "ddce",
                 "probability": 0.0497737556561086,
+                "transition_score": 3.0002674287193822,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdca",
+                "pattern": "ddcd",
+                "distance": 1
+            },
+            {
+                "pattern": "ddce",
                 "distance": 1
             },
             {
                 "pattern": "ddcb",
-                "distance": 1
-            },
-            {
-                "pattern": "bdca",
                 "distance": 1
             }
         ],
@@ -1349,7 +1490,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 7.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.398162701517753,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 26,
@@ -1375,16 +1519,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1392,7 +1539,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 27,
@@ -1418,20 +1568,27 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
+            {
+                "pattern": "cdbd",
+                "distance": 1
+            },
             {
                 "pattern": "cbbd",
                 "distance": 1
@@ -1439,16 +1596,15 @@
             {
                 "pattern": "caba",
                 "distance": 1
-            },
-            {
-                "pattern": "cabc",
-                "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 28,
@@ -1474,16 +1630,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1493,18 +1652,21 @@
                 "distance": 1
             },
             {
-                "pattern": "bbdb",
+                "pattern": "abab",
                 "distance": 1
             },
             {
-                "pattern": "abbb",
+                "pattern": "bbdb",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 29,
@@ -1530,16 +1692,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1547,7 +1712,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.971179545423466,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 30,
@@ -1573,11 +1741,13 @@
             {
                 "pattern": "dbcc",
                 "probability": 0.06077348066298342,
+                "transition_score": 2.8006017584674554,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             }
         ],
@@ -1587,7 +1757,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 3.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.1539745935424026,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 31,
@@ -1613,11 +1786,13 @@
             {
                 "pattern": "bcda",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -1628,7 +1803,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.743768283704289,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 32,
@@ -1652,13 +1830,15 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -1669,7 +1849,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.097141118779237,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 33,
@@ -1695,11 +1878,13 @@
             {
                 "pattern": "dcdc",
                 "probability": 0.1855203619909502,
+                "transition_score": 1.6845906348134452,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "dcdd",
                 "probability": 0.09502262443438914,
+                "transition_score": 2.35364026379433,
                 "would_be_anomaly": false
             }
         ],
@@ -1723,7 +1908,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 7.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 3.0002674287193822,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 34,
@@ -1749,22 +1937,25 @@
             {
                 "pattern": "cdbc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdcb",
+                "pattern": "cdbb",
                 "distance": 1
             },
             {
@@ -1772,7 +1963,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdbb",
+                "pattern": "cdcb",
                 "distance": 1
             }
         ],
@@ -1782,7 +1973,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 35,
@@ -1808,16 +2002,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1827,18 +2024,21 @@
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "ddbc",
                 "distance": 1
             },
             {
-                "pattern": "ddbc",
+                "pattern": "dcbc",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.691594683204304,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 36,
@@ -1864,16 +2064,19 @@
             {
                 "pattern": "bbcc",
                 "probability": 0.21465968586387432,
+                "transition_score": 1.5387013613423222,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
@@ -1883,7 +2086,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bbcd",
+                "pattern": "dbcd",
                 "distance": 1
             },
             {
@@ -1896,7 +2099,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.25227342804663,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 37,
@@ -1922,16 +2128,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -1939,7 +2148,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.010717595236173,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 38,
@@ -1965,11 +2177,13 @@
             {
                 "pattern": "cdbc",
                 "probability": 0.17748917748917747,
+                "transition_score": 1.7288456438174857,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004329004329004329,
+                "transition_score": 5.442417710521793,
                 "would_be_anomaly": false
             }
         ],
@@ -1979,7 +2193,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 8.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.7288456438174857,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 39,
@@ -2005,11 +2222,13 @@
             {
                 "pattern": "dbdd",
                 "probability": 0.16230366492146597,
+                "transition_score": 1.8182862235614836,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
@@ -2023,7 +2242,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bbdc",
+                "pattern": "dbcc",
                 "distance": 2
             }
         ],
@@ -2033,7 +2252,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.854378155248259,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 40,
@@ -2059,16 +2281,19 @@
             {
                 "pattern": "bdcc",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bdcb",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -2092,7 +2317,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 41,
@@ -2118,32 +2346,37 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "abaa",
-                "distance": 2
-            },
-            {
-                "pattern": "dcab",
+                "pattern": "bbaa",
                 "distance": 2
             },
             {
                 "pattern": "ddac",
+                "distance": 2
+            },
+            {
+                "pattern": "dcab",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.9114129100569257,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 42,
@@ -2169,25 +2402,27 @@
             {
                 "pattern": "aaab",
                 "probability": 0.050554870530209614,
+                "transition_score": 2.984695987411105,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaae",
                 "probability": 0.013563501849568437,
+                "transition_score": 4.3003727813170425,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "baaa",
-                "distance": 1
-            },
-            {
                 "pattern": "aaaa",
                 "distance": 1
             },
             {
-                "pattern": "abaa",
+                "pattern": "baaa",
+                "distance": 1
+            },
+            {
+                "pattern": "bbaa",
                 "distance": 2
             }
         ],
@@ -2196,7 +2431,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 66.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 0.28317109494381754,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 43,
@@ -2222,11 +2460,13 @@
             {
                 "pattern": "aaab",
                 "probability": 0.05387647831800263,
+                "transition_score": 2.921061291157378,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaae",
                 "probability": 0.014454664914586073,
+                "transition_score": 4.236738085063315,
                 "would_be_anomaly": false
             }
         ],
@@ -2237,7 +2477,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 61.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 0.30491245233898945,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 44,
@@ -2263,11 +2506,13 @@
             {
                 "pattern": "aaab",
                 "probability": 0.05387647831800263,
+                "transition_score": 2.921061291157378,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaae",
                 "probability": 0.014454664914586073,
+                "transition_score": 4.236738085063315,
                 "would_be_anomaly": false
             }
         ],
@@ -2277,11 +2522,11 @@
                 "distance": 1
             },
             {
-                "pattern": "aaae",
+                "pattern": "aaaa",
                 "distance": 1
             },
             {
-                "pattern": "aaaa",
+                "pattern": "aaae",
                 "distance": 1
             }
         ],
@@ -2291,7 +2536,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 61.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 0.30491245233898945,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 45,
@@ -2317,30 +2565,33 @@
             {
                 "pattern": "aaaa",
                 "probability": 0.7371879106438897,
+                "transition_score": 0.30491245233898945,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaab",
                 "probability": 0.05387647831800263,
+                "transition_score": 2.921061291157378,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaae",
                 "probability": 0.014454664914586073,
+                "transition_score": 4.236738085063315,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "dadd",
-                "distance": 1
-            },
-            {
                 "pattern": "acdd",
                 "distance": 1
             },
             {
-                "pattern": "cddd",
+                "pattern": "dadd",
+                "distance": 1
+            },
+            {
+                "pattern": "ccdd",
                 "distance": 2
             }
         ],
@@ -2350,7 +2601,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 61.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 6.634633357861686,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 46,
@@ -2376,22 +2630,25 @@
             {
                 "pattern": "cddd",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddc",
+                "pattern": "addb",
                 "distance": 1
             },
             {
@@ -2399,7 +2656,7 @@
                 "distance": 1
             },
             {
-                "pattern": "addb",
+                "pattern": "cddc",
                 "distance": 1
             }
         ],
@@ -2408,7 +2665,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 47,
@@ -2434,16 +2694,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -2451,7 +2714,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.473341117184286,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 48,
@@ -2477,11 +2743,13 @@
             {
                 "pattern": "dcdd",
                 "probability": 0.15422885572139303,
+                "transition_score": 1.8693177035739295,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             }
         ],
@@ -2491,7 +2759,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.2587824703356527,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 49,
@@ -2515,18 +2786,21 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "cdcb",
-                "probability": 0.06432748538011696,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "cdcc",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "cdcb",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -2537,7 +2811,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 50,
@@ -2561,13 +2838,15 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -2577,7 +2856,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.097141118779237,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 51,
@@ -2603,25 +2885,27 @@
             {
                 "pattern": "cacd",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cacc",
-                "distance": 1
-            },
-            {
                 "pattern": "cacd",
                 "distance": 1
             },
             {
-                "pattern": "ceee",
+                "pattern": "cacc",
+                "distance": 1
+            },
+            {
+                "pattern": "babe",
                 "distance": 2
             }
         ],
@@ -2631,7 +2915,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.743768283704289,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 52,
@@ -2657,37 +2944,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "accd",
-                "distance": 1
-            },
-            {
                 "pattern": "acdd",
                 "distance": 1
             },
             {
-                "pattern": "acbc",
+                "pattern": "accd",
+                "distance": 1
+            },
+            {
+                "pattern": "ccdd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 53,
@@ -2713,37 +3006,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddc",
-                "distance": 1
-            },
-            {
-                "pattern": "eedc",
+                "pattern": "cbdc",
                 "distance": 1
             },
             {
                 "pattern": "ccdc",
+                "distance": 1
+            },
+            {
+                "pattern": "eedc",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 4.790046233067352,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 54,
@@ -2769,21 +3068,23 @@
             {
                 "pattern": "bdcc",
                 "probability": 0.1633466135458167,
+                "transition_score": 1.8118808724274762,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bdca",
                 "probability": 0.043824701195219126,
+                "transition_score": 3.1275576663334133,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "eecb",
+                "pattern": "cdcb",
                 "distance": 1
             },
             {
-                "pattern": "cdcb",
+                "pattern": "edcc",
                 "distance": 1
             },
             {
@@ -2796,7 +3097,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 10.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.5936273064074582,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 55,
@@ -2822,16 +3126,19 @@
             {
                 "pattern": "dcbb",
                 "probability": 0.1044776119402985,
+                "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "dcbc",
                 "probability": 0.1044776119402985,
+                "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "dcbd",
                 "probability": 0.05472636815920398,
+                "transition_score": 2.905409635260705,
                 "would_be_anomaly": false
             }
         ],
@@ -2841,11 +3148,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "daba",
                 "distance": 1
             },
             {
-                "pattern": "daba",
+                "pattern": "ccba",
                 "distance": 1
             }
         ],
@@ -2855,7 +3162,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.303304908059076,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 56,
@@ -2881,11 +3191,13 @@
             {
                 "pattern": "cbaa",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -2895,7 +3207,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.743768283704289,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 57,
@@ -2921,37 +3236,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bcbc",
+                "pattern": "babe",
                 "distance": 1
             },
             {
-                "pattern": "bacc",
+                "pattern": "babb",
                 "distance": 1
             },
             {
-                "pattern": "cabc",
+                "pattern": "bdbc",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 58,
@@ -2977,37 +3298,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "dbcc",
                 "distance": 1
             },
             {
-                "pattern": "bbcc",
+                "pattern": "cbcc",
                 "distance": 1
             },
             {
-                "pattern": "abac",
+                "pattern": "accc",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 6.3606443121851886,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 59,
@@ -3033,16 +3360,19 @@
             {
                 "pattern": "bacc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -3052,7 +3382,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 60,
@@ -3078,11 +3411,13 @@
             {
                 "pattern": "ccdc",
                 "probability": 0.2250922509225092,
+                "transition_score": 1.4912449567063897,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "dccd",
                 "probability": 0.0036900369003690036,
+                "transition_score": 5.602118820879701,
                 "would_be_anomaly": false
             }
         ],
@@ -3092,7 +3427,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 12.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.4912449567063897,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 61,
@@ -3116,13 +3454,15 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "cddb",
                 "probability": 0.0995260663507109,
+                "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cddb",
+                "pattern": "cddd",
                 "probability": 0.0995260663507109,
+                "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
             }
         ],
@@ -3133,7 +3473,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 6.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.3073356957526436,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 62,
@@ -3159,16 +3502,19 @@
             {
                 "pattern": "ddcb",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -3179,7 +3525,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 63,
@@ -3205,16 +3554,19 @@
             {
                 "pattern": "dcdd",
                 "probability": 0.15422885572139303,
+                "transition_score": 1.8693177035739295,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "dcdc",
                 "probability": 0.1044776119402985,
+                "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             }
         ],
@@ -3237,7 +3589,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.303304908059076,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 64,
@@ -3263,22 +3618,25 @@
             {
                 "pattern": "cdbc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdcb",
+                "pattern": "cdbb",
                 "distance": 1
             },
             {
@@ -3286,7 +3644,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdbb",
+                "pattern": "cdcb",
                 "distance": 1
             }
         ],
@@ -3295,7 +3653,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 65,
@@ -3321,16 +3682,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -3340,18 +3704,21 @@
                 "distance": 1
             },
             {
-                "pattern": "aaba",
+                "pattern": "eebe",
                 "distance": 2
             },
             {
-                "pattern": "eebb",
+                "pattern": "ddbd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 66,
@@ -3377,16 +3744,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -3400,14 +3770,17 @@
                 "distance": 1
             },
             {
-                "pattern": "abaa",
+                "pattern": "dbdc",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 6.3606443121851886,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 67,
@@ -3433,30 +3806,33 @@
             {
                 "pattern": "bacc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
+            {
+                "pattern": "bcca",
+                "distance": 1
+            },
             {
                 "pattern": "bacc",
                 "distance": 1
             },
             {
                 "pattern": "bdca",
-                "distance": 1
-            },
-            {
-                "pattern": "baaa",
                 "distance": 1
             }
         ],
@@ -3465,7 +3841,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 68,
@@ -3491,30 +3870,33 @@
             {
                 "pattern": "aaaa",
                 "probability": 0.25373134328358204,
+                "transition_score": 1.3714792753347502,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
-                "distance": 1
-            },
-            {
-                "pattern": "dcac",
+                "pattern": "accc",
                 "distance": 1
             },
             {
                 "pattern": "abac",
+                "distance": 1
+            },
+            {
+                "pattern": "dcac",
                 "distance": 1
             }
         ],
@@ -3523,7 +3905,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.303304908059076,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 69,
@@ -3549,30 +3934,33 @@
             {
                 "pattern": "bacc",
                 "probability": 0.12280701754385964,
+                "transition_score": 2.097141118779237,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cacc",
-                "distance": 1
-            },
-            {
                 "pattern": "cacd",
                 "distance": 1
             },
             {
-                "pattern": "ceee",
+                "pattern": "cacc",
+                "distance": 1
+            },
+            {
+                "pattern": "babe",
                 "distance": 2
             }
         ],
@@ -3581,7 +3969,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 70,
@@ -3607,37 +3998,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
-                "distance": 1
-            },
-            {
                 "pattern": "accc",
                 "distance": 1
             },
             {
-                "pattern": "bcbc",
+                "pattern": "acbc",
+                "distance": 1
+            },
+            {
+                "pattern": "acdd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 71,
@@ -3663,26 +4060,29 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdcc",
+                "pattern": "cbcc",
                 "distance": 1
             },
             {
-                "pattern": "cccc",
+                "pattern": "cdcc",
                 "distance": 1
             },
             {
@@ -3693,7 +4093,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 72,
@@ -3719,37 +4122,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "bccd",
-                "distance": 1
-            },
-            {
-                "pattern": "cccd",
-                "distance": 1
-            },
-            {
                 "pattern": "dccd",
+                "distance": 1
+            },
+            {
+                "pattern": "accd",
+                "distance": 1
+            },
+            {
+                "pattern": "bccd",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 73,
@@ -3775,26 +4184,29 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "ccdb",
+                "pattern": "ccdd",
                 "distance": 1
             },
             {
-                "pattern": "bcda",
+                "pattern": "ccba",
                 "distance": 1
             },
             {
@@ -3805,7 +4217,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 6.3606443121851886,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 74,
@@ -3831,11 +4246,13 @@
             {
                 "pattern": "cdac",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -3845,7 +4262,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.743768283704289,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 75,
@@ -3871,37 +4291,43 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "dddc",
-                "distance": 1
-            },
-            {
                 "pattern": "dbdc",
                 "distance": 1
             },
             {
-                "pattern": "dadd",
+                "pattern": "dacc",
+                "distance": 1
+            },
+            {
+                "pattern": "dddc",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.971179545423466,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 76,
@@ -3925,27 +4351,29 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "accb",
+                "pattern": "accd",
                 "probability": 0.06077348066298342,
+                "transition_score": 2.8006017584674554,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "accd",
+                "pattern": "accb",
                 "probability": 0.06077348066298342,
+                "transition_score": 2.8006017584674554,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
+                "pattern": "accc",
+                "distance": 1
+            },
+            {
                 "pattern": "cdcc",
                 "distance": 1
             },
             {
-                "pattern": "bdcc",
-                "distance": 1
-            },
-            {
-                "pattern": "ddcc",
+                "pattern": "edcc",
                 "distance": 1
             }
         ],
@@ -3954,7 +4382,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 3.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.8006017584674554,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 77,
@@ -3980,16 +4411,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.16230366492146597,
+                "transition_score": 1.8182862235614836,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "cccb",
                 "probability": 0.05759162303664921,
+                "transition_score": 2.854378155248259,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
@@ -3999,7 +4433,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.25227342804663,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 78,
@@ -4025,16 +4462,19 @@
             {
                 "pattern": "ccbb",
                 "probability": 0.10994764397905758,
+                "transition_score": 2.207750990323207,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "ccbc",
                 "probability": 0.10994764397905758,
+                "transition_score": 2.207750990323207,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
@@ -4044,7 +4484,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.25227342804663,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 79,
@@ -4070,11 +4513,13 @@
             {
                 "pattern": "cbdc",
                 "probability": 0.17748917748917747,
+                "transition_score": 1.7288456438174857,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004329004329004329,
+                "transition_score": 5.442417710521793,
                 "would_be_anomaly": false
             }
         ],
@@ -4084,7 +4529,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 8.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.7288456438174857,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 80,
@@ -4110,16 +4558,19 @@
             {
                 "pattern": "bddb",
                 "probability": 0.10994764397905758,
+                "transition_score": 2.207750990323207,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bddc",
                 "probability": 0.10994764397905758,
+                "transition_score": 2.207750990323207,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
@@ -4130,7 +4581,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.25227342804663,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 81,
@@ -4154,32 +4608,35 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dddc",
-                "probability": 0.06432748538011696,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dddd",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "dddc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
-            {
-                "pattern": "dddc",
-                "distance": 1
-            },
             {
                 "pattern": "dddd",
                 "distance": 1
             },
             {
                 "pattern": "ddce",
+                "distance": 1
+            },
+            {
+                "pattern": "dddb",
                 "distance": 1
             }
         ],
@@ -4188,7 +4645,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 82,
@@ -4214,16 +4674,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -4233,7 +4696,7 @@
                 "distance": 1
             },
             {
-                "pattern": "ddab",
+                "pattern": "dddb",
                 "distance": 1
             },
             {
@@ -4244,7 +4707,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 83,
@@ -4270,16 +4736,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -4289,18 +4758,21 @@
                 "distance": 1
             },
             {
-                "pattern": "aaba",
+                "pattern": "eebe",
                 "distance": 2
             },
             {
-                "pattern": "eebb",
+                "pattern": "ddbd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 84,
@@ -4326,16 +4798,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -4345,18 +4820,21 @@
                 "distance": 1
             },
             {
-                "pattern": "cbab",
+                "pattern": "abab",
                 "distance": 1
             },
             {
-                "pattern": "ebbb",
+                "pattern": "cbab",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 85,
@@ -4382,16 +4860,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -4399,7 +4880,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.971179545423466,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 86,
@@ -4425,11 +4909,13 @@
             {
                 "pattern": "abbb",
                 "probability": 0.11602209944751381,
+                "transition_score": 2.1539745935424026,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             }
         ],
@@ -4439,11 +4925,11 @@
                 "distance": 1
             },
             {
-                "pattern": "abcd",
+                "pattern": "abba",
                 "distance": 1
             },
             {
-                "pattern": "abba",
+                "pattern": "dbbd",
                 "distance": 1
             }
         ],
@@ -4452,7 +4938,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 3.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.8006017584674554,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 87,
@@ -4478,30 +4967,33 @@
             {
                 "pattern": "bbab",
                 "probability": 0.16230366492146597,
+                "transition_score": 1.8182862235614836,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbaa",
                 "probability": 0.05759162303664921,
+                "transition_score": 2.854378155248259,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
-            {
-                "pattern": "bbdc",
-                "distance": 1
-            },
             {
                 "pattern": "bbee",
                 "distance": 1
             },
             {
                 "pattern": "bbdd",
+                "distance": 1
+            },
+            {
+                "pattern": "bbdc",
                 "distance": 1
             }
         ],
@@ -4510,7 +5002,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.25227342804663,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 88,
@@ -4536,16 +5031,19 @@
             {
                 "pattern": "bbee",
                 "probability": 0.17127071823204418,
+                "transition_score": 1.7645098267806796,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             }
         ],
@@ -4568,7 +5066,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 3.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.198497031265826,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 89,
@@ -4594,16 +5095,19 @@
             {
                 "pattern": "dbdd",
                 "probability": 0.17127071823204418,
+                "transition_score": 1.7645098267806796,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "probability": 0.0055248618784530384,
+                "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             }
         ],
@@ -4617,7 +5121,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dadd",
+                "pattern": "dbdd",
                 "distance": 1
             }
         ],
@@ -4626,7 +5130,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 3.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.198497031265826,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 90,
@@ -4652,22 +5159,25 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "dddd",
                 "distance": 1
             },
             {
@@ -4675,14 +5185,17 @@
                 "distance": 1
             },
             {
-                "pattern": "dddd",
+                "pattern": "cddd",
                 "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 6.3606443121851886,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 91,
@@ -4706,32 +5219,35 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dddc",
-                "probability": 0.06432748538011696,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dddd",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "dddc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "dddc",
-                "distance": 1
-            },
-            {
                 "pattern": "dddd",
                 "distance": 1
             },
             {
-                "pattern": "bdda",
+                "pattern": "dddb",
+                "distance": 1
+            },
+            {
+                "pattern": "cdda",
                 "distance": 1
             }
         ],
@@ -4740,7 +5256,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 92,
@@ -4766,16 +5285,19 @@
             {
                 "pattern": "ddac",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "ddab",
                 "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005847953216374269,
+                "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             }
         ],
@@ -4785,11 +5307,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dddd",
+                "pattern": "ddcd",
                 "distance": 1
             },
             {
-                "pattern": "ddac",
+                "pattern": "dddd",
                 "distance": 1
             }
         ],
@@ -4798,7 +5320,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 2.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.14166355650266,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 93,
@@ -4824,16 +5349,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -4841,7 +5369,10 @@
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 94,
@@ -4867,16 +5398,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -4886,18 +5420,21 @@
                 "distance": 1
             },
             {
-                "pattern": "bddb",
+                "pattern": "acdd",
                 "distance": 2
             },
             {
-                "pattern": "cddd",
+                "pattern": "dddd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 95,
@@ -4923,20 +5460,27 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
+            {
+                "pattern": "ddcd",
+                "distance": 1
+            },
             {
                 "pattern": "dddd",
                 "distance": 1
@@ -4944,16 +5488,15 @@
             {
                 "pattern": "ddbd",
                 "distance": 1
-            },
-            {
-                "pattern": "ddcd",
-                "distance": 1
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.473341117184286,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 96,
@@ -4979,25 +5522,27 @@
             {
                 "pattern": "dbdd",
                 "probability": 0.05472636815920398,
+                "transition_score": 2.905409635260705,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.004975124378109453,
+                "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "dddc",
-                "distance": 1
-            },
-            {
                 "pattern": "dbdc",
                 "distance": 1
             },
             {
-                "pattern": "eedc",
+                "pattern": "dddc",
+                "distance": 1
+            },
+            {
+                "pattern": "dcdc",
                 "distance": 1
             }
         ],
@@ -5006,7 +5551,10 @@
         ],
         "selected_order": 1,
         "selected_context_count": 5.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 1.5897328413547682,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 97,
@@ -5032,30 +5580,33 @@
             {
                 "pattern": "bdcc",
                 "probability": 0.16230366492146597,
+                "transition_score": 1.8182862235614836,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bdcb",
                 "probability": 0.05759162303664921,
+                "transition_score": 2.854378155248259,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ceee",
+                "pattern": "ccdd",
                 "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
+            {
+                "pattern": "edcc",
+                "distance": 1
+            },
             {
                 "pattern": "cdca",
                 "distance": 1
             },
             {
                 "pattern": "bdca",
-                "distance": 1
-            },
-            {
-                "pattern": "edcc",
                 "distance": 1
             }
         ],
@@ -5065,7 +5616,10 @@
         ],
         "selected_order": 2,
         "selected_context_count": 4.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 5.25227342804663,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 98,
@@ -5091,16 +5645,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -5114,14 +5671,17 @@
                 "distance": 1
             },
             {
-                "pattern": "abaa",
+                "pattern": "dccd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 99,
@@ -5147,16 +5707,19 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "aaaa",
                 "probability": 0.05439881491235289,
+                "transition_score": 2.9114129100569257,
                 "would_be_anomaly": false
             }
         ],
@@ -5170,14 +5733,17 @@
                 "distance": 1
             },
             {
-                "pattern": "cddd",
+                "pattern": "ccdd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 7.007271477110241,
+        "anomaly_threshold": 6.907755
     },
     {
         "time_step": 100,
@@ -5203,31 +5769,36 @@
             {
                 "pattern": "cccc",
                 "probability": 0.11612212986585467,
+                "transition_score": 2.1531127980557976,
                 "would_be_anomaly": false
             },
             {
                 "pattern": "bbbb",
                 "probability": 0.09472471401530738,
+                "transition_score": 2.356780341186729,
                 "would_be_anomaly": false
             }
         ],
         "similarity_analysis": [
             {
-                "pattern": "aaba",
-                "distance": 1
-            },
-            {
                 "pattern": "aaaa",
                 "distance": 1
             },
             {
-                "pattern": "abaa",
+                "pattern": "aaba",
+                "distance": 1
+            },
+            {
+                "pattern": "acdd",
                 "distance": 2
             }
         ],
         "selected_context": [],
         "selected_order": 0,
         "selected_context_count": 1200.0,
-        "model_variant": "probabilistic_suffix_tree"
+        "model_variant": "probabilistic_suffix_tree",
+        "scoring_mode": "negative_log",
+        "transition_score": 2.9114129100569257,
+        "anomaly_threshold": 6.907755
     }
 ]

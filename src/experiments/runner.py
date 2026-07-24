@@ -17,9 +17,16 @@ def load_json_config(config_path="src/config/settings.json"):
         "alphabet_size": 3,
         "window_sizes": [3, 4, 5, 6],
         "alphabet_sizes": [3, 4, 5, 6],
+
+        # PST scoring ayarları
+        # probability: ham olasılık threshold'u kullanır.
+        # negative_log: -log(P(next | context)) skoru kullanır.
+        "pst_scoring_mode": "negative_log",
+        "pst_nll_epsilon": 1e-12,
+
         "anomaly_threshold": 0.05,
-        "skab_anomaly_threshold": 0.90,
-        "batadal_anomaly_threshold": 0.05,
+        "skab_anomaly_threshold": 0.1053605,
+        "batadal_anomaly_threshold": 6.907755,
         "noise_level": 0.1,
         "seeds": [42, 123, 2026, 7, 999],
         "batadal_train_ratio": 0.60,
@@ -41,7 +48,7 @@ def load_json_config(config_path="src/config/settings.json"):
         "batadal_suffix_max_order": 2,
         "batadal_suffix_min_context_count": 2,
         "batadal_suffix_smoothing_alpha": 0.1,
-        "batadal_anomaly_threshold": 0.001,
+        "batadal_anomaly_threshold": 6.907755,
 
         # SKAB özel PST ayarları
         "skab_window_size": 5,
@@ -49,7 +56,7 @@ def load_json_config(config_path="src/config/settings.json"):
         "skab_suffix_max_order": 2,
         "skab_suffix_min_context_count": 1,
         "skab_suffix_smoothing_alpha": 0.1,
-        "skab_anomaly_threshold": 0.90,
+        "skab_anomaly_threshold": 0.1053605,
     }
 
     if os.path.exists(config_path):
@@ -80,12 +87,13 @@ def inject_gaussian_noise(series, noise_level=0.1, seed=42):
 
 
 def build_suffix_automata(config):
-    
     return ProbabilisticAutomata(
         smoothing=True,
         max_order=config.get("suffix_max_order", 3),
         min_context_count=config.get("suffix_min_context_count", 2),
         smoothing_alpha=config.get("suffix_smoothing_alpha", 1.0),
+        scoring_mode=config.get("pst_scoring_mode", "probability"),
+        nll_epsilon=config.get("pst_nll_epsilon", 1e-12),
     )
 
 def get_dataset_specific_config(config, dataset_name):
@@ -188,6 +196,8 @@ def run_experiment_pipeline(
         "suffix_min_context_count": config.get("suffix_min_context_count", 2),
         "suffix_smoothing_alpha": config.get("suffix_smoothing_alpha", 1.0),
         "anomaly_threshold": config.get("anomaly_threshold"),
+        "scoring_mode": config.get("pst_scoring_mode", "probability"),
+        "pst_nll_epsilon": config.get("pst_nll_epsilon", 1e-12),
         **complexity_fields,
     }
 
@@ -297,14 +307,21 @@ def run_parameter_sensitivity_analysis(config):
         [config.get("suffix_smoothing_alpha", 1.0)],
     )
 
+    if config.get("pst_scoring_mode", "probability") == "negative_log":
+        default_batadal_thresholds = [3.0, 4.0, 5.0, 6.0, 6.907755, 7.5, 9.0]
+        default_skab_thresholds = [0.05, 0.1053605, 0.20, 0.35, 0.50, 0.70, 1.0]
+    else:
+        default_batadal_thresholds = [0.001, 0.005, 0.01, 0.02, 0.05, 0.10, 0.20]
+        default_skab_thresholds = [0.05, 0.10, 0.20, 0.35, 0.50, 0.70, 0.90]
+
     batadal_thresholds = config.get(
         "batadal_thresholds",
-        [0.001, 0.005, 0.01, 0.02, 0.05, 0.10, 0.20],
+        default_batadal_thresholds,
     )
 
     skab_thresholds = config.get(
         "skab_thresholds",
-        [0.05, 0.10, 0.20, 0.35, 0.50, 0.70, 0.90],
+        default_skab_thresholds,
     )
 
     sensitivity_results = []
@@ -365,6 +382,7 @@ def run_parameter_sensitivity_analysis(config):
                                     f"Order={max_order}, "
                                     f"MinCtx={min_context_count}, "
                                     f"Alpha={smoothing_alpha}, "
+                                    f"Score={cc.get('pst_scoring_mode', 'probability')}, "
                                     f"Thr={threshold} | "
                                     f"F1={orig_res['f1_score']:.4f}, "
                                     f"P={orig_res['precision']:.4f}, "
@@ -975,6 +993,7 @@ def main():
         f"suffix_max_order={config_batadal_preview['suffix_max_order']}, "
         f"min_context_count={config_batadal_preview['suffix_min_context_count']}, "
         f"smoothing_alpha={config_batadal_preview['suffix_smoothing_alpha']}, "
+        f"scoring_mode={config_batadal_preview.get('pst_scoring_mode', 'probability')}, "
         f"threshold={config_batadal_preview['anomaly_threshold']}"
     )
 
@@ -985,6 +1004,7 @@ def main():
         f"suffix_max_order={config_skab_preview['suffix_max_order']}, "
         f"min_context_count={config_skab_preview['suffix_min_context_count']}, "
         f"smoothing_alpha={config_skab_preview['suffix_smoothing_alpha']}, "
+        f"scoring_mode={config_skab_preview.get('pst_scoring_mode', 'probability')}, "
         f"threshold={config_skab_preview['anomaly_threshold']}"
     )
 
@@ -1016,6 +1036,7 @@ def main():
                 f"alphabet={config_batadal['alphabet_size']}, "
                 f"suffix_max_order={config_batadal.get('suffix_max_order', 3)}, "
                 f"min_context_count={config_batadal.get('suffix_min_context_count', 2)}, "
+                f"scoring_mode={config_batadal.get('pst_scoring_mode', 'probability')}, "
                 f"threshold={config_batadal['anomaly_threshold']} çalışıyor..."
             )
 
@@ -1066,6 +1087,7 @@ def main():
                     f"alphabet={config_skab['alphabet_size']}, "
                     f"suffix_max_order={config_skab.get('suffix_max_order', 3)}, "
                     f"min_context_count={config_skab.get('suffix_min_context_count', 2)}, "
+                    f"scoring_mode={config_skab.get('pst_scoring_mode', 'probability')}, "
                     f"threshold={config_skab['anomaly_threshold']} çalışıyor..."
                 )
 
