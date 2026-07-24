@@ -144,5 +144,12 @@ Geçiş sayılarının normal veya anomaly modelini ne ölçüde desteklediğini
 
 Support kullanılan en iyi ayarda validation F1 `0.2824` olarak elde edilmiş, ancak mevcut modelin `0.2857` sonucunu geçememiştir. Validation tekrar `support_weight=0.0` değerini seçmiş ve test F1 `0.4386` olarak değişmeden kalmıştır. Bu nedenle yöntem final modele dahil edilmemiş ve deney kodları kaldırılmıştır.
 
+### Class-Normalized Raw Transition Support Denemesi
+
+Normal ve anomaly sınıflarındaki aynı ham pattern geçişleri karşılaştırılarak, geçiş sayılarının sınıf içindeki toplam çıkış sayılarına göre normalize edildiği Class-Normalized Raw Transition Support yaklaşımı denenmiştir.
+
+Mevcut başarılı Dual ALERGIA yapısı sabit tutulmuş ve yalnızca `support_weight`, `beta` ve `tau` parametreleri validation üzerinden taranmıştır. Support yön doğruluğu yaklaşık `0.49` seviyesinde kalmış ve geçiş desteğinin normal ile anomaly sınıflarını yeterince ayıramadığı görülmüştür.
+
+Support kullanılan ayarlar mevcut `0.2857` validation F1 değerini geçememiştir. Validation tekrar `support_weight=0.0` değerini seçmiş ve test F1 `0.4386` olarak değişmeden kalmıştır. Bu nedenle yöntem final modele dahil edilmemiş ve deney kodları kaldırılmıştır.
 
 
