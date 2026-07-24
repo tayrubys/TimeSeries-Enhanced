@@ -967,6 +967,302 @@ def run_skab_fold_aware_refined_search(config):
     print(f"- {best_path}")
     print(f"- {stability_path}")
 
+def run_nll_threshold_tuning(config):
+    """
+    PST negative log scoring için threshold tuning yapar.
+
+    Bu fonksiyon PST/SAX parametrelerini sabit tutar.
+    Sadece negative log anomaly_threshold değerlerini tarar.
+
+    BATADAL:
+        5 seed
+
+    SKAB:
+        5 fold x 5 seed
+    """
+
+    print("\n--- PST NEGATIVE LOG THRESHOLD TUNING BAŞLATILIYOR ---")
+
+    if config.get("pst_scoring_mode") != "negative_log":
+        print(
+            "[WARN] pst_scoring_mode negative_log değil. "
+            "Bu tuning fonksiyonu negative_log için tasarlandı."
+        )
+
+    batadal_thresholds = config.get(
+        "batadal_nll_thresholds",
+        [4.0, 5.0, 6.0, 6.907755, 7.5, 8.0, 9.0, 10.0],
+    )
+
+    skab_thresholds = config.get(
+        "skab_nll_thresholds",
+        [0.05, 0.1053605, 0.2, 0.35, 0.5, 0.7, 0.9, 1.2, 1.5],
+    )
+
+    tuning_results = []
+
+    # -------------------------
+    # BATADAL NLL threshold tuning
+    # -------------------------
+    if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
+        print("\n>> BATADAL PST-NLL Threshold Tuning...")
+
+        X_train_b = pd.read_csv(
+            "data/processed/batadal_X_train_adasyn_pc1.csv"
+        ).values.flatten()
+
+        X_test_b = pd.read_csv(
+            "data/processed/batadal_X_test_pc1.csv"
+        ).values.flatten()
+
+        y_test_b = pd.read_csv(
+            "data/processed/batadal_y_test.csv"
+        ).values.flatten()
+
+        y_test_b = np.where(y_test_b == -999, 0, y_test_b)
+
+        base_batadal_config = get_dataset_specific_config(config, "BATADAL")
+        base_batadal_config["pst_scoring_mode"] = "negative_log"
+
+        for threshold in batadal_thresholds:
+            print(f"\n[BATADAL] NLL threshold={threshold}")
+
+            threshold_rows = []
+
+            for seed in config["seeds"]:
+                candidate_config = {
+                    **base_batadal_config,
+                    "anomaly_threshold": threshold,
+                }
+
+                res, _ = run_experiment_pipeline(
+                    X_train_b,
+                    X_test_b,
+                    y_test_b,
+                    candidate_config,
+                    "BATADAL",
+                    "nll_threshold_search",
+                    seed=seed,
+                )
+
+                for row in res:
+                    row["tuning_type"] = "pst_nll_threshold_tuning"
+                    row["threshold_candidate"] = threshold
+                    tuning_results.append(row)
+                    threshold_rows.append(row)
+
+            threshold_df = pd.DataFrame(threshold_rows)
+            original_df = threshold_df[threshold_df["scenario"] == "original"]
+
+            if not original_df.empty:
+                print(
+                    "  -> Original F1 mean="
+                    f"{original_df['f1_score'].mean():.4f}, "
+                    "precision mean="
+                    f"{original_df['precision'].mean():.4f}, "
+                    "recall mean="
+                    f"{original_df['recall'].mean():.4f}"
+                )
+
+    # -------------------------
+    # SKAB NLL threshold tuning
+    # -------------------------
+    print("\n>> SKAB PST-NLL Threshold Tuning...")
+
+    base_skab_config = get_dataset_specific_config(config, "SKAB")
+    base_skab_config["pst_scoring_mode"] = "negative_log"
+
+    for threshold in skab_thresholds:
+        print(f"\n[SKAB] NLL threshold={threshold}")
+
+        threshold_rows = []
+
+        for fold in range(1, 6):
+            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+            if not (
+                os.path.exists(train_file)
+                and os.path.exists(test_file)
+                and os.path.exists(y_test_file)
+            ):
+                print(f"[WARN] SKAB fold {fold} dosyaları bulunamadı, atlandı.")
+                continue
+
+            X_train_s = pd.read_csv(train_file).values.flatten()
+            X_test_s = pd.read_csv(test_file).values.flatten()
+            y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+            for seed in config["seeds"]:
+                candidate_config = {
+                    **base_skab_config,
+                    "anomaly_threshold": threshold,
+                }
+
+                res, _ = run_experiment_pipeline(
+                    X_train_s,
+                    X_test_s,
+                    y_test_s,
+                    candidate_config,
+                    "SKAB",
+                    f"fold_{fold}_nll_threshold_search",
+                    seed=seed,
+                )
+
+                for row in res:
+                    row["tuning_type"] = "pst_nll_threshold_tuning"
+                    row["threshold_candidate"] = threshold
+                    tuning_results.append(row)
+                    threshold_rows.append(row)
+
+        threshold_df = pd.DataFrame(threshold_rows)
+        original_df = threshold_df[threshold_df["scenario"] == "original"]
+
+        if not original_df.empty:
+            print(
+                "  -> Original F1 mean="
+                f"{original_df['f1_score'].mean():.4f}, "
+                "precision mean="
+                f"{original_df['precision'].mean():.4f}, "
+                "recall mean="
+                f"{original_df['recall'].mean():.4f}"
+            )
+
+    if not tuning_results:
+        print("[WARN] PST-NLL threshold tuning sonucu üretilemedi.")
+        return
+
+    os.makedirs("results/outputs/pst_ablation", exist_ok=True)
+
+    df_tuning = pd.DataFrame(tuning_results)
+
+    all_path = (
+        "results/outputs/pst_ablation/"
+        "pst_nll_threshold_tuning_results.csv"
+    )
+
+    summary_path = (
+        "results/outputs/pst_ablation/"
+        "pst_nll_threshold_tuning_summary.csv"
+    )
+
+    best_original_path = (
+        "results/outputs/pst_ablation/"
+        "pst_nll_threshold_tuning_best_original.csv"
+    )
+
+    stability_path = (
+        "results/outputs/pst_ablation/"
+        "pst_nll_threshold_tuning_stability.csv"
+    )
+
+    df_tuning.to_csv(all_path, index=False)
+
+    group_cols = [
+        "dataset",
+        "threshold_candidate",
+        "scenario",
+        "window_size",
+        "alphabet_size",
+        "suffix_max_order",
+        "suffix_min_context_count",
+        "suffix_smoothing_alpha",
+        "scoring_mode",
+    ]
+
+    summary_df = (
+        df_tuning
+        .groupby(group_cols)
+        .agg(
+            accuracy_mean=("accuracy", "mean"),
+            accuracy_std=("accuracy", "std"),
+            precision_mean=("precision", "mean"),
+            precision_std=("precision", "std"),
+            recall_mean=("recall", "mean"),
+            recall_std=("recall", "std"),
+            f1_score_mean=("f1_score", "mean"),
+            f1_score_std=("f1_score", "std"),
+            f1_score_min=("f1_score", "min"),
+            num_contexts_mean=("num_contexts", "mean"),
+            transition_density_mean=("transition_density", "mean"),
+        )
+        .reset_index()
+    )
+
+    summary_df.to_csv(summary_path, index=False)
+
+    original_summary = summary_df[summary_df["scenario"] == "original"].copy()
+
+    best_original = (
+        original_summary
+        .sort_values(
+            [
+                "dataset",
+                "f1_score_mean",
+                "f1_score_min",
+                "recall_mean",
+                "precision_mean",
+            ],
+            ascending=[True, False, False, False, False],
+        )
+        .groupby("dataset")
+        .head(10)
+        .reset_index(drop=True)
+    )
+
+    best_original.to_csv(best_original_path, index=False)
+
+    stability_df = (
+        df_tuning[df_tuning["scenario"].isin(["original", "gaussian_noise"])]
+        .groupby(
+            [
+                "dataset",
+                "threshold_candidate",
+                "window_size",
+                "alphabet_size",
+                "suffix_max_order",
+                "suffix_min_context_count",
+                "suffix_smoothing_alpha",
+                "scoring_mode",
+            ]
+        )
+        .agg(
+            stability_f1_mean=("f1_score", "mean"),
+            stability_f1_min=("f1_score", "min"),
+            accuracy_mean=("accuracy", "mean"),
+            precision_mean=("precision", "mean"),
+            recall_mean=("recall", "mean"),
+            num_contexts_mean=("num_contexts", "mean"),
+            transition_density_mean=("transition_density", "mean"),
+        )
+        .reset_index()
+        .sort_values(
+            [
+                "dataset",
+                "stability_f1_mean",
+                "stability_f1_min",
+                "recall_mean",
+                "precision_mean",
+            ],
+            ascending=[True, False, False, False, False],
+        )
+    )
+
+    stability_df.to_csv(stability_path, index=False)
+
+    print("\n--- PST-NLL THRESHOLD TUNING BEST ORIGINAL ---")
+    print(best_original)
+
+    print("\n--- PST-NLL THRESHOLD TUNING STABILITY ---")
+    print(stability_df.groupby("dataset").head(10))
+
+    print("\nPST-NLL threshold tuning dosyaları kaydedildi:")
+    print(f"- {all_path}")
+    print(f"- {summary_path}")
+    print(f"- {best_original_path}")
+    print(f"- {stability_path}")
+
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -1162,6 +1458,7 @@ def main():
     #run_parameter_sensitivity_analysis(config)
     #validate_top_skab_candidates(config)
     #run_skab_fold_aware_refined_search(config)
+    run_nll_threshold_tuning(config)
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
 

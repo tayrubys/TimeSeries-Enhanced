@@ -38,15 +38,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddb",
-                "distance": 1
-            },
-            {
                 "pattern": "ccdb",
                 "distance": 1
             },
             {
-                "pattern": "ccdd",
+                "pattern": "cddb",
+                "distance": 1
+            },
+            {
+                "pattern": "addb",
                 "distance": 2
             }
         ],
@@ -98,15 +98,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdbd",
-                "distance": 1
-            },
-            {
                 "pattern": "ddbd",
                 "distance": 1
             },
             {
                 "pattern": "bdbd",
+                "distance": 1
+            },
+            {
+                "pattern": "cdbd",
                 "distance": 1
             }
         ],
@@ -147,13 +147,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
@@ -169,7 +169,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dbcc",
+                "pattern": "dddd",
                 "distance": 2
             }
         ],
@@ -211,7 +211,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004739336492890996,
                 "transition_score": 5.351858133476067,
                 "would_be_anomaly": false
@@ -227,7 +227,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bcdb",
+                "pattern": "addb",
                 "distance": 2
             }
         ],
@@ -275,7 +275,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -287,11 +287,11 @@
                 "distance": 1
             },
             {
-                "pattern": "ddbc",
+                "pattern": "dcbc",
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "ddbc",
                 "distance": 1
             }
         ],
@@ -328,13 +328,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -342,15 +342,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dbcc",
-                "distance": 1
-            },
-            {
                 "pattern": "cbcc",
                 "distance": 1
             },
             {
                 "pattern": "edcc",
+                "distance": 1
+            },
+            {
+                "pattern": "bbcc",
                 "distance": 1
             }
         ],
@@ -386,13 +386,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -438,7 +438,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "addb",
                 "probability": 0.004739336492890996,
                 "transition_score": 5.351858133476067,
                 "would_be_anomaly": false
@@ -478,13 +478,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "cddb",
+                "pattern": "cddc",
                 "probability": 0.0995260663507109,
                 "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cddc",
+                "pattern": "cddb",
                 "probability": 0.0995260663507109,
                 "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
@@ -570,13 +570,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ddbc",
+                "pattern": "ddbb",
                 "probability": 0.1044776119402985,
                 "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ddbb",
+                "pattern": "ddbc",
                 "probability": 0.1044776119402985,
                 "transition_score": 2.2587824703356527,
                 "would_be_anomaly": false
@@ -590,15 +590,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "ddbb",
+                "distance": 1
+            },
+            {
                 "pattern": "ddbd",
                 "distance": 1
             },
             {
                 "pattern": "daba",
-                "distance": 1
-            },
-            {
-                "pattern": "ddbc",
                 "distance": 1
             }
         ],
@@ -655,11 +655,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dbdc",
+                "pattern": "dbbc",
                 "distance": 1
             },
             {
-                "pattern": "dbcc",
+                "pattern": "abac",
                 "distance": 1
             },
             {
@@ -703,13 +703,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -717,15 +717,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "bdca",
+                "distance": 1
+            },
+            {
                 "pattern": "bcca",
                 "distance": 1
             },
             {
                 "pattern": "bacc",
-                "distance": 1
-            },
-            {
-                "pattern": "bdca",
                 "distance": 1
             }
         ],
@@ -767,13 +767,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
@@ -781,11 +781,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "accc",
+                "pattern": "abac",
                 "distance": 1
             },
             {
-                "pattern": "abac",
+                "pattern": "accc",
                 "distance": 1
             },
             {
@@ -831,13 +831,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -853,7 +853,7 @@
                 "distance": 1
             },
             {
-                "pattern": "babe",
+                "pattern": "ceee",
                 "distance": 2
             }
         ],
@@ -917,7 +917,7 @@
                 "distance": 1
             },
             {
-                "pattern": "ccdd",
+                "pattern": "cacd",
                 "distance": 2
             }
         ],
@@ -971,11 +971,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ccdd",
+                "pattern": "cbdd",
                 "distance": 1
             },
             {
-                "pattern": "cbdd",
+                "pattern": "ccdd",
                 "distance": 1
             },
             {
@@ -1025,7 +1025,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004739336492890996,
                 "transition_score": 5.351858133476067,
                 "would_be_anomaly": false
@@ -1089,7 +1089,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -1101,7 +1101,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dddb",
+                "pattern": "bdda",
                 "distance": 1
             },
             {
@@ -1141,19 +1141,19 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ddac",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "ddab",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "ddac",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -1161,15 +1161,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdad",
-                "distance": 1
-            },
-            {
-                "pattern": "ddcd",
-                "distance": 1
-            },
-            {
                 "pattern": "dddd",
+                "distance": 1
+            },
+            {
+                "pattern": "ddbd",
+                "distance": 1
+            },
+            {
+                "pattern": "ddab",
                 "distance": 1
             }
         ],
@@ -1229,11 +1229,11 @@
                 "distance": 1
             },
             {
-                "pattern": "babe",
+                "pattern": "dddd",
                 "distance": 2
             },
             {
-                "pattern": "dbdc",
+                "pattern": "dcdc",
                 "distance": 2
             }
         ],
@@ -1287,15 +1287,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acdd",
+                "pattern": "addb",
                 "distance": 2
             },
             {
-                "pattern": "cdad",
+                "pattern": "dddd",
                 "distance": 2
             },
             {
-                "pattern": "cdbd",
+                "pattern": "ddbd",
                 "distance": 2
             }
         ],
@@ -1357,7 +1357,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dbdd",
+                "pattern": "dadd",
                 "distance": 1
             }
         ],
@@ -1411,15 +1411,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "edcc",
-                "distance": 1
-            },
-            {
-                "pattern": "dddc",
-                "distance": 1
-            },
-            {
                 "pattern": "eedc",
+                "distance": 1
+            },
+            {
+                "pattern": "cddc",
+                "distance": 1
+            },
+            {
+                "pattern": "bddc",
                 "distance": 1
             }
         ],
@@ -1473,15 +1473,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ddcd",
+                "pattern": "bdca",
                 "distance": 1
             },
             {
-                "pattern": "ddce",
+                "pattern": "cdca",
                 "distance": 1
             },
             {
-                "pattern": "ddcb",
+                "pattern": "ddcc",
                 "distance": 1
             }
         ],
@@ -1586,15 +1586,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdbd",
-                "distance": 1
-            },
-            {
                 "pattern": "cbbd",
                 "distance": 1
             },
             {
-                "pattern": "caba",
+                "pattern": "cacd",
+                "distance": 1
+            },
+            {
+                "pattern": "cabc",
                 "distance": 1
             }
         ],
@@ -1652,11 +1652,11 @@
                 "distance": 1
             },
             {
-                "pattern": "abab",
+                "pattern": "abbb",
                 "distance": 1
             },
             {
-                "pattern": "bbdb",
+                "pattern": "abab",
                 "distance": 1
             }
         ],
@@ -1745,7 +1745,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
@@ -1790,7 +1790,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -1830,13 +1830,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -1890,15 +1890,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcdd",
-                "distance": 1
-            },
-            {
-                "pattern": "dcee",
+                "pattern": "dcdc",
                 "distance": 1
             },
             {
                 "pattern": "dcdb",
+                "distance": 1
+            },
+            {
+                "pattern": "dcdd",
                 "distance": 1
             }
         ],
@@ -1941,13 +1941,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -1959,11 +1959,11 @@
                 "distance": 1
             },
             {
-                "pattern": "cddb",
+                "pattern": "cdcb",
                 "distance": 1
             },
             {
-                "pattern": "cdcb",
+                "pattern": "cddb",
                 "distance": 1
             }
         ],
@@ -2024,11 +2024,11 @@
                 "distance": 1
             },
             {
-                "pattern": "ddbc",
+                "pattern": "dcbc",
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "ddbc",
                 "distance": 1
             }
         ],
@@ -2068,13 +2068,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -2082,15 +2082,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cbcd",
-                "distance": 1
-            },
-            {
-                "pattern": "dbcd",
-                "distance": 1
-            },
-            {
                 "pattern": "abcd",
+                "distance": 1
+            },
+            {
+                "pattern": "bbcd",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcd",
                 "distance": 1
             }
         ],
@@ -2181,7 +2181,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004329004329004329,
                 "transition_score": 5.442417710521793,
                 "would_be_anomaly": false
@@ -2226,7 +2226,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -2242,7 +2242,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dbcc",
+                "pattern": "dddd",
                 "distance": 2
             }
         ],
@@ -2291,7 +2291,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -2358,15 +2358,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbaa",
+                "pattern": "abaa",
                 "distance": 2
             },
             {
-                "pattern": "ddac",
+                "pattern": "ddab",
                 "distance": 2
             },
             {
-                "pattern": "dcab",
+                "pattern": "aaaa",
                 "distance": 2
             }
         ],
@@ -2422,7 +2422,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bbaa",
+                "pattern": "abaa",
                 "distance": 2
             }
         ],
@@ -2583,15 +2583,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acdd",
-                "distance": 1
-            },
-            {
                 "pattern": "dadd",
                 "distance": 1
             },
             {
-                "pattern": "ccdd",
+                "pattern": "acdd",
+                "distance": 1
+            },
+            {
+                "pattern": "addb",
                 "distance": 2
             }
         ],
@@ -2634,13 +2634,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
-                "probability": 0.005847953216374269,
-                "transition_score": 5.14166355650266,
-                "would_be_anomaly": false
-            },
-            {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -2652,11 +2646,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dddc",
+                "pattern": "cddc",
                 "distance": 1
             },
             {
-                "pattern": "cddc",
+                "pattern": "bddc",
                 "distance": 1
             }
         ],
@@ -2747,7 +2741,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
@@ -2798,7 +2792,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -2838,13 +2832,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -2889,7 +2883,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -2905,7 +2899,7 @@
                 "distance": 1
             },
             {
-                "pattern": "babe",
+                "pattern": "ceee",
                 "distance": 2
             }
         ],
@@ -2970,7 +2964,7 @@
                 "distance": 1
             },
             {
-                "pattern": "ccdd",
+                "pattern": "cacd",
                 "distance": 2
             }
         ],
@@ -3024,7 +3018,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cbdc",
+                "pattern": "eedc",
                 "distance": 1
             },
             {
@@ -3032,7 +3026,7 @@
                 "distance": 1
             },
             {
-                "pattern": "eedc",
+                "pattern": "cddc",
                 "distance": 1
             }
         ],
@@ -3080,15 +3074,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "eecb",
+                "distance": 1
+            },
+            {
                 "pattern": "cdcb",
                 "distance": 1
             },
             {
-                "pattern": "edcc",
-                "distance": 1
-            },
-            {
-                "pattern": "ddcb",
+                "pattern": "eacb",
                 "distance": 1
             }
         ],
@@ -3148,7 +3142,7 @@
                 "distance": 1
             },
             {
-                "pattern": "daba",
+                "pattern": "dcbc",
                 "distance": 1
             },
             {
@@ -3195,7 +3189,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -3254,15 +3248,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "babe",
-                "distance": 1
-            },
-            {
-                "pattern": "babb",
-                "distance": 1
-            },
-            {
                 "pattern": "bdbc",
+                "distance": 1
+            },
+            {
+                "pattern": "bacc",
+                "distance": 1
+            },
+            {
+                "pattern": "cabc",
                 "distance": 1
             }
         ],
@@ -3316,11 +3310,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dbcc",
+                "pattern": "abcd",
                 "distance": 1
             },
             {
-                "pattern": "cbcc",
+                "pattern": "abac",
                 "distance": 1
             },
             {
@@ -3364,13 +3358,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -3415,7 +3409,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "addb",
                 "probability": 0.0036900369003690036,
                 "transition_score": 5.602118820879701,
                 "would_be_anomaly": false
@@ -3454,13 +3448,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "cddb",
+                "pattern": "cddd",
                 "probability": 0.0995260663507109,
                 "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cddd",
+                "pattern": "cddb",
                 "probability": 0.0995260663507109,
                 "transition_score": 2.3073356957526436,
                 "would_be_anomaly": false
@@ -3506,13 +3500,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -3564,7 +3558,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
@@ -3572,15 +3566,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcdd",
-                "distance": 1
-            },
-            {
-                "pattern": "dcee",
+                "pattern": "dcdc",
                 "distance": 1
             },
             {
                 "pattern": "dcdb",
+                "distance": 1
+            },
+            {
+                "pattern": "dcdd",
                 "distance": 1
             }
         ],
@@ -3622,13 +3616,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -3640,11 +3634,11 @@
                 "distance": 1
             },
             {
-                "pattern": "cddb",
+                "pattern": "cdcb",
                 "distance": 1
             },
             {
-                "pattern": "cdcb",
+                "pattern": "cddb",
                 "distance": 1
             }
         ],
@@ -3704,11 +3698,11 @@
                 "distance": 1
             },
             {
-                "pattern": "eebe",
+                "pattern": "ddbb",
                 "distance": 2
             },
             {
-                "pattern": "ddbd",
+                "pattern": "dcbb",
                 "distance": 2
             }
         ],
@@ -3770,7 +3764,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dbdc",
+                "pattern": "eedc",
                 "distance": 2
             }
         ],
@@ -3810,13 +3804,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -3824,15 +3818,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "bdca",
+                "distance": 1
+            },
+            {
                 "pattern": "bcca",
                 "distance": 1
             },
             {
                 "pattern": "bacc",
-                "distance": 1
-            },
-            {
-                "pattern": "bdca",
                 "distance": 1
             }
         ],
@@ -3874,13 +3868,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
@@ -3888,11 +3882,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "accc",
+                "pattern": "abac",
                 "distance": 1
             },
             {
-                "pattern": "abac",
+                "pattern": "accc",
                 "distance": 1
             },
             {
@@ -3938,13 +3932,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -3960,7 +3954,7 @@
                 "distance": 1
             },
             {
-                "pattern": "babe",
+                "pattern": "ceee",
                 "distance": 2
             }
         ],
@@ -4024,7 +4018,7 @@
                 "distance": 1
             },
             {
-                "pattern": "acdd",
+                "pattern": "cccc",
                 "distance": 2
             }
         ],
@@ -4078,15 +4072,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cbcc",
-                "distance": 1
-            },
-            {
                 "pattern": "cdcc",
                 "distance": 1
             },
             {
-                "pattern": "cacc",
+                "pattern": "cccc",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcc",
                 "distance": 1
             }
         ],
@@ -4144,11 +4138,11 @@
                 "distance": 1
             },
             {
-                "pattern": "accd",
+                "pattern": "bccd",
                 "distance": 1
             },
             {
-                "pattern": "bccd",
+                "pattern": "accd",
                 "distance": 1
             }
         ],
@@ -4202,7 +4196,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ccdd",
+                "pattern": "cdda",
                 "distance": 1
             },
             {
@@ -4210,7 +4204,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdda",
+                "pattern": "ccdd",
                 "distance": 1
             }
         ],
@@ -4250,7 +4244,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -4309,15 +4303,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "dcdc",
+                "distance": 1
+            },
+            {
+                "pattern": "dadd",
+                "distance": 1
+            },
+            {
                 "pattern": "dbdc",
-                "distance": 1
-            },
-            {
-                "pattern": "dacc",
-                "distance": 1
-            },
-            {
-                "pattern": "dddc",
                 "distance": 1
             }
         ],
@@ -4351,13 +4345,13 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "accd",
+                "pattern": "accb",
                 "probability": 0.06077348066298342,
                 "transition_score": 2.8006017584674554,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "accb",
+                "pattern": "accd",
                 "probability": 0.06077348066298342,
                 "transition_score": 2.8006017584674554,
                 "would_be_anomaly": false
@@ -4365,15 +4359,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "accc",
-                "distance": 1
-            },
-            {
                 "pattern": "cdcc",
                 "distance": 1
             },
             {
-                "pattern": "edcc",
+                "pattern": "bdcc",
+                "distance": 1
+            },
+            {
+                "pattern": "accc",
                 "distance": 1
             }
         ],
@@ -4421,7 +4415,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -4472,7 +4466,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -4517,7 +4511,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004329004329004329,
                 "transition_score": 5.442417710521793,
                 "would_be_anomaly": false
@@ -4568,7 +4562,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -4620,7 +4614,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -4692,15 +4686,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ddcb",
-                "distance": 1
-            },
-            {
-                "pattern": "dddb",
-                "distance": 1
-            },
-            {
                 "pattern": "ddbb",
+                "distance": 1
+            },
+            {
+                "pattern": "ddab",
+                "distance": 1
+            },
+            {
+                "pattern": "ddcb",
                 "distance": 1
             }
         ],
@@ -4758,11 +4752,11 @@
                 "distance": 1
             },
             {
-                "pattern": "eebe",
+                "pattern": "ddbb",
                 "distance": 2
             },
             {
-                "pattern": "ddbd",
+                "pattern": "dcbb",
                 "distance": 2
             }
         ],
@@ -4820,11 +4814,11 @@
                 "distance": 1
             },
             {
-                "pattern": "abab",
+                "pattern": "cbab",
                 "distance": 1
             },
             {
-                "pattern": "cbab",
+                "pattern": "abab",
                 "distance": 1
             }
         ],
@@ -4913,7 +4907,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
@@ -4925,7 +4919,7 @@
                 "distance": 1
             },
             {
-                "pattern": "abba",
+                "pattern": "abcd",
                 "distance": 1
             },
             {
@@ -4977,7 +4971,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -4985,7 +4979,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbee",
+                "pattern": "bbbe",
                 "distance": 1
             },
             {
@@ -5035,13 +5029,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
@@ -5053,11 +5047,11 @@
                 "distance": 1
             },
             {
-                "pattern": "bdcd",
+                "pattern": "bdbd",
                 "distance": 1
             },
             {
-                "pattern": "bdbd",
+                "pattern": "bdcd",
                 "distance": 1
             }
         ],
@@ -5099,13 +5093,13 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dccd",
+                "pattern": "ddbb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "would_be_anomaly": false
@@ -5121,7 +5115,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dbdd",
+                "pattern": "dadd",
                 "distance": 1
             }
         ],
@@ -5231,7 +5225,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -5243,7 +5237,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dddb",
+                "pattern": "bdda",
                 "distance": 1
             },
             {
@@ -5283,19 +5277,19 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ddac",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "ddab",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "ddac",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "addb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "would_be_anomaly": false
@@ -5303,15 +5297,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdad",
-                "distance": 1
-            },
-            {
-                "pattern": "ddcd",
-                "distance": 1
-            },
-            {
                 "pattern": "dddd",
+                "distance": 1
+            },
+            {
+                "pattern": "ddbd",
+                "distance": 1
+            },
+            {
+                "pattern": "ddab",
                 "distance": 1
             }
         ],
@@ -5420,7 +5414,7 @@
                 "distance": 1
             },
             {
-                "pattern": "acdd",
+                "pattern": "bddb",
                 "distance": 2
             },
             {
@@ -5478,15 +5472,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ddcd",
-                "distance": 1
-            },
-            {
                 "pattern": "dddd",
                 "distance": 1
             },
             {
                 "pattern": "ddbd",
+                "distance": 1
+            },
+            {
+                "pattern": "ddcd",
                 "distance": 1
             }
         ],
@@ -5526,7 +5520,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "would_be_anomaly": false
@@ -5534,15 +5528,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dbdc",
-                "distance": 1
-            },
-            {
-                "pattern": "dddc",
+                "pattern": "eedc",
                 "distance": 1
             },
             {
                 "pattern": "dcdc",
+                "distance": 1
+            },
+            {
+                "pattern": "dbdc",
                 "distance": 1
             }
         ],
@@ -5590,7 +5584,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ccdd",
+                "pattern": "addb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "would_be_anomaly": false
@@ -5598,7 +5592,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "edcc",
+                "pattern": "bdca",
                 "distance": 1
             },
             {
@@ -5606,7 +5600,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bdca",
+                "pattern": "edcc",
                 "distance": 1
             }
         ],
@@ -5663,15 +5657,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcab",
-                "distance": 1
-            },
-            {
                 "pattern": "dcac",
                 "distance": 1
             },
             {
-                "pattern": "dccd",
+                "pattern": "dcab",
+                "distance": 1
+            },
+            {
+                "pattern": "dcbb",
                 "distance": 2
             }
         ],
@@ -5725,15 +5719,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdad",
-                "distance": 1
-            },
-            {
                 "pattern": "cacd",
                 "distance": 1
             },
             {
-                "pattern": "ccdd",
+                "pattern": "cdad",
+                "distance": 1
+            },
+            {
+                "pattern": "baab",
                 "distance": 2
             }
         ],
@@ -5781,15 +5775,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "aaaa",
-                "distance": 1
-            },
-            {
                 "pattern": "aaba",
                 "distance": 1
             },
             {
-                "pattern": "acdd",
+                "pattern": "aaaa",
+                "distance": 1
+            },
+            {
+                "pattern": "addb",
                 "distance": 2
             }
         ],
