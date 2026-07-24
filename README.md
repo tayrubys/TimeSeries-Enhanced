@@ -138,5 +138,11 @@ Analiz sonucunda normal geçişlerin ortalama support değeri `17.4974`, anomaly
 
 Validation sonucunda en iyi ayar tekrar `support_weight=0.0` olarak seçildi. Test sonucunda Precision `0.2907`, Recall `0.8929` ve F1-score `0.4386` olarak elde edildi. Sonuç mevcut Dual ALERGIA modeliyle aynı kaldığı için Support-Aware yaklaşım final modele dahil edilmedi.
 
+### Class-Relative Support Ratio Denemesi
+
+Geçiş sayılarının normal veya anomaly modelini ne ölçüde desteklediğini dikkate alan Class-Relative Support Ratio yaklaşımı denenmiştir. Mevcut başarılı ALERGIA yapısı sabit tutulmuş; yalnızca `support_weight`, `beta` ve `tau` parametreleri validation üzerinden taranmıştır.
+
+Support kullanılan en iyi ayarda validation F1 `0.2824` olarak elde edilmiş, ancak mevcut modelin `0.2857` sonucunu geçememiştir. Validation tekrar `support_weight=0.0` değerini seçmiş ve test F1 `0.4386` olarak değişmeden kalmıştır. Bu nedenle yöntem final modele dahil edilmemiş ve deney kodları kaldırılmıştır.
+
 
 
