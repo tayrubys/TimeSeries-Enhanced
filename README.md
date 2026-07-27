@@ -22,20 +22,11 @@ SKAB veri seti daha dengeli olduğu için herhangi bir veri artırma yöntemi uy
 | Model | Window | Accuracy | Precision | Recall | F1-score |
 |---|---:|---:|---:|---:|---:|
 | LSTM | 10 | 0.8905 ± 0.0386 | 0.8864 ± 0.1336 | 0.8193 ± 0.0800 | 0.8416 ± 0.0431 |
-| LSTM | 20 | ... ± ... | ... ± ... | ... ± ... | ... ± ... |
+| LSTM | 20 | 0.8933 ± 0.0476 | 0.8978 ± 0.1292 | 0.8233 ± 0.0808 | 0.8477 ± 0.0508 |
 | LSTM | 40 | 0.9121 ± 0.0356 | 0.9096 ± 0.0865 | 0.8446 ± 0.0778 | 0.8725 ± 0.0546 |
 | GRU | 10 | 0.9016 ± 0.0235 | 0.9019 ± 0.1010 | 0.8237 ± 0.0739 | 0.8545 ± 0.0303 |
-| GRU | 20 | ... ± ... | ... ± ... | ... ± ... | ... ± ... |
+| GRU | 20 | 0.8900 ± 0.0534 | 0.8879 ± 0.1414 | 0.8346 ± 0.0811 | 0.8473 ± 0.0532 |
 | GRU | 40 | 0.9081 ± 0.0344 | 0.9112 ± 0.0984 | 0.8382 ± 0.1095 | 0.8652 ± 0.0579 |
-
-### SKAB Değerlendirmesi
-
-Mevcut sonuçlara göre `Window=40`, hem LSTM hem de GRU modelinde `Window=10` değerinden daha yüksek F1-score sağlamıştır. En yüksek F1-score, `Window=40` kullanılan LSTM modeliyle `0.8725 ± 0.0546` olarak elde edilmiştir.
-
-
-## Genel Değerlendirme
-
-BATADAL ve SKAB sonuçları birlikte incelenerek pencere boyutunun farklı sınıf dağılımlarına sahip veri setlerindeki etkisi karşılaştırılacaktır. Ayrıca LSTM ve GRU modellerinin performans ve kararlılık açısından farklılıkları değerlendirilecektir.
 
 ## 2. Batadal Veri Setinde HiperParametreleri Optimizasyonu
 ## 2.1. LR=0.0005, Dropout=0.4/0.3, Patience=8 
