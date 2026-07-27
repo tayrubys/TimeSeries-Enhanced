@@ -13,6 +13,7 @@ class ProbabilisticAutomata:
         smoothing_alpha=1.0,
         scoring_mode="probability",
         nll_epsilon=1e-12,
+        score_window=1,
     ):
         self.smoothing = smoothing
         self.max_order = max_order
@@ -20,6 +21,7 @@ class ProbabilisticAutomata:
         self.smoothing_alpha = smoothing_alpha
         self.scoring_mode = scoring_mode
         self.nll_epsilon = nll_epsilon
+        self.score_window = max(int(score_window), 1)
 
         # context -> next_state -> count
         # context tuple olarak tutulur:
@@ -89,7 +91,7 @@ class ProbabilisticAutomata:
 
     def _get_transition_score(self, probability):
         """
-        Seçilen scoring moduna göre transition score üretir.
+        Seçilen scoring moduna göre tek geçiş skoru üretir.
 
         probability:
             P(next_pattern | selected_context)
@@ -108,16 +110,34 @@ class ProbabilisticAutomata:
 
         return float(probability)
 
-    def _is_anomaly(self, probability, threshold):
+    def _is_anomaly(self, probability, anomaly_score, threshold):
         """
         Scoring moduna göre anomaly kararı üretir.
+
+        probability:
+            Ham geçiş olasılığı.
+
+        anomaly_score:
+            probability modunda ham olasılık,
+            negative_log modunda ise windowed negative log score.
         """
 
         if self.scoring_mode == "negative_log":
-            transition_score = self._get_transition_score(probability)
-            return transition_score > threshold
+            return anomaly_score > threshold
 
         return probability < threshold
+
+    def _get_windowed_score(self, recent_transition_scores):
+        """
+        Negative log scoring için son score_window adet geçiş skorunun
+        ortalamasını döndürür.
+        """
+
+        if not recent_transition_scores:
+            return 0.0
+
+        window_values = recent_transition_scores[-self.score_window:]
+        return float(np.mean(window_values))
 
     def _select_best_suffix_context(self, transition_history):
         max_available_order = min(self.max_order, len(transition_history))
@@ -187,6 +207,10 @@ class ProbabilisticAutomata:
         transition_history = [first_state]
         cumulative_path_prob = 1.0
 
+        # Negative log modunda karar artık tek geçiş yerine
+        # son score_window adet geçiş skorunun ortalamasıyla verilir.
+        recent_transition_scores = []
+
         for t in range(1, len(test_patterns)):
             incoming_pattern = test_patterns[t]
 
@@ -220,10 +244,16 @@ class ProbabilisticAutomata:
             prob = self._get_context_probability(selected_context, mapped_to)
             transition_score = self._get_transition_score(prob)
 
+            if self.scoring_mode == "negative_log":
+                recent_transition_scores.append(transition_score)
+                anomaly_score = self._get_windowed_score(recent_transition_scores)
+            else:
+                anomaly_score = transition_score
+
             cumulative_path_prob *= prob
             path_probability = float(cumulative_path_prob)
 
-            is_anomaly = self._is_anomaly(prob, anomaly_threshold)
+            is_anomaly = self._is_anomaly(prob, anomaly_score, anomaly_threshold)
             decision = "anomaly" if is_anomaly else "normal"
 
             # Açıklanabilirlikte güven skoru olarak olasılığı koruyoruz.
@@ -245,7 +275,23 @@ class ProbabilisticAutomata:
                 for alt_pattern, alt_prob in possible_transitions[:3]:
                     if alt_pattern != mapped_to:
                         alt_score = self._get_transition_score(alt_prob)
-                        alt_is_anomaly = self._is_anomaly(alt_prob, anomaly_threshold)
+
+                        if self.scoring_mode == "negative_log":
+                            # Counterfactual için mevcut geçişi alternatif skorla
+                            # değiştirip aynı pencere ortalamasını hesaplıyoruz.
+                            previous_scores = recent_transition_scores[:-1]
+                            alt_score_window_values = (
+                                previous_scores + [alt_score]
+                            )[-self.score_window:]
+                            alt_anomaly_score = float(np.mean(alt_score_window_values))
+                        else:
+                            alt_anomaly_score = alt_score
+
+                        alt_is_anomaly = self._is_anomaly(
+                            alt_prob,
+                            alt_anomaly_score,
+                            anomaly_threshold,
+                        )
                         alt_decision = "anomaly" if alt_is_anomaly else "normal"
 
                         counterfactuals.append(
@@ -253,6 +299,7 @@ class ProbabilisticAutomata:
                                 "pattern": alt_pattern,
                                 "probability": float(alt_prob),
                                 "transition_score": float(alt_score),
+                                "anomaly_score": float(alt_anomaly_score),
                                 "would_be_anomaly": alt_decision == "anomaly",
                             }
                         )
@@ -285,8 +332,10 @@ class ProbabilisticAutomata:
                 log_entry["selected_context_count"] = float(selected_context_count)
                 log_entry["model_variant"] = "probabilistic_suffix_tree"
                 log_entry["scoring_mode"] = self.scoring_mode
+                log_entry["score_window"] = int(self.score_window)
                 log_entry["transition_probability"] = float(prob)
                 log_entry["transition_score"] = float(transition_score)
+                log_entry["anomaly_score"] = float(anomaly_score)
                 log_entry["anomaly_threshold"] = float(anomaly_threshold)
 
             explainability_logs.append(log_entry)

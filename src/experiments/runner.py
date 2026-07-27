@@ -23,6 +23,10 @@ def load_json_config(config_path="src/config/settings.json"):
         # negative_log: -log(P(next | context)) skoru kullanır.
         "pst_scoring_mode": "negative_log",
         "pst_nll_epsilon": 1e-12,
+        "pst_score_window": 1,
+        "pst_score_windows": [1, 3, 5, 10],
+        "batadal_pst_score_window": 1,
+        "skab_pst_score_window": 1,
 
         "anomaly_threshold": 0.05,
         "skab_anomaly_threshold": 0.1053605,
@@ -94,6 +98,7 @@ def build_suffix_automata(config):
         smoothing_alpha=config.get("suffix_smoothing_alpha", 1.0),
         scoring_mode=config.get("pst_scoring_mode", "probability"),
         nll_epsilon=config.get("pst_nll_epsilon", 1e-12),
+        score_window=config.get("pst_score_window", 1),
     )
 
 def get_dataset_specific_config(config, dataset_name):
@@ -136,6 +141,11 @@ def get_dataset_specific_config(config, dataset_name):
     dataset_config["anomaly_threshold"] = config.get(
         f"{dataset_key}_anomaly_threshold",
         config.get("anomaly_threshold", 0.05),
+    )
+
+    dataset_config["pst_score_window"] = config.get(
+        f"{dataset_key}_pst_score_window",
+        config.get("pst_score_window", 1),
     )
 
     return dataset_config
@@ -198,6 +208,7 @@ def run_experiment_pipeline(
         "anomaly_threshold": config.get("anomaly_threshold"),
         "scoring_mode": config.get("pst_scoring_mode", "probability"),
         "pst_nll_epsilon": config.get("pst_nll_epsilon", 1e-12),
+        "pst_score_window": config.get("pst_score_window", 1),
         **complexity_fields,
     }
 
@@ -967,21 +978,14 @@ def run_skab_fold_aware_refined_search(config):
     print(f"- {best_path}")
     print(f"- {stability_path}")
 
-def run_nll_threshold_tuning(config):
+def run_windowed_nll_threshold_tuning(config):
     """
-    PST negative log scoring için threshold tuning yapar.
-
-    Bu fonksiyon PST/SAX parametrelerini sabit tutar.
-    Sadece negative log anomaly_threshold değerlerini tarar.
-
-    BATADAL:
-        5 seed
-
-    SKAB:
-        5 fold x 5 seed
+    PST windowed negative log scoring için score_window + threshold tuning yapar.
+    PST/SAX parametreleri sabit tutulur.
+    Sadece score_window ve anomaly_threshold değerleri taranır.
     """
 
-    print("\n--- PST NEGATIVE LOG THRESHOLD TUNING BAŞLATILIYOR ---")
+    print("\n--- PST WINDOWED NEGATIVE LOG THRESHOLD TUNING BAŞLATILIYOR ---")
 
     if config.get("pst_scoring_mode") != "negative_log":
         print(
@@ -989,23 +993,28 @@ def run_nll_threshold_tuning(config):
             "Bu tuning fonksiyonu negative_log için tasarlandı."
         )
 
+    score_windows = config.get(
+        "pst_score_windows",
+        [1, 3, 5, 10],
+    )
+
     batadal_thresholds = config.get(
-        "batadal_nll_thresholds",
-        [4.0, 5.0, 6.0, 6.907755, 7.5, 8.0, 9.0, 10.0],
+        "batadal_windowed_nll_thresholds",
+        [3.0, 4.0, 5.0, 6.0, 6.907755, 7.5, 8.0, 9.0, 10.0],
     )
 
     skab_thresholds = config.get(
-        "skab_nll_thresholds",
+        "skab_windowed_nll_thresholds",
         [0.05, 0.1053605, 0.2, 0.35, 0.5, 0.7, 0.9, 1.2, 1.5],
     )
 
     tuning_results = []
 
     # -------------------------
-    # BATADAL NLL threshold tuning
+    # BATADAL windowed NLL tuning
     # -------------------------
     if os.path.exists("data/processed/batadal_X_train_adasyn_pc1.csv"):
-        print("\n>> BATADAL PST-NLL Threshold Tuning...")
+        print("\n>> BATADAL PST Windowed-NLL Tuning...")
 
         X_train_b = pd.read_csv(
             "data/processed/batadal_X_train_adasyn_pc1.csv"
@@ -1024,35 +1033,114 @@ def run_nll_threshold_tuning(config):
         base_batadal_config = get_dataset_specific_config(config, "BATADAL")
         base_batadal_config["pst_scoring_mode"] = "negative_log"
 
-        for threshold in batadal_thresholds:
-            print(f"\n[BATADAL] NLL threshold={threshold}")
-
-            threshold_rows = []
-
-            for seed in config["seeds"]:
-                candidate_config = {
-                    **base_batadal_config,
-                    "anomaly_threshold": threshold,
-                }
-
-                res, _ = run_experiment_pipeline(
-                    X_train_b,
-                    X_test_b,
-                    y_test_b,
-                    candidate_config,
-                    "BATADAL",
-                    "nll_threshold_search",
-                    seed=seed,
+        for score_window in score_windows:
+            for threshold in batadal_thresholds:
+                print(
+                    f"\n[BATADAL] "
+                    f"score_window={score_window}, "
+                    f"NLL threshold={threshold}"
                 )
 
-                for row in res:
-                    row["tuning_type"] = "pst_nll_threshold_tuning"
-                    row["threshold_candidate"] = threshold
-                    tuning_results.append(row)
-                    threshold_rows.append(row)
+                candidate_rows = []
 
-            threshold_df = pd.DataFrame(threshold_rows)
-            original_df = threshold_df[threshold_df["scenario"] == "original"]
+                for seed in config["seeds"]:
+                    candidate_config = {
+                        **base_batadal_config,
+                        "pst_score_window": score_window,
+                        "anomaly_threshold": threshold,
+                    }
+
+                    res, _ = run_experiment_pipeline(
+                        X_train_b,
+                        X_test_b,
+                        y_test_b,
+                        candidate_config,
+                        "BATADAL",
+                        "windowed_nll_search",
+                        seed=seed,
+                    )
+
+                    for row in res:
+                        row["tuning_type"] = "pst_windowed_nll_tuning"
+                        row["score_window_candidate"] = score_window
+                        row["threshold_candidate"] = threshold
+                        tuning_results.append(row)
+                        candidate_rows.append(row)
+
+                candidate_df = pd.DataFrame(candidate_rows)
+                original_df = candidate_df[candidate_df["scenario"] == "original"]
+
+                if not original_df.empty:
+                    print(
+                        "  -> Original F1 mean="
+                        f"{original_df['f1_score'].mean():.4f}, "
+                        "precision mean="
+                        f"{original_df['precision'].mean():.4f}, "
+                        "recall mean="
+                        f"{original_df['recall'].mean():.4f}"
+                    )
+
+    # -------------------------
+    # SKAB windowed NLL tuning
+    # -------------------------
+    print("\n>> SKAB PST Windowed-NLL Tuning...")
+
+    base_skab_config = get_dataset_specific_config(config, "SKAB")
+    base_skab_config["pst_scoring_mode"] = "negative_log"
+
+    for score_window in score_windows:
+        for threshold in skab_thresholds:
+            print(
+                f"\n[SKAB] "
+                f"score_window={score_window}, "
+                f"NLL threshold={threshold}"
+            )
+
+            candidate_rows = []
+
+            for fold in range(1, 6):
+                train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
+                test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
+                y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
+
+                if not (
+                    os.path.exists(train_file)
+                    and os.path.exists(test_file)
+                    and os.path.exists(y_test_file)
+                ):
+                    print(f"[WARN] SKAB fold {fold} dosyaları bulunamadı, atlandı.")
+                    continue
+
+                X_train_s = pd.read_csv(train_file).values.flatten()
+                X_test_s = pd.read_csv(test_file).values.flatten()
+                y_test_s = pd.read_csv(y_test_file).values.flatten()
+
+                for seed in config["seeds"]:
+                    candidate_config = {
+                        **base_skab_config,
+                        "pst_score_window": score_window,
+                        "anomaly_threshold": threshold,
+                    }
+
+                    res, _ = run_experiment_pipeline(
+                        X_train_s,
+                        X_test_s,
+                        y_test_s,
+                        candidate_config,
+                        "SKAB",
+                        f"fold_{fold}_windowed_nll_search",
+                        seed=seed,
+                    )
+
+                    for row in res:
+                        row["tuning_type"] = "pst_windowed_nll_tuning"
+                        row["score_window_candidate"] = score_window
+                        row["threshold_candidate"] = threshold
+                        tuning_results.append(row)
+                        candidate_rows.append(row)
+
+            candidate_df = pd.DataFrame(candidate_rows)
+            original_df = candidate_df[candidate_df["scenario"] == "original"]
 
             if not original_df.empty:
                 print(
@@ -1064,73 +1152,8 @@ def run_nll_threshold_tuning(config):
                     f"{original_df['recall'].mean():.4f}"
                 )
 
-    # -------------------------
-    # SKAB NLL threshold tuning
-    # -------------------------
-    print("\n>> SKAB PST-NLL Threshold Tuning...")
-
-    base_skab_config = get_dataset_specific_config(config, "SKAB")
-    base_skab_config["pst_scoring_mode"] = "negative_log"
-
-    for threshold in skab_thresholds:
-        print(f"\n[SKAB] NLL threshold={threshold}")
-
-        threshold_rows = []
-
-        for fold in range(1, 6):
-            train_file = f"data/processed/skab_fold{fold}_X_train_pc1.csv"
-            test_file = f"data/processed/skab_fold{fold}_X_test_pc1.csv"
-            y_test_file = f"data/processed/skab_fold{fold}_y_test.csv"
-
-            if not (
-                os.path.exists(train_file)
-                and os.path.exists(test_file)
-                and os.path.exists(y_test_file)
-            ):
-                print(f"[WARN] SKAB fold {fold} dosyaları bulunamadı, atlandı.")
-                continue
-
-            X_train_s = pd.read_csv(train_file).values.flatten()
-            X_test_s = pd.read_csv(test_file).values.flatten()
-            y_test_s = pd.read_csv(y_test_file).values.flatten()
-
-            for seed in config["seeds"]:
-                candidate_config = {
-                    **base_skab_config,
-                    "anomaly_threshold": threshold,
-                }
-
-                res, _ = run_experiment_pipeline(
-                    X_train_s,
-                    X_test_s,
-                    y_test_s,
-                    candidate_config,
-                    "SKAB",
-                    f"fold_{fold}_nll_threshold_search",
-                    seed=seed,
-                )
-
-                for row in res:
-                    row["tuning_type"] = "pst_nll_threshold_tuning"
-                    row["threshold_candidate"] = threshold
-                    tuning_results.append(row)
-                    threshold_rows.append(row)
-
-        threshold_df = pd.DataFrame(threshold_rows)
-        original_df = threshold_df[threshold_df["scenario"] == "original"]
-
-        if not original_df.empty:
-            print(
-                "  -> Original F1 mean="
-                f"{original_df['f1_score'].mean():.4f}, "
-                "precision mean="
-                f"{original_df['precision'].mean():.4f}, "
-                "recall mean="
-                f"{original_df['recall'].mean():.4f}"
-            )
-
     if not tuning_results:
-        print("[WARN] PST-NLL threshold tuning sonucu üretilemedi.")
+        print("[WARN] PST windowed-NLL tuning sonucu üretilemedi.")
         return
 
     os.makedirs("results/outputs/pst_ablation", exist_ok=True)
@@ -1139,28 +1162,29 @@ def run_nll_threshold_tuning(config):
 
     all_path = (
         "results/outputs/pst_ablation/"
-        "pst_nll_threshold_tuning_results.csv"
+        "pst_windowed_nll_tuning_results.csv"
     )
 
     summary_path = (
         "results/outputs/pst_ablation/"
-        "pst_nll_threshold_tuning_summary.csv"
+        "pst_windowed_nll_tuning_summary.csv"
     )
 
     best_original_path = (
         "results/outputs/pst_ablation/"
-        "pst_nll_threshold_tuning_best_original.csv"
+        "pst_windowed_nll_tuning_best_original.csv"
     )
 
     stability_path = (
         "results/outputs/pst_ablation/"
-        "pst_nll_threshold_tuning_stability.csv"
+        "pst_windowed_nll_tuning_stability.csv"
     )
 
     df_tuning.to_csv(all_path, index=False)
 
     group_cols = [
         "dataset",
+        "score_window_candidate",
         "threshold_candidate",
         "scenario",
         "window_size",
@@ -1169,6 +1193,7 @@ def run_nll_threshold_tuning(config):
         "suffix_min_context_count",
         "suffix_smoothing_alpha",
         "scoring_mode",
+        "pst_score_window",
     ]
 
     summary_df = (
@@ -1218,6 +1243,7 @@ def run_nll_threshold_tuning(config):
         .groupby(
             [
                 "dataset",
+                "score_window_candidate",
                 "threshold_candidate",
                 "window_size",
                 "alphabet_size",
@@ -1225,6 +1251,7 @@ def run_nll_threshold_tuning(config):
                 "suffix_min_context_count",
                 "suffix_smoothing_alpha",
                 "scoring_mode",
+                "pst_score_window",
             ]
         )
         .agg(
@@ -1251,18 +1278,18 @@ def run_nll_threshold_tuning(config):
 
     stability_df.to_csv(stability_path, index=False)
 
-    print("\n--- PST-NLL THRESHOLD TUNING BEST ORIGINAL ---")
+    print("\n--- PST WINDOWED-NLL BEST ORIGINAL ---")
     print(best_original)
 
-    print("\n--- PST-NLL THRESHOLD TUNING STABILITY ---")
+    print("\n--- PST WINDOWED-NLL STABILITY ---")
     print(stability_df.groupby("dataset").head(10))
 
-    print("\nPST-NLL threshold tuning dosyaları kaydedildi:")
+    print("\nPST windowed-NLL tuning dosyaları kaydedildi:")
     print(f"- {all_path}")
     print(f"- {summary_path}")
     print(f"- {best_original_path}")
     print(f"- {stability_path}")
-
+    
 def main():
     config = load_json_config()
     seeds = config["seeds"]
@@ -1290,6 +1317,7 @@ def main():
         f"min_context_count={config_batadal_preview['suffix_min_context_count']}, "
         f"smoothing_alpha={config_batadal_preview['suffix_smoothing_alpha']}, "
         f"scoring_mode={config_batadal_preview.get('pst_scoring_mode', 'probability')}, "
+        f"score_window={config_batadal_preview.get('pst_score_window', 1)}, "
         f"threshold={config_batadal_preview['anomaly_threshold']}"
     )
 
@@ -1301,6 +1329,7 @@ def main():
         f"min_context_count={config_skab_preview['suffix_min_context_count']}, "
         f"smoothing_alpha={config_skab_preview['suffix_smoothing_alpha']}, "
         f"scoring_mode={config_skab_preview.get('pst_scoring_mode', 'probability')}, "
+        f"score_window={config_skab_preview.get('pst_score_window', 1)}, "
         f"threshold={config_skab_preview['anomaly_threshold']}"
     )
 
@@ -1333,6 +1362,7 @@ def main():
                 f"suffix_max_order={config_batadal.get('suffix_max_order', 3)}, "
                 f"min_context_count={config_batadal.get('suffix_min_context_count', 2)}, "
                 f"scoring_mode={config_batadal.get('pst_scoring_mode', 'probability')}, "
+                f"score_window={config_batadal.get('pst_score_window', 1)}, "
                 f"threshold={config_batadal['anomaly_threshold']} çalışıyor..."
             )
 
@@ -1384,6 +1414,7 @@ def main():
                     f"suffix_max_order={config_skab.get('suffix_max_order', 3)}, "
                     f"min_context_count={config_skab.get('suffix_min_context_count', 2)}, "
                     f"scoring_mode={config_skab.get('pst_scoring_mode', 'probability')}, "
+                    f"score_window={config_skab.get('pst_score_window', 1)}, "
                     f"threshold={config_skab['anomaly_threshold']} çalışıyor..."
                 )
 
@@ -1458,7 +1489,7 @@ def main():
     #run_parameter_sensitivity_analysis(config)
     #validate_top_skab_candidates(config)
     #run_skab_fold_aware_refined_search(config)
-    run_nll_threshold_tuning(config)
+    run_windowed_nll_threshold_tuning(config)
     try:
         from src.experiments.statistical_tests import main as run_statistical_main
 
