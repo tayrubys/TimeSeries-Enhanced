@@ -102,3 +102,77 @@ Sınıf etiketleri değil olasılık çıktıları birleştirildi. GRU seed ense
 ## Değerlendirme
 
 İki model birbirine çok yakın sonuç verdi (LSTM 0.8214 vs GRU 0.8192); LSTM Accuracy/Recall/F1'de, GRU Precision/Val-F1'de hafifçe önde. Ensemble her iki modelde de tekil ortalamayı geçti.
+
+## Threshold Seçimi
+
+Kod, aşağıdaki aralıkta threshold araması yapmaktadır:
+
+```python
+thresholds = np.arange(0.01, 0.51, 0.01)
+```
+
+Her threshold için validation F1-score hesaplanır ve en yüksek F1-score'u sağlayan değer seçilir. Seçilen threshold daha sonra test verisine uygulanır.
+
+Threshold test etiketlerine göre seçilmediği için test verisinden doğrudan bilgi sızıntısı yapılmaz.
+
+## Seed Ensemble Mantığı
+
+Ensemble işleminde seed'lerin F1-score değerleri ortalanmaz. Her test örneği için beş modelin ürettiği anomali olasılıkları ortalanır.
+
+Örneğin aynı test sequence'i için modeller şu olasılıkları üretmiş olsun:
+
+```text
+Seed 42   → 0.30
+Seed 123  → 0.18
+Seed 2026 → 0.25
+Seed 7    → 0.40
+Seed 999  → 0.32
+```
+
+Ensemble olasılığı:
+
+```text
+(0.30 + 0.18 + 0.25 + 0.40 + 0.32) / 5 = 0.29
+```
+
+Bu işlem tüm test örnekleri için ayrı ayrı gerçekleştirilir. Daha sonra validation kümesinden seçilen ortak threshold kullanılarak final sınıf tahminleri oluşturulur.
+
+Kod içerisindeki temel işlem:
+
+```python
+ensemble_val_prob = val_probability_matrix.mean(axis=0)
+ensemble_test_prob = test_probability_matrix.mean(axis=0)
+
+## Deney Akışı
+ 
+Seed ensemble deneyleri (BATADAL ve SKAB) aşağıdaki ortak akışı takip eder:
+ 
+```text
+Train / validation / test sequence verilerinin yüklenmesi
+                ↓
+LSTM ve GRU modellerinin oluşturulması
+                ↓
+Her modelin 5 farklı seed ile ayrı ayrı eğitilmesi
+        (seed: 42, 123, 2026, 7, 999)
+                ↓
+Her seed için validation ve test olasılıklarının kaydedilmesi
+                ↓
+Validation kümesinde threshold araması (0.01–0.50/0.51)
+        → en yüksek F1-score'u sağlayan threshold seçilir
+                ↓
+Seçilen tekil threshold'un test verisine uygulanması
+        → her seed için Accuracy / Precision / Recall / F1 kaydedilir
+                ↓
+5 modelin validation olasılıklarının örnek bazında ortalanması
+                ↓
+Ortalama validation olasılıkları üzerinden ortak ensemble threshold seçimi
+        (test etiketleri kullanılmaz → sızıntı yok)
+                ↓
+5 modelin test olasılıklarının örnek bazında ortalanması
+                ↓
+Ortak threshold ile final 0/1 ensemble tahmininin oluşturulması
+                ↓
+Ensemble için Accuracy / Precision / Recall / F1-score hesaplanması
+```
+ 
+**Not:** BATADAL deneyinde sequence boyutu 10, SKAB deneyinde ise pencere boyutu 20'dir. SKAB deneyi bu aşamada yalnızca Fold 1 üzerinde çalıştırılmıştır; final değerlendirmede 5 fold üzerinde tekrarlanması planlanmaktadır.
