@@ -9,7 +9,6 @@ import tensorflow as tf
 
 from pathlib import Path
 from tensorflow.keras.callbacks import EarlyStopping
-from sklearn.utils.class_weight import compute_class_weight
 
 from src.models.deep_model import build_lstm_model, build_gru_model
 from src.experiments.evaluator import evaluate_binary_classification
@@ -60,7 +59,9 @@ def build_model(model_type, input_shape):
     raise ValueError(f"Desteklenmeyen model tipi: {model_type}")
 
 
-def find_best_threshold(y_true, y_pred_prob, thresholds):
+def find_best_threshold(y_true, y_pred_prob):
+    thresholds = np.arange(0.01, 0.51, 0.01)
+
     best_threshold, best_metrics, best_f1 = None, None, -1
 
     for threshold in thresholds:
@@ -104,16 +105,7 @@ def train_one_skab_experiment(model_type, fold_id, seed):
         restore_best_weights=True,
     )
 
-    class_weights_array = compute_class_weight(
-        class_weight="balanced",
-        classes=np.array([0, 1]),
-        y=y_tr.astype(int),
-    )
-    class_weights = {
-        0: class_weights_array[0],
-        1: class_weights_array[1],
-    }
-
+    # BATADAL betiğiyle tutarlılık için class_weight kullanılmıyor.
     model.fit(
         X_tr,
         y_tr,
@@ -121,7 +113,7 @@ def train_one_skab_experiment(model_type, fold_id, seed):
         epochs=cfg["epochs"],
         batch_size=cfg["batch_size"],
         callbacks=[early_stopping],
-        class_weight=class_weights,
+        class_weight=None,
         shuffle=False,
         verbose=1,
     )
@@ -130,7 +122,6 @@ def train_one_skab_experiment(model_type, fold_id, seed):
     best_threshold, val_metrics = find_best_threshold(
         y_val,
         y_val_pred_prob,
-        cfg["thresholds"],
     )
 
     y_test_pred_prob = model.predict(X_test, verbose=0).ravel()
@@ -174,7 +165,6 @@ def evaluate_fold_seed_ensemble(
     test_probabilities,
     y_val,
     y_test,
-    thresholds,
 ):
     """Aynı fold'da eğitilen seed modellerinin olasılıklarını ortalar."""
     val_probability_matrix = np.stack(val_probabilities, axis=0)
@@ -187,7 +177,6 @@ def evaluate_fold_seed_ensemble(
     best_threshold, val_metrics = find_best_threshold(
         y_val,
         ensemble_val_prob,
-        thresholds,
     )
 
     ensemble_test_pred = (ensemble_test_prob >= best_threshold).astype(int)
@@ -283,7 +272,7 @@ def main():
     # Ensemble aynı fold'un aynı örnekleri üzerinde kurulacağı için
     # döngü sırası model -> fold -> seed şeklindedir.
     for model_type in ["LSTM", "GRU"]:
-        for fold_id in range(1, 6):
+        for fold_id in range(1, 2):
             val_probabilities = []
             test_probabilities = []
             ensemble_y_val = None
@@ -325,7 +314,6 @@ def main():
                 test_probabilities=test_probabilities,
                 y_val=ensemble_y_val,
                 y_test=ensemble_y_test,
-                thresholds=cfg["thresholds"],
             )
             ensemble_results.append(ensemble_result)
             ensemble_probability_outputs.append(probability_df)

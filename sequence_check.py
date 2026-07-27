@@ -1,7 +1,7 @@
 import numpy as np
 
 X_train = np.load(
-"data2/processed/robust_adasyn/batadal_X_train_seq.npy",
+"data/processed/batadal_X_train_seq.npy",
     mmap_mode="r"
 )
 

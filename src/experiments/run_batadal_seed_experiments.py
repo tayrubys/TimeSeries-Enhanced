@@ -11,7 +11,7 @@ from src.experiments.evaluator import evaluate_binary_classification
 from src.config import get_dl_config
 
 
-def load_batadal_sequence_data(processed_dir="data2/processed/robust_adasyn",balancing_method="class_weight", model_type="GRU"):
+def load_batadal_sequence_data(processed_dir="data/processed/",balancing_method="class_weight", model_type="GRU"):
     X_train = np.load(f"{processed_dir}/batadal_X_train_seq.npy").astype("float32")
     y_train = np.load(f"{processed_dir}/batadal_y_train_seq.npy").astype("float32")
     X_val   = np.load(f"{processed_dir}/batadal_X_val_seq.npy").astype("float32")
@@ -59,12 +59,11 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
     np.random.seed(seed)
     tf.random.set_seed(seed)
 
-    # Değişiklik: model_type parametresi artık veri yükleyiciye iletiliyor
     X_train, y_train, X_val, y_val, X_test, y_test = load_batadal_sequence_data(
         balancing_method=balancing_method,
         model_type=model_type
     )
-    actual_window_size = X_train.shape[1]  # Pencere boyutu, veri yükleyiciye göre dinamik olarak belirleniyor
+    actual_window_size = X_train.shape[1]  
     cfg["sequence_window_size"] = actual_window_size
 
     model = build_model(model_type=model_type, input_shape=X_train.shape[1:])
@@ -135,8 +134,6 @@ def train_one_batadal_experiment(model_type, seed, balancing_method="class_weigh
     }
     print("Validation sonucu:", val_metrics)
     print("Test sonucu:", result)
-    # Ensemble için sınıf etiketlerini değil, ham olasılıkları döndürüyoruz.
-    # Böylece her seed'in olasılığı örnek bazında ortalanabilir.
     return (
         result,
         y_val_pred_prob.ravel(),
