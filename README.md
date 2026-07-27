@@ -174,3 +174,16 @@ SKAB üzerinde false positive tahminlerini azaltmak amacıyla Dual-Threshold Hys
 Fold ve seed bazlı analizde hysteresis 25 çalışmanın 9’unda, baseline ise 16’sında daha iyi sonuç verdi. Ortalama F1 farkı `+0.0014` olmasına rağmen medyan fark `-0.0301` olarak bulundu. Bootstrap güven aralığının sıfırı içermesi ve recall değerindeki düşüş nedeniyle iyileştirmenin tutarlı olmadığı görüldü.
 
 Bu nedenle Dual-Threshold Hysteresis final modele dahil edilmedi ve deney kodları kaldırıldı.
+
+### SKAB Class-Specific Dual ALERGIA Denemesi
+
+Normal ve anomaly otomatalarının farklı davranış yapılarına sahip olabileceği düşünülerek, ALERGIA parametrelerinin iki model için ayrı seçildiği Class-Specific Dual ALERGIA yaklaşımı denendi. Her fold ve seed için 27 normal ve 27 anomaly modeli eğitildi ve toplam 729 model çifti inner validation üzerinde değerlendirildi.
+
+| Yöntem                      | Precision | Recall | F1-score | F1 Std. |
+| --------------------------- | --------: | -----: | -------: | ------: |
+| Mevcut Dual ALERGIA         |    0.3944 | 0.8729 |   0.5433 |       — |
+| Class-Specific Dual ALERGIA |    0.3882 | 0.6783 |   0.4661 |  0.1285 |
+
+Parametre tutarlılık analizinde 25 çalışmada 13 farklı tam ayar seçildi. Validation F1 ortalaması `0.5600`, test F1 ortalaması ise `0.4661` olarak bulundu. Validation ve test sonuçları arasındaki korelasyonun `-0.5793` olması, geniş parametre taramasının inner validation verisine aşırı uyum sağladığını gösterdi.
+
+Bu nedenle Class-Specific Dual ALERGIA final modele dahil edilmedi ve deney kodları kaldırıldı.
