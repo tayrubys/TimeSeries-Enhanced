@@ -1,0 +1,31 @@
+combination_type,configuration_text,selection_count,selection_rate
+normal_model,normal_merge_alpha=0.01 | normal_min_state_count=2 | normal_smoothing_alpha=0.1,6,0.24
+normal_model,normal_merge_alpha=0.01 | normal_min_state_count=5 | normal_smoothing_alpha=0.1,5,0.2
+normal_model,normal_merge_alpha=0.1 | normal_min_state_count=5 | normal_smoothing_alpha=0.1,4,0.16
+normal_model,normal_merge_alpha=0.1 | normal_min_state_count=2 | normal_smoothing_alpha=0.1,3,0.12
+normal_model,normal_merge_alpha=0.05 | normal_min_state_count=2 | normal_smoothing_alpha=0.1,2,0.08
+normal_model,normal_merge_alpha=0.01 | normal_min_state_count=2 | normal_smoothing_alpha=0.5,2,0.08
+normal_model,normal_merge_alpha=0.01 | normal_min_state_count=5 | normal_smoothing_alpha=1.0,2,0.08
+normal_model,normal_merge_alpha=0.01 | normal_min_state_count=10 | normal_smoothing_alpha=1.0,1,0.04
+anomaly_model,anomaly_merge_alpha=0.01 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0,10,0.4
+anomaly_model,anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=0.5,3,0.12
+anomaly_model,anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0,3,0.12
+anomaly_model,anomaly_merge_alpha=0.01 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=1.0,2,0.08
+anomaly_model,anomaly_merge_alpha=0.1 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=0.1,2,0.08
+anomaly_model,anomaly_merge_alpha=0.01 | anomaly_min_state_count=5 | anomaly_smoothing_alpha=1.0,2,0.08
+anomaly_model,anomaly_merge_alpha=0.01 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=0.1,1,0.04
+anomaly_model,anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=0.1,1,0.04
+anomaly_model,anomaly_merge_alpha=0.05 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=0.1,1,0.04
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=2 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=2.0 | min_anomaly_run=10,3,0.12
+full_selection,normal_merge_alpha=0.1 | normal_min_state_count=2 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.25 | min_anomaly_run=8,3,0.12
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=5 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.0 | min_anomaly_run=10,3,0.12
+full_selection,normal_merge_alpha=0.05 | normal_min_state_count=2 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=0.5 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.25 | min_anomaly_run=12,2,0.08
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=5 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.5 | min_anomaly_run=12,2,0.08
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=2 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.1 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=0.1 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.0 | min_anomaly_run=1,2,0.08
+full_selection,normal_merge_alpha=0.1 | normal_min_state_count=5 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=5 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.0 | min_anomaly_run=1,2,0.08
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=2 | normal_smoothing_alpha=0.5 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.0 | min_anomaly_run=12,2,0.08
+full_selection,normal_merge_alpha=0.1 | normal_min_state_count=5 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=1.0 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.25 | min_anomaly_run=12,2,0.08
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=2 | normal_smoothing_alpha=0.1 | anomaly_merge_alpha=0.01 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=0.1 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.0 | min_anomaly_run=10,1,0.04
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=10 | normal_smoothing_alpha=1.0 | anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=0.1 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.0 | min_anomaly_run=5,1,0.04
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=5 | normal_smoothing_alpha=1.0 | anomaly_merge_alpha=0.05 | anomaly_min_state_count=10 | anomaly_smoothing_alpha=0.5 | normal_distance_penalty=0.0 | anomaly_distance_penalty=0.5 | min_anomaly_run=5,1,0.04
+full_selection,normal_merge_alpha=0.01 | normal_min_state_count=5 | normal_smoothing_alpha=1.0 | anomaly_merge_alpha=0.05 | anomaly_min_state_count=2 | anomaly_smoothing_alpha=0.1 | normal_distance_penalty=0.0 | anomaly_distance_penalty=2.0 | min_anomaly_run=7,1,0.04
