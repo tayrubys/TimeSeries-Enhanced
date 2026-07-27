@@ -164,28 +164,13 @@ Bu nedenle yöntem final modele dahil edilmemiş ve mevcut `0.4386` test F1 sonu
 
 ### SKAB Dual-Threshold Hysteresis Denemesi
 
-SKAB üzerinde false positive tahminleri azaltmak amacıyla Dual-Threshold Hysteresis yöntemi denendi. Anomaly başlangıcı için `high_threshold`, devamı için `low_threshold` kullanıldı. Parametreler yalnızca inner validation üzerinden seçildi ve hysteresis durumu her `source_file` başlangıcında sıfırlandı.
+SKAB üzerinde false positive tahminlerini azaltmak amacıyla Dual-Threshold Hysteresis yöntemi denendi. Parametreler `source_file` bazlı inner validation üzerinden seçildi ve hysteresis durumu her dosya başlangıcında sıfırlandı.
 
-#### Genel Sonuçlar
+| Yöntem                    | Precision | Recall | F1-score | F1 Std. |
+| ------------------------- | --------: | -----: | -------: | ------: |
+| Tek Threshold Baseline    |    0.3766 | 0.8162 |   0.5069 |  0.0779 |
+| Dual-Threshold Hysteresis |    0.3905 | 0.7379 |   0.5083 |  0.0507 |
 
-| Yöntem                    | Senaryo        | Accuracy | Precision | Recall | F1-score | F1 Std. Sapma |
-| ------------------------- | -------------- | -------: | --------: | -----: | -------: | ------------: |
-| Tek Threshold Baseline    | Original       |   0.4402 |    0.3766 | 0.8162 |   0.5069 |        0.0779 |
-| Dual-Threshold Hysteresis | Original       |   0.4802 |    0.3905 | 0.7379 |   0.5083 |        0.0507 |
-| Tek Threshold Baseline    | Gaussian Noise |   0.4405 |    0.3767 | 0.8160 |   0.5071 |        0.0792 |
-| Dual-Threshold Hysteresis | Gaussian Noise |   0.4795 |    0.3896 | 0.7362 |   0.5073 |        0.0505 |
+Fold ve seed bazlı analizde hysteresis 25 çalışmanın 9’unda, baseline ise 16’sında daha iyi sonuç verdi. Ortalama F1 farkı `+0.0014` olmasına rağmen medyan fark `-0.0301` olarak bulundu. Bootstrap güven aralığının sıfırı içermesi ve recall değerindeki düşüş nedeniyle iyileştirmenin tutarlı olmadığı görüldü.
 
-#### Original Senaryo Değişimi
-
-| Metrik        | Baseline | Hysteresis | Değişim |
-| ------------- | -------: | ---------: | ------: |
-| Accuracy      |   0.4402 |     0.4802 | +0.0400 |
-| Precision     |   0.3766 |     0.3905 | +0.0139 |
-| Recall        |   0.8162 |     0.7379 | -0.0783 |
-| F1-score      |   0.5069 |     0.5083 | +0.0014 |
-| F1 Std. Sapma |   0.0779 |     0.0507 | -0.0272 |
-
-Hysteresis yöntemi precision ve accuracy değerlerini artırırken recall değerini düşürmüştür. F1-score `0.5069` seviyesinden `0.5083` seviyesine yükselmiş, ancak artış oldukça sınırlı kalmıştır. F1 standart sapmasının azalması yöntemin fold ve seed sonuçlarında daha kararlı olabileceğini göstermektedir. Bu nedenle yöntem henüz final modele dahil edilmemiştir.
-
-
-
+Bu nedenle Dual-Threshold Hysteresis final modele dahil edilmedi ve deney kodları kaldırıldı.
