@@ -226,3 +226,18 @@ Dual ALERGIA ve Temporal Persistence sonrasında 7 anomaly tahmin bloğu oluştu
 Blok uzunluğu sınırlı bir ayrım gösterdi. Ancak modelde zaten Temporal Persistence kullanıldığı için uzunluğa göre ek filtre uygulamak mevcut yöntemi yalnızca daha katı hâle getirecekti.
 
 Ayrıca margin değerlerinin false-positive bloklarda daha yüksek olduğu görüldü. Bu nedenle confidence tabanlı filtre gerçek anomaly bloklarını kaldırma riski taşıyordu. True-positive blok sayısının da az olması nedeniyle BATADAL için filtre deneyine geçilmedi ve geçici tanı kodları kaldırıldı.
+
+### Shared-State Dual ALERGIA Denemesi
+
+Normal ve anomaly otomatalarının aynı pattern’ı farklı pattern’lara eşlemesinin false-positive tahminlerle ilişkili olduğu görüldüğü için Shared-State Dual ALERGIA yöntemi denendi.
+
+Bu yöntemde ortak bir state mapping kullanıldı, ancak normal ve anomaly geçiş olasılıkları ayrı tutuldu. Baseline sonucu yeniden üretildi ve parity kontrolü başarılı oldu.
+
+| Yöntem                    | Precision | Recall | F1-score |
+| ------------------------- | --------: | -----: | -------: |
+| Independent Dual ALERGIA  |    0.2907 | 0.8929 |   0.4386 |
+| Shared-State Dual ALERGIA |    0.1743 | 0.6786 |   0.2774 |
+
+Shared-State yönteminde validation F1 `0.2243`, test F1 ise `0.2774` olarak elde edildi. Gaussian noise F1 değeri `0.2774`, unseen F1 değeri ise `0.2500` oldu.
+
+Ortak state mapping sınıflar arasındaki ayrımı azalttığı için yöntem final modele dahil edilmedi ve mevcut Independent Dual ALERGIA modeli korundu.
