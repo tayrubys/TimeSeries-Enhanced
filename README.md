@@ -209,3 +209,20 @@ Bu sonuçlara göre Temporal Persistence sonrasında kalan anomaly blokları iç
 Block Confidence filtresi accuracy ve precision değerlerini az miktarda artırdı. Ancak gerçek anomaly noktalarının da kaldırılması nedeniyle recall `0.7814` değerinden `0.6682` değerine, F1-score ise `0.5012` değerinden `0.4698` değerine düştü. F1 standart sapmasının yükselmesi, yöntemin fold ve seed’ler arasında daha değişken çalıştığını gösterdi.
 
 Gaussian noise senaryosunda da baseline F1 değeri `0.4973`, filtreli modelin F1 değeri ise `0.4697` olarak elde edildi. Bu nedenle Block-Level Confidence Filter final modele dahil edilmedi.
+
+### BATADAL Block-Level Confidence Tanı Analizi
+
+Block-Level Confidence yaklaşımının BATADAL için uygunluğunu değerlendirmek amacıyla yalnızca validation verisi üzerinde tanı analizi yapıldı. Outer test verisi kullanılmadı.
+
+Dual ALERGIA ve Temporal Persistence sonrasında 7 anomaly tahmin bloğu oluştu. Bunların 2’si gerçek anomaly ile kesişirken 5’i false-positive blok olarak belirlendi.
+
+| Özellik      | True Blok Medyanı | False Blok Medyanı | ROC-AUC |
+| ------------ | ----------------: | -----------------: | ------: |
+| Block Length |           11.0000 |            10.0000 |  0.6500 |
+| Mean Margin  |            2.1744 |             4.7765 |  0.0000 |
+| Max Margin   |            6.6319 |             9.7013 |  0.1000 |
+| Sum Margin   |           24.7532 |            42.7285 |  0.0000 |
+
+Blok uzunluğu sınırlı bir ayrım gösterdi. Ancak modelde zaten Temporal Persistence kullanıldığı için uzunluğa göre ek filtre uygulamak mevcut yöntemi yalnızca daha katı hâle getirecekti.
+
+Ayrıca margin değerlerinin false-positive bloklarda daha yüksek olduğu görüldü. Bu nedenle confidence tabanlı filtre gerçek anomaly bloklarını kaldırma riski taşıyordu. True-positive blok sayısının da az olması nedeniyle BATADAL için filtre deneyine geçilmedi ve geçici tanı kodları kaldırıldı.
