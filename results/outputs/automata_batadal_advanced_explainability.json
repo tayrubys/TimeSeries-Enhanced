@@ -49,7 +49,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdda",
+                "pattern": "aabb",
                 "distance": 2
             }
         ],
@@ -158,14 +158,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
@@ -182,7 +182,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cbdd",
+                "pattern": "ebee",
                 "distance": 2
             }
         ],
@@ -227,7 +227,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004739336492890996,
                 "transition_score": 5.351858133476067,
                 "anomaly_score": 5.351858133476067,
@@ -236,15 +236,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "bddb",
-                "distance": 1
-            },
-            {
                 "pattern": "bdcb",
                 "distance": 1
             },
             {
-                "pattern": "cdbb",
+                "pattern": "bddb",
+                "distance": 1
+            },
+            {
+                "pattern": "bbbb",
                 "distance": 2
             }
         ],
@@ -282,13 +282,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dcbc",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "anomaly_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dcbb",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
@@ -296,7 +289,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "dcbc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "anomaly_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -305,15 +305,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcbc",
-                "distance": 1
-            },
-            {
                 "pattern": "ddbc",
                 "distance": 1
             },
             {
                 "pattern": "dbbc",
+                "distance": 1
+            },
+            {
+                "pattern": "dcbc",
                 "distance": 1
             }
         ],
@@ -352,14 +352,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -368,15 +368,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbcc",
-                "distance": 1
-            },
-            {
-                "pattern": "edcc",
-                "distance": 1
-            },
-            {
                 "pattern": "dbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "bbcc",
                 "distance": 1
             }
         ],
@@ -414,14 +414,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -471,7 +471,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004739336492890996,
                 "transition_score": 5.351858133476067,
                 "anomaly_score": 5.351858133476067,
@@ -645,7 +645,7 @@
                 "distance": 1
             },
             {
-                "pattern": "ddbd",
+                "pattern": "ddbc",
                 "distance": 1
             }
         ],
@@ -707,15 +707,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcac",
+                "pattern": "dbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "abac",
                 "distance": 1
             },
             {
                 "pattern": "ddac",
-                "distance": 1
-            },
-            {
-                "pattern": "dbcc",
                 "distance": 1
             }
         ],
@@ -758,14 +758,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -774,15 +774,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "baaa",
+                "distance": 1
+            },
+            {
+                "pattern": "bcca",
+                "distance": 1
+            },
+            {
                 "pattern": "bdca",
-                "distance": 1
-            },
-            {
-                "pattern": "baba",
-                "distance": 1
-            },
-            {
-                "pattern": "bacc",
                 "distance": 1
             }
         ],
@@ -827,14 +827,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
@@ -843,7 +843,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
+                "pattern": "abac",
                 "distance": 1
             },
             {
@@ -851,7 +851,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dcac",
+                "pattern": "acbc",
                 "distance": 1
             }
         ],
@@ -896,14 +896,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -920,7 +920,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdac",
+                "pattern": "dacc",
                 "distance": 2
             }
         ],
@@ -981,15 +981,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acdd",
-                "distance": 1
-            },
-            {
                 "pattern": "accd",
                 "distance": 1
             },
             {
-                "pattern": "abcd",
+                "pattern": "acdd",
+                "distance": 1
+            },
+            {
+                "pattern": "ccbd",
                 "distance": 2
             }
         ],
@@ -1048,15 +1048,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "ccdd",
+                "distance": 1
+            },
+            {
                 "pattern": "cbdd",
                 "distance": 1
             },
             {
                 "pattern": "cddd",
-                "distance": 1
-            },
-            {
-                "pattern": "ccdd",
                 "distance": 1
             }
         ],
@@ -1092,13 +1092,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bddc",
-                "probability": 0.14691943127962084,
-                "transition_score": 1.9178709289909204,
-                "anomaly_score": 1.9178709289909204,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "bddb",
                 "probability": 0.14691943127962084,
                 "transition_score": 1.9178709289909204,
@@ -1106,7 +1099,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bddc",
+                "probability": 0.14691943127962084,
+                "transition_score": 1.9178709289909204,
+                "anomaly_score": 1.9178709289909204,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.004739336492890996,
                 "transition_score": 5.351858133476067,
                 "anomaly_score": 5.351858133476067,
@@ -1115,11 +1115,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "dddd",
                 "distance": 1
             },
             {
-                "pattern": "dddd",
+                "pattern": "cddd",
                 "distance": 1
             },
             {
@@ -1161,13 +1161,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dddc",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "anomaly_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dddd",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
@@ -1175,7 +1168,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "dddc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "anomaly_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -1184,15 +1184,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdda",
-                "distance": 1
-            },
-            {
                 "pattern": "dddb",
                 "distance": 1
             },
             {
-                "pattern": "dddc",
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
+                "pattern": "bdda",
                 "distance": 1
             }
         ],
@@ -1244,7 +1244,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -1253,15 +1253,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
                 "pattern": "ddab",
                 "distance": 1
             },
             {
                 "pattern": "ddcd",
-                "distance": 1
-            },
-            {
-                "pattern": "cdad",
                 "distance": 1
             }
         ],
@@ -1326,11 +1326,11 @@
                 "distance": 1
             },
             {
-                "pattern": "babe",
+                "pattern": "daba",
                 "distance": 2
             },
             {
-                "pattern": "dbdd",
+                "pattern": "dacc",
                 "distance": 2
             }
         ],
@@ -1389,15 +1389,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "aeeb",
                 "distance": 2
             },
             {
-                "pattern": "ddcd",
+                "pattern": "bdbd",
                 "distance": 2
             },
             {
-                "pattern": "cddd",
+                "pattern": "dddd",
                 "distance": 2
             }
         ],
@@ -1456,15 +1456,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dbdd",
-                "distance": 1
-            },
-            {
-                "pattern": "dadd",
-                "distance": 1
-            },
-            {
                 "pattern": "dcdd",
+                "distance": 1
+            },
+            {
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
+                "pattern": "dbdd",
                 "distance": 1
             }
         ],
@@ -1523,15 +1523,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "eedc",
+                "pattern": "cddc",
+                "distance": 1
+            },
+            {
+                "pattern": "dddc",
                 "distance": 1
             },
             {
                 "pattern": "edcc",
-                "distance": 1
-            },
-            {
-                "pattern": "bddc",
                 "distance": 1
             }
         ],
@@ -1581,7 +1581,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "ddcb",
+                "pattern": "ddce",
                 "probability": 0.0497737556561086,
                 "transition_score": 3.0002674287193822,
                 "anomaly_score": 3.0002674287193822,
@@ -1590,7 +1590,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ddcd",
+                "pattern": "ddce",
                 "distance": 1
             },
             {
@@ -1598,7 +1598,7 @@
                 "distance": 1
             },
             {
-                "pattern": "ddcb",
+                "pattern": "ddcc",
                 "distance": 1
             }
         ],
@@ -1713,15 +1713,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cbbd",
-                "distance": 1
-            },
-            {
                 "pattern": "ccbd",
                 "distance": 1
             },
             {
                 "pattern": "caba",
+                "distance": 1
+            },
+            {
+                "pattern": "cabc",
                 "distance": 1
             }
         ],
@@ -1780,7 +1780,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "abbb",
+                "pattern": "bbdb",
                 "distance": 1
             },
             {
@@ -1788,7 +1788,7 @@
                 "distance": 1
             },
             {
-                "pattern": "bbdb",
+                "pattern": "abbb",
                 "distance": 1
             }
         ],
@@ -1885,7 +1885,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
@@ -1934,7 +1934,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -1977,14 +1977,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -2043,15 +2043,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcdc",
-                "distance": 1
-            },
-            {
                 "pattern": "dcdd",
                 "distance": 1
             },
             {
-                "pattern": "dcee",
+                "pattern": "dcdc",
+                "distance": 1
+            },
+            {
+                "pattern": "dcdb",
                 "distance": 1
             }
         ],
@@ -2097,14 +2097,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -2113,7 +2113,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdbb",
+                "pattern": "cdcb",
                 "distance": 1
             },
             {
@@ -2121,7 +2121,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdcb",
+                "pattern": "cdbb",
                 "distance": 1
             }
         ],
@@ -2183,15 +2183,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcbc",
-                "distance": 1
-            },
-            {
                 "pattern": "ddbc",
                 "distance": 1
             },
             {
                 "pattern": "dbbc",
+                "distance": 1
+            },
+            {
+                "pattern": "dcbc",
                 "distance": 1
             }
         ],
@@ -2234,7 +2234,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bccc",
+                "probability": 0.005235602094240838,
+                "transition_score": 5.25227342804663,
+                "anomaly_score": 5.25227342804663,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bbbb",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -2243,15 +2250,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "abcd",
-                "distance": 1
-            },
-            {
                 "pattern": "cbcd",
                 "distance": 1
             },
             {
                 "pattern": "bbcd",
+                "distance": 1
+            },
+            {
+                "pattern": "abcd",
                 "distance": 1
             }
         ],
@@ -2350,7 +2357,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004329004329004329,
                 "transition_score": 5.442417710521793,
                 "anomaly_score": 5.442417710521793,
@@ -2399,7 +2406,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -2416,7 +2423,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cbdd",
+                "pattern": "ebee",
                 "distance": 2
             }
         ],
@@ -2455,13 +2462,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bdcb",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "anomaly_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "bdcc",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
@@ -2469,7 +2469,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bdcb",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "anomaly_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -2482,11 +2489,11 @@
                 "distance": 1
             },
             {
-                "pattern": "beea",
+                "pattern": "bdda",
                 "distance": 1
             },
             {
-                "pattern": "bdda",
+                "pattern": "beea",
                 "distance": 1
             }
         ],
@@ -2541,15 +2548,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "ddab",
+                "pattern": "daba",
                 "distance": 2
             },
             {
-                "pattern": "cbaa",
+                "pattern": "baaa",
                 "distance": 2
             },
             {
-                "pattern": "dcac",
+                "pattern": "aaaa",
                 "distance": 2
             }
         ],
@@ -2601,15 +2608,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "aaaa",
-                "distance": 1
-            },
-            {
                 "pattern": "baaa",
                 "distance": 1
             },
             {
-                "pattern": "ebba",
+                "pattern": "aaaa",
+                "distance": 1
+            },
+            {
+                "pattern": "daba",
                 "distance": 2
             }
         ],
@@ -2713,15 +2720,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "aaae",
-                "distance": 1
-            },
-            {
                 "pattern": "aaaa",
                 "distance": 1
             },
             {
                 "pattern": "aaab",
+                "distance": 1
+            },
+            {
+                "pattern": "aaae",
                 "distance": 1
             }
         ],
@@ -2783,15 +2790,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acdd",
-                "distance": 1
-            },
-            {
                 "pattern": "dadd",
                 "distance": 1
             },
             {
-                "pattern": "abcd",
+                "pattern": "acdd",
+                "distance": 1
+            },
+            {
+                "pattern": "aabb",
                 "distance": 2
             }
         ],
@@ -2837,14 +2844,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -2853,11 +2860,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "bddc",
+                "pattern": "cddc",
                 "distance": 1
             },
             {
-                "pattern": "cddc",
+                "pattern": "addb",
                 "distance": 1
             },
             {
@@ -2960,7 +2967,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
@@ -3016,7 +3023,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3059,14 +3066,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3115,7 +3122,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3132,7 +3139,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdac",
+                "pattern": "dacc",
                 "distance": 2
             }
         ],
@@ -3194,15 +3201,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acdd",
-                "distance": 1
-            },
-            {
                 "pattern": "accd",
                 "distance": 1
             },
             {
-                "pattern": "abcd",
+                "pattern": "acdd",
+                "distance": 1
+            },
+            {
+                "pattern": "ccbd",
                 "distance": 2
             }
         ],
@@ -3261,11 +3268,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "eedc",
+                "pattern": "cddc",
                 "distance": 1
             },
             {
-                "pattern": "cddc",
+                "pattern": "cbdc",
                 "distance": 1
             },
             {
@@ -3321,15 +3328,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "edcc",
+                "pattern": "cdcb",
                 "distance": 1
             },
             {
-                "pattern": "ddcb",
+                "pattern": "bdcb",
                 "distance": 1
             },
             {
-                "pattern": "eecb",
+                "pattern": "eacb",
                 "distance": 1
             }
         ],
@@ -3367,14 +3374,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dcbc",
+                "pattern": "dcbb",
                 "probability": 0.1044776119402985,
                 "transition_score": 2.2587824703356527,
                 "anomaly_score": 2.2587824703356527,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "dcbb",
+                "pattern": "dcbc",
                 "probability": 0.1044776119402985,
                 "transition_score": 2.2587824703356527,
                 "anomaly_score": 2.2587824703356527,
@@ -3390,15 +3397,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcbc",
+                "pattern": "daba",
+                "distance": 1
+            },
+            {
+                "pattern": "dcbd",
                 "distance": 1
             },
             {
                 "pattern": "dcbb",
-                "distance": 1
-            },
-            {
-                "pattern": "daba",
                 "distance": 1
             }
         ],
@@ -3444,7 +3451,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3509,15 +3516,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "babe",
+                "pattern": "cabc",
                 "distance": 1
             },
             {
-                "pattern": "bcbc",
+                "pattern": "bdbc",
                 "distance": 1
             },
             {
-                "pattern": "baba",
+                "pattern": "bacc",
                 "distance": 1
             }
         ],
@@ -3576,15 +3583,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "dbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "abac",
                 "distance": 1
             },
             {
                 "pattern": "accc",
-                "distance": 1
-            },
-            {
-                "pattern": "bbcc",
                 "distance": 1
             }
         ],
@@ -3627,14 +3634,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3683,7 +3690,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.0036900369003690036,
                 "transition_score": 5.602118820879701,
                 "anomaly_score": 5.602118820879701,
@@ -3725,14 +3732,14 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "cddb",
                 "probability": 0.0995260663507109,
                 "transition_score": 2.3073356957526436,
                 "anomaly_score": 2.3073356957526436,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cddb",
+                "pattern": "cddd",
                 "probability": 0.0995260663507109,
                 "transition_score": 2.3073356957526436,
                 "anomaly_score": 2.3073356957526436,
@@ -3782,14 +3789,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3846,7 +3853,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
@@ -3855,15 +3862,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcdc",
-                "distance": 1
-            },
-            {
                 "pattern": "dcdd",
                 "distance": 1
             },
             {
-                "pattern": "dcee",
+                "pattern": "dcdc",
+                "distance": 1
+            },
+            {
+                "pattern": "dcdb",
                 "distance": 1
             }
         ],
@@ -3908,14 +3915,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -3924,7 +3931,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdbb",
+                "pattern": "cdcb",
                 "distance": 1
             },
             {
@@ -3932,7 +3939,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdcb",
+                "pattern": "cdbb",
                 "distance": 1
             }
         ],
@@ -3997,11 +4004,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "abba",
                 "distance": 2
             },
             {
-                "pattern": "abba",
+                "pattern": "aaba",
                 "distance": 2
             }
         ],
@@ -4060,15 +4067,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "eeac",
-                "distance": 1
-            },
-            {
                 "pattern": "abac",
                 "distance": 1
             },
             {
-                "pattern": "cdac",
+                "pattern": "eeac",
+                "distance": 1
+            },
+            {
+                "pattern": "ebee",
                 "distance": 2
             }
         ],
@@ -4111,14 +4118,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -4127,15 +4134,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "baaa",
+                "distance": 1
+            },
+            {
+                "pattern": "bcca",
+                "distance": 1
+            },
+            {
                 "pattern": "bdca",
-                "distance": 1
-            },
-            {
-                "pattern": "baba",
-                "distance": 1
-            },
-            {
-                "pattern": "bacc",
                 "distance": 1
             }
         ],
@@ -4180,14 +4187,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
@@ -4196,7 +4203,7 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
+                "pattern": "abac",
                 "distance": 1
             },
             {
@@ -4204,7 +4211,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dcac",
+                "pattern": "acbc",
                 "distance": 1
             }
         ],
@@ -4249,14 +4256,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -4273,7 +4280,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdac",
+                "pattern": "dacc",
                 "distance": 2
             }
         ],
@@ -4334,15 +4341,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "acbc",
-                "distance": 1
-            },
-            {
                 "pattern": "accc",
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "acbc",
+                "distance": 1
+            },
+            {
+                "pattern": "bccc",
                 "distance": 2
             }
         ],
@@ -4401,15 +4408,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cccc",
-                "distance": 1
-            },
-            {
-                "pattern": "cacc",
-                "distance": 1
-            },
-            {
                 "pattern": "cdcc",
+                "distance": 1
+            },
+            {
+                "pattern": "cbcc",
+                "distance": 1
+            },
+            {
+                "pattern": "cccc",
                 "distance": 1
             }
         ],
@@ -4468,15 +4475,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "accd",
-                "distance": 1
-            },
-            {
-                "pattern": "dccd",
+                "pattern": "bccd",
                 "distance": 1
             },
             {
                 "pattern": "cccd",
+                "distance": 1
+            },
+            {
+                "pattern": "dccd",
                 "distance": 1
             }
         ],
@@ -4535,15 +4542,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdda",
-                "distance": 1
-            },
-            {
                 "pattern": "bcda",
                 "distance": 1
             },
             {
                 "pattern": "ccdb",
+                "distance": 1
+            },
+            {
+                "pattern": "ccdd",
                 "distance": 1
             }
         ],
@@ -4586,7 +4593,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -4651,15 +4658,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "dacc",
+                "distance": 1
+            },
+            {
                 "pattern": "dcdc",
                 "distance": 1
             },
             {
                 "pattern": "dadd",
-                "distance": 1
-            },
-            {
-                "pattern": "dddc",
                 "distance": 1
             }
         ],
@@ -4711,15 +4718,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "cdcc",
+                "distance": 1
+            },
+            {
                 "pattern": "accc",
                 "distance": 1
             },
             {
-                "pattern": "edcc",
-                "distance": 1
-            },
-            {
-                "pattern": "cdcc",
+                "pattern": "bdcc",
                 "distance": 1
             }
         ],
@@ -4771,7 +4778,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -4813,13 +4820,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "ccbb",
-                "probability": 0.10994764397905758,
-                "transition_score": 2.207750990323207,
-                "anomaly_score": 2.207750990323207,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "ccbc",
                 "probability": 0.10994764397905758,
                 "transition_score": 2.207750990323207,
@@ -4827,7 +4827,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "ccbb",
+                "probability": 0.10994764397905758,
+                "transition_score": 2.207750990323207,
+                "anomaly_score": 2.207750990323207,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -4876,7 +4883,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004329004329004329,
                 "transition_score": 5.442417710521793,
                 "anomaly_score": 5.442417710521793,
@@ -4918,13 +4925,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "bddc",
-                "probability": 0.10994764397905758,
-                "transition_score": 2.207750990323207,
-                "anomaly_score": 2.207750990323207,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "bddb",
                 "probability": 0.10994764397905758,
                 "transition_score": 2.207750990323207,
@@ -4932,7 +4932,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bddc",
+                "probability": 0.10994764397905758,
+                "transition_score": 2.207750990323207,
+                "anomaly_score": 2.207750990323207,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -4975,13 +4982,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dddc",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "anomaly_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dddd",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
@@ -4989,7 +4989,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "dddc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "anomaly_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -5002,7 +5009,7 @@
                 "distance": 1
             },
             {
-                "pattern": "dddc",
+                "pattern": "ddce",
                 "distance": 1
             },
             {
@@ -5067,15 +5074,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "dddb",
+                "distance": 1
+            },
+            {
                 "pattern": "ddab",
                 "distance": 1
             },
             {
-                "pattern": "ddcb",
-                "distance": 1
-            },
-            {
-                "pattern": "dddb",
+                "pattern": "ddbb",
                 "distance": 1
             }
         ],
@@ -5138,11 +5145,11 @@
                 "distance": 1
             },
             {
-                "pattern": "dcbc",
+                "pattern": "abba",
                 "distance": 2
             },
             {
-                "pattern": "abba",
+                "pattern": "aaba",
                 "distance": 2
             }
         ],
@@ -5201,15 +5208,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "bbab",
+                "distance": 1
+            },
+            {
                 "pattern": "abab",
                 "distance": 1
             },
             {
                 "pattern": "ebbb",
-                "distance": 1
-            },
-            {
-                "pattern": "bbab",
                 "distance": 1
             }
         ],
@@ -5306,7 +5313,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
@@ -5315,11 +5322,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "abcd",
+                "pattern": "abba",
                 "distance": 1
             },
             {
-                "pattern": "cbbd",
+                "pattern": "abbb",
                 "distance": 1
             },
             {
@@ -5375,7 +5382,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -5384,15 +5391,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "bbdc",
-                "distance": 1
-            },
-            {
-                "pattern": "bbdd",
+                "pattern": "bbdb",
                 "distance": 1
             },
             {
                 "pattern": "bbbe",
+                "distance": 1
+            },
+            {
+                "pattern": "bbdd",
                 "distance": 1
             }
         ],
@@ -5437,14 +5444,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
@@ -5457,11 +5464,11 @@
                 "distance": 1
             },
             {
-                "pattern": "bddd",
+                "pattern": "bdcd",
                 "distance": 1
             },
             {
-                "pattern": "bdcd",
+                "pattern": "bddd",
                 "distance": 1
             }
         ],
@@ -5506,14 +5513,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
                 "would_be_anomaly": false
             },
             {
-                "pattern": "cdac",
+                "pattern": "bbbb",
                 "probability": 0.0055248618784530384,
                 "transition_score": 5.198497031265826,
                 "anomaly_score": 5.198497031265826,
@@ -5522,15 +5529,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dbdd",
-                "distance": 1
-            },
-            {
-                "pattern": "dadd",
-                "distance": 1
-            },
-            {
                 "pattern": "dcdd",
+                "distance": 1
+            },
+            {
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
+                "pattern": "dbdd",
                 "distance": 1
             }
         ],
@@ -5591,11 +5598,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cddd",
+                "pattern": "dddd",
                 "distance": 1
             },
             {
-                "pattern": "dddd",
+                "pattern": "cddd",
                 "distance": 1
             },
             {
@@ -5635,13 +5642,6 @@
         ],
         "counterfactual_analysis": [
             {
-                "pattern": "dddc",
-                "probability": 0.06432748538011696,
-                "transition_score": 2.743768283704289,
-                "anomaly_score": 2.743768283704289,
-                "would_be_anomaly": false
-            },
-            {
                 "pattern": "dddd",
                 "probability": 0.06432748538011696,
                 "transition_score": 2.743768283704289,
@@ -5649,7 +5649,14 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "dddc",
+                "probability": 0.06432748538011696,
+                "transition_score": 2.743768283704289,
+                "anomaly_score": 2.743768283704289,
+                "would_be_anomaly": false
+            },
+            {
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -5658,15 +5665,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdda",
-                "distance": 1
-            },
-            {
                 "pattern": "dddb",
                 "distance": 1
             },
             {
-                "pattern": "dddc",
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
+                "pattern": "bdda",
                 "distance": 1
             }
         ],
@@ -5718,7 +5725,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005847953216374269,
                 "transition_score": 5.14166355650266,
                 "anomaly_score": 5.14166355650266,
@@ -5727,15 +5734,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
                 "pattern": "ddab",
                 "distance": 1
             },
             {
                 "pattern": "ddcd",
-                "distance": 1
-            },
-            {
-                "pattern": "cdad",
                 "distance": 1
             }
         ],
@@ -5854,11 +5861,11 @@
                 "distance": 1
             },
             {
-                "pattern": "cdda",
+                "pattern": "cddc",
                 "distance": 2
             },
             {
-                "pattern": "cddd",
+                "pattern": "dddb",
                 "distance": 2
             }
         ],
@@ -5917,15 +5924,15 @@
         ],
         "similarity_analysis": [
             {
+                "pattern": "dddd",
+                "distance": 1
+            },
+            {
                 "pattern": "ddcd",
                 "distance": 1
             },
             {
                 "pattern": "ddbd",
-                "distance": 1
-            },
-            {
-                "pattern": "dddd",
                 "distance": 1
             }
         ],
@@ -5968,7 +5975,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.004975124378109453,
                 "transition_score": 5.303304908059076,
                 "anomaly_score": 5.303304908059076,
@@ -5977,15 +5984,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "eedc",
-                "distance": 1
-            },
-            {
                 "pattern": "dcdc",
                 "distance": 1
             },
             {
                 "pattern": "dddc",
+                "distance": 1
+            },
+            {
+                "pattern": "dbdc",
                 "distance": 1
             }
         ],
@@ -6037,7 +6044,7 @@
                 "would_be_anomaly": false
             },
             {
-                "pattern": "abcd",
+                "pattern": "bccc",
                 "probability": 0.005235602094240838,
                 "transition_score": 5.25227342804663,
                 "anomaly_score": 5.25227342804663,
@@ -6046,11 +6053,11 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "edcc",
+                "pattern": "bdca",
                 "distance": 1
             },
             {
-                "pattern": "bdca",
+                "pattern": "edcc",
                 "distance": 1
             },
             {
@@ -6116,15 +6123,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "dcac",
-                "distance": 1
-            },
-            {
                 "pattern": "dcab",
                 "distance": 1
             },
             {
-                "pattern": "dccb",
+                "pattern": "dcac",
+                "distance": 1
+            },
+            {
+                "pattern": "daba",
                 "distance": 2
             }
         ],
@@ -6183,15 +6190,15 @@
         ],
         "similarity_analysis": [
             {
-                "pattern": "cdad",
-                "distance": 1
-            },
-            {
                 "pattern": "cacd",
                 "distance": 1
             },
             {
-                "pattern": "cdac",
+                "pattern": "cdad",
+                "distance": 1
+            },
+            {
+                "pattern": "ccbd",
                 "distance": 2
             }
         ],
@@ -6251,7 +6258,7 @@
                 "distance": 1
             },
             {
-                "pattern": "cdda",
+                "pattern": "daba",
                 "distance": 2
             }
         ],
