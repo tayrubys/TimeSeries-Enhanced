@@ -187,3 +187,25 @@ Normal ve anomaly otomatalarının farklı davranış yapılarına sahip olabile
 Parametre tutarlılık analizinde 25 çalışmada 13 farklı tam ayar seçildi. Validation F1 ortalaması `0.5600`, test F1 ortalaması ise `0.4661` olarak bulundu. Validation ve test sonuçları arasındaki korelasyonun `-0.5793` olması, geniş parametre taramasının inner validation verisine aşırı uyum sağladığını gösterdi.
 
 Bu nedenle Class-Specific Dual ALERGIA final modele dahil edilmedi ve deney kodları kaldırıldı.
+
+### SKAB Block-Level Confidence Filter Denemesi
+
+Dual ALERGIA modelinin ürettiği false-positive anomaly bloklarını azaltmak amacıyla Block-Level Confidence Filter yaklaşımı denendi. İlk olarak inner validation üzerindeki true-positive ve false-positive tahmin bloklarının özellikleri karşılaştırıldı.
+
+Tanı analizinde 25 fold-seed çalışmasında toplam 695 tahmin bloğu incelendi. Bunların 191 tanesi gerçek anomaly etiketleriyle kesişirken 504 tanesi false-positive blok olarak belirlendi. En ayırıcı özellikler blok uzunluğu ve blok içindeki toplam threshold farkı oldu.
+
+| Blok Özelliği | True Blok Medyanı | False Blok Medyanı | ROC-AUC |
+| ------------- | ----------------: | -----------------: | ------: |
+| Block Length  |            3.0000 |             2.0000 |  0.6789 |
+| Sum Margin    |            1.5051 |             0.6637 |  0.6587 |
+
+Bu sonuçlara göre Temporal Persistence sonrasında kalan anomaly blokları için `minimum_block_length` ve `minimum_sum_margin` parametreleri inner validation üzerinden seçildi. Deney akışı, başarılı Temporal Persistence runner’ıyla birebir tekrarlandı ve baseline sonuçlarının 25 fold-seed çalışmasının tamamında kayıtlı sonuçlarla aynı olduğu doğrulandı.
+
+| Yöntem                         | Accuracy | Precision | Recall | F1-score | F1 Std. |
+| ------------------------------ | -------: | --------: | -----: | -------: | ------: |
+| Temporal Persistence Baseline  |   0.4555 |    0.3796 | 0.7814 |   0.5012 |  0.0972 |
+| Persistence + Block Confidence |   0.5054 |    0.3816 | 0.6682 |   0.4698 |  0.1464 |
+
+Block Confidence filtresi accuracy ve precision değerlerini az miktarda artırdı. Ancak gerçek anomaly noktalarının da kaldırılması nedeniyle recall `0.7814` değerinden `0.6682` değerine, F1-score ise `0.5012` değerinden `0.4698` değerine düştü. F1 standart sapmasının yükselmesi, yöntemin fold ve seed’ler arasında daha değişken çalıştığını gösterdi.
+
+Gaussian noise senaryosunda da baseline F1 değeri `0.4973`, filtreli modelin F1 değeri ise `0.4697` olarak elde edildi. Bu nedenle Block-Level Confidence Filter final modele dahil edilmedi.

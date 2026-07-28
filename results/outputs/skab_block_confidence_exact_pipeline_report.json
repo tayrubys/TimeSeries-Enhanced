@@ -1,8 +1,0 @@
-{
-    "pipeline_replayed": "state_merging_search -> distance_threshold_persistence_search -> block_confidence_search",
-    "selected_model_reconstructed_from_csv": false,
-    "outer_test_used_for_selection": false,
-    "all_baseline_parity_checks_passed": true,
-    "fold_seed_count": 25,
-    "block_filter_baseline_selected_count": 10
-}
