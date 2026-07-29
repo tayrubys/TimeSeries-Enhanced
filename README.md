@@ -1,98 +1,48 @@
-# PST Windowed Negative Log Scoring Deneyi
+# PST Adaptive Threshold Ablation Deneyi
 
 ## Amaç
 
-Bu branch’in amacı, Probabilistic Suffix Tree (PST) tabanlı automata modelinde anomaly kararını tek geçişlik negative log skoruna göre değil, son birkaç geçişin ortalama negative log skoruna göre vermektir.
+Bu branch’in amacı, Probabilistic Suffix Tree (PST) tabanlı automata modelinde anomaly threshold değerini sabit seçmek yerine, eğitim skor dağılımından otomatik olarak üretmektir.
 
-Önceki `feature/pst-negative-log-scoring` branch’inde kullanılan karar mantığı şu şekildeydi:
+Önceki PST-NLL ve PST Windowed-NLL deneylerinde threshold değerleri elle belirlenmişti. Bu branch’te ise threshold değerleri train anomaly score dağılımı üzerinden adaptive olarak hesaplanmıştır.
 
-```text
-score_t = -log(P(next_pattern | context))
-```
-
-Bu yaklaşım, tek bir geçişin olasılığını anomaly kararı için kullanıyordu.
-
-Bu branch’te ise karar skoru şu hâle getirildi:
+Temel fikir şudur:
 
 ```text
-score_t = average(-log(P_i)) over last k transitions
+threshold = percentile(train_scores, p)
 ```
 
-Buradaki `k`, `score_window` parametresidir.
+veya:
+
+```text
+threshold = mean(train_scores) + k * std(train_scores)
+```
 
 ## Hipotez
 
-Tek bir düşük olasılıklı geçiş her zaman gerçek anomaly anlamına gelmeyebilir. Ancak ardışık birkaç geçiş boyunca düşük olasılıklı davranış görülüyorsa, bu durum daha güçlü bir anomaly sinyali olabilir.
+Sabit threshold değerleri her veri seti için optimal olmayabilir. Eğitim verisindeki anomaly score dağılımından otomatik threshold üretmek, özellikle BATADAL gibi veri setlerinde daha uygun karar sınırı sağlayabilir.
 
-Bu nedenle windowed negative log scoring yaklaşımının özellikle BATADAL gibi saldırı senaryolarında daha stabil ve anlamlı sonuç verebileceği varsayılmıştır.
+Bu nedenle adaptive threshold yaklaşımının PST performansını artırabileceği varsayılmıştır.
 
-## Yapılan Kod Değişiklikleri
+## Denenen Stratejiler
 
-Bu branch’te aşağıdaki değişiklikler yapılmıştır:
-
-```text
-1. ProbabilisticAutomata modeline score_window parametresi eklendi.
-2. Negative log scoring modunda son score_window adet geçiş skorunun ortalaması alınarak anomaly_score üretildi.
-3. Anomaly kararı tek geçiş skoru yerine windowed anomaly_score üzerinden verildi.
-4. Counterfactual açıklamalarında alternatif geçiş için windowed skor hesaplaması eklendi.
-5. runner.py içine pst_score_window desteği eklendi.
-6. build_suffix_automata fonksiyonu score_window parametresini modele gönderecek şekilde güncellendi.
-7. Dataset-specific config üretiminde batadal_pst_score_window ve skab_pst_score_window desteği eklendi.
-8. Windowed NLL için score_window + threshold tuning fonksiyonu eklendi.
-9. Deney çıktıları pst_ablation klasörüne ayrı CSV dosyaları olarak kaydedildi.
-```
-
-## Kullanılan Temel Ayarlar
-
-### Genel Scoring Ayarları
-
-```json
-{
-    "pst_scoring_mode": "negative_log",
-    "pst_nll_epsilon": 1e-12,
-    "pst_score_window": 1,
-    "pst_score_windows": [1, 3, 5, 10]
-}
-```
-
-### BATADAL PST Ayarları
-
-```json
-{
-    "batadal_window_size": 4,
-    "batadal_alphabet_size": 5,
-    "batadal_suffix_max_order": 2,
-    "batadal_suffix_min_context_count": 2,
-    "batadal_suffix_smoothing_alpha": 0.1,
-    "batadal_anomaly_threshold": 6.907755
-}
-```
-
-### SKAB PST Ayarları
-
-```json
-{
-    "skab_window_size": 5,
-    "skab_alphabet_size": 5,
-    "skab_suffix_max_order": 2,
-    "skab_suffix_min_context_count": 1,
-    "skab_suffix_smoothing_alpha": 0.1,
-    "skab_anomaly_threshold": 0.1053605
-}
-```
-
-## Tuning Aralığı
-
-BATADAL için kullanılan threshold değerleri:
+Bu branch’te iki adaptive threshold stratejisi denenmiştir:
 
 ```text
-[3.0, 4.0, 5.0, 6.0, 6.907755, 7.5, 8.0, 9.0, 10.0]
+1. Percentile tabanlı threshold
+2. Mean + standard deviation tabanlı threshold
 ```
 
-SKAB için kullanılan threshold değerleri:
+Percentile değerleri:
 
 ```text
-[0.05, 0.1053605, 0.2, 0.35, 0.5, 0.7, 0.9, 1.2, 1.5]
+[90, 95, 97, 99]
+```
+
+Mean + std multiplier değerleri:
+
+```text
+[1.0, 2.0, 3.0]
 ```
 
 Score window değerleri:
@@ -101,31 +51,35 @@ Score window değerleri:
 [1, 3, 5, 10]
 ```
 
-## Deney Akışı
+## Kullanılan Temel PST Ayarları
 
-Deney şu sırayla çalıştırılmıştır:
-
-```text
-1. BATADAL üzerinde 5 farklı seed ile final PST run.
-2. SKAB üzerinde 5 fold x 5 seed ile final PST run.
-3. BATADAL için score_window + threshold tuning.
-4. SKAB için score_window + threshold tuning.
-5. Statistical test pipeline.
-```
-
-Runner çıktısında windowed tuning’in doğru şekilde çalıştığı doğrulanmıştır:
+### BATADAL
 
 ```text
---- PST WINDOWED NEGATIVE LOG THRESHOLD TUNING BAŞLATILIYOR ---
+window_size              = 4
+alphabet_size            = 5
+suffix_max_order         = 2
+suffix_min_context_count = 2
+suffix_smoothing_alpha   = 0.1
+scoring_mode             = negative_log
 ```
 
-## Sonuçlar
+### SKAB
 
-### Final PST-NLL Başlangıç Sonuçları
+```text
+window_size              = 5
+alphabet_size            = 5
+suffix_max_order         = 2
+suffix_min_context_count = 1
+suffix_smoothing_alpha   = 0.1
+scoring_mode             = negative_log
+```
 
-Windowed tuning öncesinde `score_window=1` ile elde edilen temel sonuçlar:
+## Baseline Sonuçlar
 
-#### SKAB
+Adaptive threshold tuning öncesinde PST-NLL baseline sonuçları şu şekildedir:
+
+### SKAB
 
 ```text
 Original F1      = 0.580373
@@ -133,7 +87,7 @@ Gaussian F1      = 0.579320
 Unseen Data F1   = 0.255882
 ```
 
-#### BATADAL
+### BATADAL
 
 ```text
 Original F1      = 0.173913
@@ -141,129 +95,84 @@ Gaussian F1      = 0.166015
 Unseen Data F1   = 0.153846
 ```
 
-## Windowed-NLL Tuning Sonuçları
+## Adaptive Threshold Sonuçları
 
 ### BATADAL
 
-BATADAL üzerinde windowed negative log scoring performansı artırmıştır.
+Adaptive threshold, BATADAL’da PST-NLL baseline’a göre küçük bir iyileştirme sağlamıştır.
 
 En iyi BATADAL sonucu:
 
 ```text
 score_window = 3
-threshold    = 6.907755
-F1           = 0.285714
-precision    = 0.285714
-recall       = 0.285714
+strategy     = percentile
+value        = 99
+F1           ≈ 0.196078
 ```
 
-Önceki PST-NLL sonucuna göre gelişim:
+Karşılaştırma:
 
 ```text
-PST-NLL baseline F1       = 0.173913
-PST Windowed-NLL best F1  = 0.285714
+PST-NLL baseline BATADAL          = 0.173913
+PST adaptive threshold BATADAL    ≈ 0.196078
+PST Windowed-NLL best BATADAL     = 0.285714
+Markov-final BATADAL              = 0.444444
 ```
 
-Bu sonuç, windowed negative log scoring yaklaşımının BATADAL veri setinde PST modelinin zayıf kaldığı noktayı kısmen iyileştirdiğini göstermektedir.
-
-Ancak BATADAL için Markov-final sonucu hâlâ daha yüksektir:
-
-```text
-Markov-final BATADAL F1 = 0.444444
-PST Windowed-NLL F1     = 0.285714
-```
-
-Bu nedenle BATADAL tarafında PST Windowed-NLL, PST ailesi içinde ilerleme sağlasa da genel automata sonuçları içinde Markov-final modelini geçememiştir.
+Bu sonuç, adaptive threshold yaklaşımının BATADAL’da küçük bir katkı sağladığını, ancak önceki `feature/pst-windowed-negative-log` branch’inden daha zayıf kaldığını göstermektedir.
 
 ### SKAB
 
-SKAB üzerinde windowed scoring iyileştirme sağlamamıştır.
+Adaptive threshold, SKAB üzerinde ciddi performans düşüşüne neden olmuştur.
 
-En iyi SKAB sonucu:
+En iyi SKAB adaptive threshold sonucu yaklaşık olarak:
 
 ```text
-score_window = 1
-threshold    = 0.1053605
-F1           = 0.580373
+score_window = 10
+strategy     = mean_std
+value        = 1.0
+F1           ≈ 0.3253
 ```
 
-Window büyüdükçe SKAB performansı hafif düşmüştür:
+Karşılaştırma:
 
 ```text
-score_window = 1   -> F1 = 0.580373
-score_window = 3   -> F1 = 0.578582
-score_window = 5   -> F1 = 0.576905
-score_window = 10  -> F1 = 0.574182
+PST-NLL / PST-final SKAB       = 0.580373
+PST adaptive threshold SKAB    ≈ 0.3253
 ```
 
-Bu sonuç, SKAB veri setinde tek geçişlik PST-NLL kararının windowed ortalamadan daha uygun olduğunu göstermektedir.
+Bu sonuç, SKAB veri setinde train-score dağılımından otomatik threshold üretmenin sabit threshold yaklaşımından belirgin şekilde daha kötü olduğunu göstermektedir.
 
-## Karşılaştırmalı Değerlendirme
+## Genel Değerlendirme
 
-### BATADAL
+Bu branch performans açısından başarılı bir feature değildir.
 
-```text
-PST-NLL baseline       = 0.173913
-PST Windowed-NLL best  = 0.285714
-Markov-final           = 0.444444
-```
+BATADAL’da küçük bir iyileştirme sağlanmıştır, ancak bu iyileştirme önceki Windowed-NLL branch’inin gerisinde kalmıştır. SKAB tarafında ise adaptive threshold ciddi bir performans düşüşüne yol açmıştır.
 
-Yorum:
+Bu nedenle branch’in sonucu şu şekilde yorumlanmalıdır:
 
 ```text
-Windowed-NLL, BATADAL’da PST performansını artırmıştır.
-Ancak Markov-final hâlâ daha güçlüdür.
-```
-
-### SKAB
-
-```text
-Markov-final           = 0.574023
-PST-final              = 0.580373
-PST-NLL                = 0.580373
-PST Windowed-NLL best  = 0.580373
-```
-
-Yorum:
-
-```text
-SKAB’de PST yaklaşımı Markov-final’dan az farkla daha iyidir.
-Ancak windowed-NLL ek iyileştirme sağlamamıştır.
+Adaptive threshold, bu haliyle PST modeline genel bir katkı sağlamamıştır.
+BATADAL’da küçük bir artış üretmiştir.
+SKAB’de ciddi performans kaybına neden olmuştur.
+Bu nedenle negatif ablation sonucu olarak değerlendirilebilir.
 ```
 
 ## Üretilen Çıktı Dosyaları
 
-Bu branch kapsamında aşağıdaki deney çıktıları üretilmiştir:
+Bu branch kapsamında aşağıdaki adaptive threshold tuning dosyaları üretilmiştir:
+
+```text
+results/outputs/pst_ablation/pst_adaptive_threshold_tuning_results.csv
+results/outputs/pst_ablation/pst_adaptive_threshold_tuning_summary.csv
+results/outputs/pst_ablation/pst_adaptive_threshold_tuning_best_original.csv
+results/outputs/pst_ablation/pst_adaptive_threshold_tuning_stability.csv
+```
+
+Ayrıca standart experiment çıktıları da güncellenmiştir:
 
 ```text
 results/outputs/automata_advanced_all_scenarios_metrics.csv
-results/outputs/automata_skab_fold_summary.csv
-results/outputs/automata_batadal_seed_summary.csv
 results/outputs/automata_batadal_advanced_explainability.json
 results/outputs/statistical_test_results.csv
-```
-
-Windowed-NLL tuning çıktıları:
-
-```text
-results/outputs/pst_ablation/pst_windowed_nll_tuning_results.csv
-results/outputs/pst_ablation/pst_windowed_nll_tuning_summary.csv
-results/outputs/pst_ablation/pst_windowed_nll_tuning_best_original.csv
-results/outputs/pst_ablation/pst_windowed_nll_tuning_stability.csv
-```
-
-## Genel Sonuç
-
-Bu branch başarılı bir deneydir.
-
-Windowed negative log scoring, BATADAL veri setinde PST modelinin performansını artırmıştır. En iyi BATADAL sonucu `score_window=3` ve `threshold=6.907755` ile elde edilmiştir.
-
-SKAB veri setinde ise en iyi sonuç `score_window=1` ile korunmuştur. Daha büyük window değerleri SKAB performansını hafif düşürmüştür.
-
-Bu nedenle nihai yorum şu şekildedir:
-
-```text
-PST Windowed-NLL, BATADAL için faydalı bir iyileştirme sağlamıştır.
-SKAB için ise ek katkı sağlamamıştır.
-Dataset-specific karar mekanizması açısından anlamlı bir bulgudur.
 ```
